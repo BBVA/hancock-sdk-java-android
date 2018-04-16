@@ -5,9 +5,7 @@ package com.bbva.hancock.sdk;
  */
 import org.junit.Test;
 import org.web3j.crypto.RawTransaction;
-
 import java.math.BigInteger;
-
 import static org.junit.Assert.*;
 
 public class HancockEthereumClientTest {

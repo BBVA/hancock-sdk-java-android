@@ -1,0 +1,7 @@
+{
+  "env": "local",
+  "node": {
+    "host": "http://localhost",
+    "port": 8545
+  }
+}
