@@ -5,16 +5,10 @@
 nodePipeline{
 
       // Make some custom commands (generate unit tests, etc.)
-      stage("Custom Stage"){
+      stage("TODO: gradle pipeline"){
         container("node"){
-          sh "node --version"
+          sh "echo 'make a gradle pipeline in order to deploy java libs from CI'"
         }
       }
 
-      // Docker build and push. The image will be: registry-dev.kickstartteam.es/PROJECT/REPO_NAME:GIT_COMMIT
-      // It also tag the build with the branch name
-      docker_shuttle_stage()
-
-      // Deploy the image to Kubernetes
-      deploy_shuttle_stage()
 }
