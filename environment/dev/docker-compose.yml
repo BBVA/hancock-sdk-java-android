@@ -7,5 +7,5 @@ services:
     image: dev/hancock_sdk_client_java
     container_name: dev/hancock_sdk_client_java
     volumes:
-      - ../..:/hancock-sdk-client-java
+      - ../..:/hancock-sdk-client-android
   

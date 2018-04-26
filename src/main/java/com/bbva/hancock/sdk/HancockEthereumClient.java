@@ -8,7 +8,8 @@ import org.web3j.crypto.Credentials;
 import org.web3j.crypto.RawTransaction;
 import org.web3j.crypto.TransactionEncoder;
 import org.web3j.crypto.WalletUtils;
-import org.web3j.protocol.admin.Admin;
+import org.web3j.protocol.Web3j;
+import org.web3j.protocol.Web3jFactory;
 import org.web3j.protocol.core.methods.response.EthSendTransaction;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.utils.Numeric;
@@ -99,7 +100,7 @@ public class HancockEthereumClient {
 
         // defaults to http://localhost:8545/
         String nodeUrl = this.config.getNode().getHost() + ':' + this.config.getNode().getPort();
-        Admin web3j = Admin.build(new HttpService(nodeUrl));
+        Web3j web3j = Web3jFactory.build(new HttpService(nodeUrl));
 
         EthSendTransaction ethSendTransaction = web3j.ethSendRawTransaction(signedTransaction).sendAsync().get();
         String transactionHash = ethSendTransaction.getTransactionHash();
