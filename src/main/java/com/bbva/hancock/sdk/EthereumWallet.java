@@ -1,6 +1,6 @@
 package com.bbva.hancock.sdk;
 
-class EthereumWallet implements java.io.Serializable {
+public class EthereumWallet implements java.io.Serializable {
 
     private String address;
     private String privateKey;
