@@ -1,4 +1,4 @@
-FROM gradle:latest
+FROM gradle:jdk8-alpine
 LABEL maintainer "Angel Manzano Alcaraz <angel.manzano.contractor@bbva.com>"
 
 WORKDIR /hancock-sdk-client-android

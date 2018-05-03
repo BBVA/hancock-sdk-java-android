@@ -1,6 +1,9 @@
 package com.bbva.hancock.sdk.config;
 
-import java.io.Serializable;
+import org.yaml.snakeyaml.Yaml;
+
+import java.io.*;
+import java.util.Map;
 
 
 public class HancockConfig implements Serializable {
@@ -24,6 +27,31 @@ public class HancockConfig implements Serializable {
 
     public void setNode(HancockConfigNode node) {
         this.node = node;
+    }
+
+    public static HancockConfig createDefaultConfig() {
+
+        try {
+
+            InputStream input = new FileInputStream(new File("application.yml"));
+            Yaml yaml = new Yaml();
+
+            Map<String, Object> object = (Map<String, Object>) yaml.load(input);
+            System.out.println(object);
+
+            String env = (String) object.get("env");
+            Map<String, Object> node = (Map<String, Object>) object.get("node");
+
+            return new Builder(env)
+                    .withNode((String) node.get("host"), (Integer) node.get("port"))
+                    .build();
+
+        } catch (FileNotFoundException e) {
+
+            return new HancockConfig();
+
+        }
+
     }
 
     public static class Builder {

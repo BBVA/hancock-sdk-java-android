@@ -1,9 +1,9 @@
 package com.bbva.hancock.sdk;
 
 import com.bbva.hancock.sdk.config.HancockConfig;
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigBeanFactory;
-import com.typesafe.config.ConfigFactory;
+// import com.typesafe.config.Config;
+// import com.typesafe.config.ConfigBeanFactory;
+// import com.typesafe.config.ConfigFactory;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.RawTransaction;
 import org.web3j.crypto.TransactionEncoder;
@@ -28,24 +28,32 @@ public class HancockEthereumClient {
 
     public HancockEthereumClient() {
 
-        this.config = this.loadPrivateConfig();
+        // this.config = this.loadPrivateConfig();
+        this.config = HancockConfig.createDefaultConfig();
 
     }
 
     public HancockEthereumClient(HancockConfig config) throws Exception {
 
-        this.config = this.loadPrivateConfig();
-        BeanUtils.merge(this.config, config);
+        // TODO: Support yaml load config on android
+        this.config = config;
 
     }
 
     public EthereumWallet generateWallet() throws Exception {
 
+        String dir = WalletUtils.getDefaultKeyDirectory();
+        return this.generateWallet(dir);
+
+    }
+
+    public EthereumWallet generateWallet(String dir) throws Exception {
+
         try {
 
-            String pass = "__123456__";
+            String pass = String.format("__%s__", Math.floor(Math.random() * 100000000));
 
-            File tmpDirectory = new File("/tmp/wallets");
+            File tmpDirectory = new File(dir);
             tmpDirectory.mkdirs();
 
             String fileName = WalletUtils.generateNewWalletFile(pass, tmpDirectory, false);
@@ -116,7 +124,8 @@ public class HancockEthereumClient {
 
     }
 
-    private HancockConfig loadPrivateConfig() {
+    // TODO: Support yaml load config on android
+    /*private HancockConfig loadPrivateConfig() {
         Config baseConfig = ConfigFactory.load();
         Config config, specificConfig;
 
@@ -133,7 +142,7 @@ public class HancockEthereumClient {
 
         HancockConfig hancockConfig = ConfigBeanFactory.create(config, HancockConfig.class);
         return hancockConfig;
-    }
+    }*/
 
 
 }
