@@ -5,6 +5,8 @@ package com.bbva.hancock.sdk;
  */
 import org.junit.Test;
 import org.web3j.crypto.RawTransaction;
+import org.web3j.utils.Numeric;
+
 import java.math.BigInteger;
 import static org.junit.Assert.*;
 
@@ -42,15 +44,30 @@ public class HancockEthereumClientTest {
         BigInteger gasLimit = BigInteger.valueOf(222);
         BigInteger value = BigInteger.valueOf(333);
         String to = wallet.getAddress();
+        String data = "0xwhatever";
 
-        RawTransaction rawTransaction = classUnderTest.createRawTransaction(nonce, gasPrice, gasLimit, to, value);
+        EthereumRawTransaction rawTransaction = classUnderTest.createRawTransaction(nonce, gasPrice, gasLimit, to, value, data);
 
-        assertTrue("RawTransaction is well constructed ", rawTransaction instanceof RawTransaction);
+        assertTrue("RawTransaction is well constructed ", rawTransaction instanceof EthereumRawTransaction);
+        assertTrue("RawTransaction web3 instance is well constructed ", rawTransaction.getWeb3Instance() instanceof RawTransaction);
         assertTrue("RawTransaction has nonce ", rawTransaction.getNonce() instanceof BigInteger);
         assertTrue("RawTransaction has gasPrice ", rawTransaction.getGasPrice() instanceof BigInteger);
         assertTrue("RawTransaction has gasLimit ", rawTransaction.getGasPrice() instanceof BigInteger);
         assertTrue("RawTransaction has to ", rawTransaction.getTo() instanceof String);
         assertTrue("RawTransaction has value ", rawTransaction.getValue() instanceof BigInteger);
+        assertTrue("RawTransaction has value ", rawTransaction.getData() instanceof String);
+
+
+        rawTransaction = classUnderTest.createRawTransaction(nonce, gasPrice, gasLimit, to, value);
+
+        assertTrue("RawTransaction has value ", rawTransaction.getValue() instanceof BigInteger);
+        assertTrue("RawTransaction has value ", rawTransaction.getData() == null);
+
+
+        rawTransaction = classUnderTest.createRawTransaction(nonce, gasPrice, gasLimit, to, data);
+
+        assertTrue("RawTransaction has value ", rawTransaction.getValue().equals(BigInteger.ZERO));
+        assertTrue("RawTransaction has value ", rawTransaction.getData() instanceof String);
 
     }
 
@@ -66,7 +83,7 @@ public class HancockEthereumClientTest {
         String to = wallet.getAddress();
         String privateKey = wallet.getPrivateKey();
 
-        RawTransaction rawTransaction = classUnderTest.createRawTransaction(nonce, gasPrice, gasLimit, to, value);
+        EthereumRawTransaction rawTransaction = classUnderTest.createRawTransaction(nonce, gasPrice, gasLimit, to, value);
         String signedTransaction = classUnderTest.signTransaction(rawTransaction, privateKey);
 
         assertTrue("transaction signed successfully", signedTransaction instanceof String);

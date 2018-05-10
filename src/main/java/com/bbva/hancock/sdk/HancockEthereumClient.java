@@ -1,11 +1,7 @@
 package com.bbva.hancock.sdk;
 
 import com.bbva.hancock.sdk.config.HancockConfig;
-// import com.typesafe.config.Config;
-// import com.typesafe.config.ConfigBeanFactory;
-// import com.typesafe.config.ConfigFactory;
 import org.web3j.crypto.Credentials;
-import org.web3j.crypto.RawTransaction;
 import org.web3j.crypto.TransactionEncoder;
 import org.web3j.crypto.WalletUtils;
 import org.web3j.protocol.Web3j;
@@ -76,15 +72,22 @@ public class HancockEthereumClient {
 
     }
 
-    public RawTransaction createRawTransaction(BigInteger nonce, BigInteger gasPrice, BigInteger gasLimit, String to,
-                                       BigInteger value) {
-        return RawTransaction.createEtherTransaction(nonce, gasPrice, gasLimit, to, value);
+    public EthereumRawTransaction createRawTransaction(BigInteger nonce, BigInteger gasPrice, BigInteger gasLimit, String to, String data) {
+        return new EthereumRawTransaction(nonce, gasPrice, gasLimit, to, data);
     }
 
-    public String signTransaction(RawTransaction rawTransaction, String privateKey) {
+    public EthereumRawTransaction createRawTransaction(BigInteger nonce, BigInteger gasPrice, BigInteger gasLimit, String to, BigInteger value) {
+        return new EthereumRawTransaction(nonce, gasPrice, gasLimit, to, value);
+    }
+
+    public EthereumRawTransaction createRawTransaction(BigInteger nonce, BigInteger gasPrice, BigInteger gasLimit, String to, BigInteger value, String data) {
+        return new EthereumRawTransaction(nonce, gasPrice, gasLimit, to, value, data);
+    }
+
+    public String signTransaction(EthereumRawTransaction rawTransaction, String privateKey) {
 
         Credentials credentials = Credentials.create(privateKey);
-        byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials);
+        byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction.getWeb3Instance(), credentials);
         String hexValue = Numeric.toHexString(signedMessage);
 
         return hexValue;
@@ -92,22 +95,32 @@ public class HancockEthereumClient {
 
     public String sendSignedTransaction(String signedTransaction, boolean locally) throws Exception {
 
+        String url = locally
+                ? (this.config.getNode().getHost() + ':' + this.config.getNode().getPort())
+                : ("");
+
+        return sendSignedTransaction(signedTransaction, locally, url);
+
+    }
+
+    public String sendSignedTransaction(String signedTransaction, boolean locally, String url) throws Exception {
+
         if (locally) {
-
-            return this.sendSignedTransactionLocally(signedTransaction);
-
+            return this.sendSignedTransactionLocally(signedTransaction, url);
         } else {
-
-            return this.sendSignedTransactionRemotely(signedTransaction);
-
+            return this.sendSignedTransactionRemotely(signedTransaction, url);
         }
 
     }
 
     private String sendSignedTransactionLocally(String signedTransaction) throws InterruptedException, ExecutionException {
+        String nodeUrl = this.config.getNode().getHost() + ':' + this.config.getNode().getPort();
+        return this.sendSignedTransactionLocally(signedTransaction, nodeUrl);
+    }
+
+    private String sendSignedTransactionLocally(String signedTransaction, String nodeUrl) throws InterruptedException, ExecutionException {
 
         // defaults to http://localhost:8545/
-        String nodeUrl = this.config.getNode().getHost() + ':' + this.config.getNode().getPort();
         Web3j web3j = Web3jFactory.build(new HttpService(nodeUrl));
 
         EthSendTransaction ethSendTransaction = web3j.ethSendRawTransaction(signedTransaction).sendAsync().get();
@@ -118,7 +131,7 @@ public class HancockEthereumClient {
 
     }
 
-    private String sendSignedTransactionRemotely(String signedTransaction) throws Exception {
+    private String sendSignedTransactionRemotely(String signedTransaction, String backUrl) throws Exception {
 
        throw new Exception("Not implemented");
 
