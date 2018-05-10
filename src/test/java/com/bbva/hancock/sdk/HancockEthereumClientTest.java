@@ -61,7 +61,7 @@ public class HancockEthereumClientTest {
         rawTransaction = classUnderTest.createRawTransaction(nonce, gasPrice, gasLimit, to, value);
 
         assertTrue("RawTransaction has value ", rawTransaction.getValue() instanceof BigInteger);
-        assertTrue("RawTransaction has value ", rawTransaction.getData() == null);
+        assertTrue("RawTransaction has value ", rawTransaction.getData() == "");
 
 
         rawTransaction = classUnderTest.createRawTransaction(nonce, gasPrice, gasLimit, to, data);
