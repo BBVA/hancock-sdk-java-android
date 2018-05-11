@@ -1,16 +1,13 @@
 package com.bbva.hancock.sdk;
 
 import com.bbva.hancock.sdk.config.HancockConfig;
-import org.web3j.crypto.Credentials;
-import org.web3j.crypto.TransactionEncoder;
-import org.web3j.crypto.WalletUtils;
+import org.web3j.crypto.*;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.Web3jFactory;
 import org.web3j.protocol.core.methods.response.EthSendTransaction;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.utils.Numeric;
 
-import java.io.File;
 import java.math.BigInteger;
 import java.util.concurrent.ExecutionException;
 
@@ -38,24 +35,10 @@ public class HancockEthereumClient {
 
     public EthereumWallet generateWallet() throws Exception {
 
-        String dir = WalletUtils.getDefaultKeyDirectory();
-        return this.generateWallet(dir);
-
-    }
-
-    public EthereumWallet generateWallet(String dir) throws Exception {
-
         try {
 
-            String pass = String.format("__%s__", Math.floor(Math.random() * 100000000));
-
-            File tmpDirectory = new File(dir);
-            tmpDirectory.mkdirs();
-
-            String fileName = WalletUtils.generateNewWalletFile(pass, tmpDirectory, false);
-            Credentials credentials = WalletUtils.loadCredentials(pass, tmpDirectory + "/" + fileName);
-
-            tmpDirectory.delete();
+            ECKeyPair ecKeyPair = Keys.createEcKeyPair();
+            Credentials credentials = Credentials.create(ecKeyPair);
 
             String address = credentials.getAddress();
             String privateKey = "0x" + credentials.getEcKeyPair().getPrivateKey().toString(16);
