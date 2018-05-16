@@ -10,6 +10,7 @@ public class HancockConfig implements Serializable {
 
     private String env;
     public HancockConfigNode node;
+    public HancockConfigAdapter adapter;
 
     public HancockConfig() { }
 
@@ -29,44 +30,51 @@ public class HancockConfig implements Serializable {
         this.node = node;
     }
 
-    public static HancockConfig createDefaultConfig() {
+    public HancockConfigAdapter getAdapter() {
+        return adapter;
+    }
 
-        try {
-
-            InputStream input = new FileInputStream(new File("application.yml"));
-            Yaml yaml = new Yaml();
-
-            Map<String, Object> object = (Map<String, Object>) yaml.load(input);
-            System.out.println(object);
-
-            String env = (String) object.get("env");
-            Map<String, Object> node = (Map<String, Object>) object.get("node");
-
-            return new Builder(env)
-                    .withNode((String) node.get("host"), (Integer) node.get("port"))
-                    .build();
-
-        } catch (FileNotFoundException e) {
-
-            return new HancockConfig();
-
-        }
-
+    public void setAdapter(HancockConfigAdapter adapter) {
+        this.adapter = adapter;
     }
 
     public static class Builder {
 
-        private final String env;
-        private String nodeHost;
-        private int nodePort;
+        private String env;
+        private HancockConfigNode node;
+        private HancockConfigAdapter adapter;
 
-        public Builder(String env) {
+        public Builder() {
+            this.fromConfigFile();
+        }
+
+        public Builder withEnv(String env) {
             this.env = env;
+            return this;
         }
 
         public Builder withNode(String host, int port) {
-            this.nodeHost = host;
-            this.nodePort = port;
+
+            if (this.node == null) {
+                this.node = new HancockConfigNode();
+            }
+
+            this.node.setHost(host);
+            this.node.setPort(port);
+
+            return this;
+        }
+
+        public Builder withAdapter(String host, String base, int port) {
+
+            if (this.adapter == null) {
+                this.adapter = new HancockConfigAdapter();
+            }
+
+            this.adapter.setHost(host);
+            this.adapter.setBase(base);
+            this.adapter.setPort(port);
+
             return this;
         }
 
@@ -76,15 +84,49 @@ public class HancockConfig implements Serializable {
 
             config.setEnv(this.env);
 
-            if (this.nodeHost != null) {
-                HancockConfigNode configNode = new HancockConfigNode();
-                configNode.setHost(this.nodeHost);
-                configNode.setPort(this.nodePort);
+            if (this.node != null) {
+                config.setNode(this.node);
+            }
 
-                config.setNode(configNode);
+            if (this.adapter != null) {
+                config.setAdapter(this.adapter);
             }
 
             return config;
+        }
+
+
+        private Builder withAdapter(String host, String base, int port, Map<String, String> resources) {
+            this.adapter = new HancockConfigAdapter(host, base, port, resources);
+            return this;
+        }
+
+        private Builder fromConfigFile() {
+            try {
+
+                ClassLoader classLoader = getClass().getClassLoader();
+                File file = new File(classLoader.getResource("application.yml").getFile());
+
+                InputStream input = new FileInputStream(file);
+                Yaml yaml = new Yaml();
+
+                Map<String, Object> object = (Map<String, Object>) yaml.load(input);
+                System.out.println(object);
+
+                String env = (String) object.get("env");
+                Map<String, Object> node = (Map<String, Object>) object.get("node");
+                Map<String, Object> adapter = (Map<String, Object>) object.get("adapter");
+
+                this.withEnv(env);
+                this.withAdapter((String) adapter.get("host"), (String) adapter.get("base"), (int) adapter.get("port"), (Map<String, String>) adapter.get("resources"));
+                this.withNode((String) node.get("host"), (int) node.get("port"));
+                return this;
+
+            } catch (FileNotFoundException e) {
+
+                return this;
+
+            }
         }
 
 

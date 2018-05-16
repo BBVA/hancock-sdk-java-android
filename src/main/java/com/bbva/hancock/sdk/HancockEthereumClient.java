@@ -1,13 +1,18 @@
 package com.bbva.hancock.sdk;
 
 import com.bbva.hancock.sdk.config.HancockConfig;
+import com.bbva.hancock.sdk.models.GetBalanceResponse;
+import com.google.gson.Gson;
+import okhttp3.*;
 import org.web3j.crypto.*;
+import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.Web3jFactory;
 import org.web3j.protocol.core.methods.response.EthSendTransaction;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.utils.Numeric;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.concurrent.ExecutionException;
 
@@ -21,16 +26,15 @@ public class HancockEthereumClient {
 
     public HancockEthereumClient() {
 
-        // this.config = this.loadPrivateConfig();
-        this.config = HancockConfig.createDefaultConfig();
+        this.config = new HancockConfig
+                .Builder()
+                .build();
 
     }
 
     public HancockEthereumClient(HancockConfig config) throws Exception {
 
-        // TODO: Support yaml load config on android
         this.config = config;
-
     }
 
     public EthereumWallet generateWallet() throws Exception {
@@ -50,6 +54,36 @@ public class HancockEthereumClient {
 
             System.out.println("error: " + error.toString());
             throw new Exception("Error generating wallet");
+
+        }
+
+    }
+
+    public BigInteger getBalance(String address) throws IOException {
+
+        OkHttpClient httpClient = new OkHttpClient();
+        String url = this.config.getAdapter().getHost() + ':' + this.config.getAdapter().getPort() + this.config.getAdapter().getBase() + this.config.getAdapter().getResources().get("balance").replaceAll("__ADDRESS__", address);
+
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+
+        Response response = httpClient.newCall(request).execute();
+        GetBalanceResponse responseModel = checkStatus(response, GetBalanceResponse.class);
+        return new BigInteger(responseModel.getBalance());
+
+    }
+
+    private <T> T checkStatus(Response response, Class<T> tClass) throws IOException {
+
+        try (ResponseBody responseBody = response.body()) {
+
+            // HTTP status code between 200 and 299
+            if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
+
+
+            Gson gson = new Gson();
+            return gson.fromJson(responseBody.string(), tClass);
 
         }
 
