@@ -14,7 +14,7 @@ import static org.junit.Assert.*;
 
 public class HancockEthereumClientTest {
 
-    @Test public void testClientInstantiation() throws Exception {
+    @Test public void testConfigInstantiation() throws Exception {
 
         HancockConfig config = new HancockConfig.Builder()
                 .withEnv("custom")
@@ -33,19 +33,6 @@ public class HancockEthereumClientTest {
         assertEquals(adapter.getBase(), "/base");
         assertEquals(adapter.getPort(), 9999);
         assertEquals(adapter.getResources().get("balance"), "/ethereum/balance/__ADDRESS__");
-
-    }
-
-    @Test public void testConfigInit() throws Exception {
-
-        HancockConfig config = new HancockConfig.Builder().build();
-        HancockEthereumClient classUnderTest = new HancockEthereumClient(config);
-
-        BigInteger balance = classUnderTest.getBalance("0xde8e772f0350e992ddef81bf8f51d94a8ea9216d");
-
-        assertTrue("transaction signed successfully", balance.compareTo(BigInteger.valueOf(0)) == 1);
-
-        System.out.println("Balance =>" + balance.toString());
 
     }
 

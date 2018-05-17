@@ -102,31 +102,22 @@ public class HancockConfig implements Serializable {
         }
 
         private Builder fromConfigFile() {
-            try {
 
-                ClassLoader classLoader = getClass().getClassLoader();
-                File file = new File(classLoader.getResource("application.yml").getFile());
+            InputStream input = getClass().getClassLoader().getResourceAsStream("application.yml");
+            Yaml yaml = new Yaml();
 
-                InputStream input = new FileInputStream(file);
-                Yaml yaml = new Yaml();
+            Map<String, Object> object = (Map<String, Object>) yaml.load(input);
+            System.out.println(object);
 
-                Map<String, Object> object = (Map<String, Object>) yaml.load(input);
-                System.out.println(object);
+            String env = (String) object.get("env");
+            Map<String, Object> node = (Map<String, Object>) object.get("node");
+            Map<String, Object> adapter = (Map<String, Object>) object.get("adapter");
 
-                String env = (String) object.get("env");
-                Map<String, Object> node = (Map<String, Object>) object.get("node");
-                Map<String, Object> adapter = (Map<String, Object>) object.get("adapter");
+            this.withEnv(env);
+            this.withAdapter((String) adapter.get("host"), (String) adapter.get("base"), (int) adapter.get("port"), (Map<String, String>) adapter.get("resources"));
+            this.withNode((String) node.get("host"), (int) node.get("port"));
+            return this;
 
-                this.withEnv(env);
-                this.withAdapter((String) adapter.get("host"), (String) adapter.get("base"), (int) adapter.get("port"), (Map<String, String>) adapter.get("resources"));
-                this.withNode((String) node.get("host"), (int) node.get("port"));
-                return this;
-
-            } catch (FileNotFoundException e) {
-
-                return this;
-
-            }
         }
 
 
