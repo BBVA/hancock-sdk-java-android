@@ -165,7 +165,7 @@ public class HancockEthereumClient {
         return this.sendSignedTransaction(signedTransaction, true, nodeurl);
     }
 
-    public EthereumRawTransaction adaptTransfer(String from, String to, String value, String data) throws Exception {
+    private EthereumRawTransaction adaptTransfer(String from, String to, String value, String data) throws Exception {
         OkHttpClient httpClient = new OkHttpClient();
         String url = this.config.getAdapter().getHost() + ':' + this.config.getAdapter().getPort() + this.config.getAdapter().getBase() + this.config.getAdapter().getResources().get("transfer");
         
