@@ -2,12 +2,12 @@ package com.bbva.hancock.sdk.models;
 
 import java.math.BigInteger;
 
-class TransferResponseResult {
+class EthereumTransferResponseResult {
     public int code;
     public String description;
 }
 
-class TransferResponseData {
+class EthereumTransferResponseData {
     public String from;
     public String to;
     public String value;
@@ -17,9 +17,9 @@ class TransferResponseData {
     public String nonce;
 }
 
-public class TransferResponse {
-    public TransferResponseResult result;
-    public TransferResponseData data;
+public class EthereumTransferResponse {
+    public EthereumTransferResponseResult result;
+    public EthereumTransferResponseData data;
 
     public BigInteger getNonce(){
         return new BigInteger(data.nonce.substring(2), 16);

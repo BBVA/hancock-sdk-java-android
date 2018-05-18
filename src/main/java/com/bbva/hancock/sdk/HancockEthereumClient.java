@@ -1,8 +1,10 @@
 package com.bbva.hancock.sdk;
 
 import com.bbva.hancock.sdk.config.HancockConfig;
+import com.bbva.hancock.sdk.models.EthereumTransferResponse;
 import com.bbva.hancock.sdk.models.GetBalanceResponse;
-import com.bbva.hancock.sdk.models.TransferResponse;
+import com.bbva.hancock.sdk.models.TransactionConfig;
+import com.bbva.hancock.sdk.models.EthereumTransferRequest;
 import com.google.gson.Gson;
 import okhttp3.*;
 import org.web3j.crypto.*;
@@ -23,7 +25,7 @@ import java.util.concurrent.ExecutionException;
  */
 public class HancockEthereumClient {
 
-    private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+    private static final MediaType CONTENT_TYPE_JSON = MediaType.parse("application/json; charset=utf-8");
 
     private HancockConfig config;
 
@@ -157,27 +159,41 @@ public class HancockEthereumClient {
 
     }
 
-    public String transfer(String from, String to, String value, String data, String privateKey) throws Exception{
-        EthereumRawTransaction rawtx = this.adaptTransfer(from, to, value, data);
-        String signedTransaction = this.signTransaction(rawtx, privateKey);
+    public String transfer(EthereumTransferRequest request, TransactionConfig txConfig) throws Exception{
+        EthereumRawTransaction rawtx = this.adaptTransfer(request);
 
-        String nodeurl = this.config.getNode().getHost() + ':' + this.config.getNode().getPort();
-        return this.sendSignedTransaction(signedTransaction, true, nodeurl);
+        String requestUrl = "";
+        String signedTransaction = "";
+
+        if(txConfig.isLocally()) {
+            requestUrl = this.config.getNode().getHost() + ':' + this.config.getNode().getPort();
+        }else{
+            //TODO with hancock
+        }
+
+        if(txConfig.getPrivateKey() != null) {
+            signedTransaction = this.signTransaction(rawtx, txConfig.getPrivateKey());
+        }else{
+            //TODO with provider
+        }
+
+        return this.sendSignedTransaction(signedTransaction, txConfig.isLocally(), requestUrl);
     }
 
-    private EthereumRawTransaction adaptTransfer(String from, String to, String value, String data) throws Exception {
+    private EthereumRawTransaction adaptTransfer(EthereumTransferRequest txRequest) throws Exception {
         OkHttpClient httpClient = new OkHttpClient();
         String url = this.config.getAdapter().getHost() + ':' + this.config.getAdapter().getPort() + this.config.getAdapter().getBase() + this.config.getAdapter().getResources().get("transfer");
-        
-        String json = "{\"from\":\""+from+"\", \"to\":\""+to+"\", \"value\":\""+value+"\", \"data\":\""+data+"\"}";
-        RequestBody body = RequestBody.create(JSON, json);
+
+        Gson gson = new Gson();
+        String json = gson.toJson(txRequest);
+        RequestBody body = RequestBody.create(CONTENT_TYPE_JSON, json);
         Request request = new Request.Builder()
                 .url(url)
                 .post(body)
                 .build();
 
         Response response = httpClient.newCall(request).execute();
-        TransferResponse rawTx = checkStatus(response, TransferResponse.class);
+        EthereumTransferResponse rawTx = checkStatus(response, EthereumTransferResponse.class);
         EthereumRawTransaction ethrawtx = this.createRawTransaction(rawTx.getNonce(), rawTx.getGasPrice(), rawTx.getGas(), rawTx.getTo(), rawTx.getValue(), rawTx.getData());
         return ethrawtx;
     }
