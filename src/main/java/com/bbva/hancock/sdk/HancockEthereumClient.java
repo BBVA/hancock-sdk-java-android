@@ -165,8 +165,8 @@ public class HancockEthereumClient {
         String requestUrl = "";
         String signedTransaction = "";
 
-        if(txConfig.isLocally()) {
-            requestUrl = this.config.getNode().getHost() + ':' + this.config.getNode().getPort();
+        if(txConfig.getSendLocally()) {
+            requestUrl = txConfig.getNode() != null ? txConfig.getNode() : this.config.getNode().getHost() + ':' + this.config.getNode().getPort();
         }else{
             //TODO with hancock
         }
@@ -177,7 +177,7 @@ public class HancockEthereumClient {
             //TODO with provider
         }
 
-        return this.sendSignedTransaction(signedTransaction, txConfig.isLocally(), requestUrl);
+        return this.sendSignedTransaction(signedTransaction, txConfig.getSendLocally(), requestUrl);
     }
 
     private EthereumRawTransaction adaptTransfer(EthereumTransferRequest txRequest) throws Exception {

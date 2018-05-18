@@ -136,9 +136,9 @@ public class HancockEthereumClientTest {
     //             .build();
     //     HancockEthereumClient classUnderTest = new HancockEthereumClient(config);
 
-    //     TransactionConfig txConfig = new TransactionConfig();
-    //     txConfig.setPrivateKey("0x6c47653f66ac9b733f3b8bf09ed3d300520b4d9c78711ba90162744f5906b1f8");
-    //     txConfig.setLocally(true);
+    //     TransactionConfig txConfig = new TransactionConfig.Builder()
+    //         .withPrivateKey("0x6c47653f66ac9b733f3b8bf09ed3d300520b4d9c78711ba90162744f5906b1f8")
+    //         .build();
 
     //     EthereumTransferRequest txRequest = new EthereumTransferRequest("0x6c0a14f7561898b9ddc0c57652a53b2c6665443e", "0xde8e772f0350e992ddef81bf8f51d94a8ea9216d", "0260941720000000000", "test test");
 
