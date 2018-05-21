@@ -5,6 +5,7 @@ adapter:
   base: ''
   resources:
     balance: '/ethereum/balance/__ADDRESS__'
+    transfer: '/ethereum/transfers'
 node:
   host: http://localhost
   port: 8545
