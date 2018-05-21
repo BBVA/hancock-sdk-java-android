@@ -6,9 +6,9 @@ package com.bbva.hancock.sdk;
 import com.bbva.hancock.sdk.config.HancockConfig;
 import com.bbva.hancock.sdk.config.HancockConfigAdapter;
 import com.bbva.hancock.sdk.config.HancockConfigNode;
+
 import com.bbva.hancock.sdk.models.EthereumTransferRequest;
 import com.bbva.hancock.sdk.models.TransactionConfig;
-
 import org.junit.Test;
 import org.web3j.crypto.RawTransaction;
 
@@ -65,7 +65,7 @@ public class HancockEthereumClientTest {
         String to = wallet.getAddress();
         String data = "0xwhatever";
 
-        EthereumRawTransaction rawTransaction = classUnderTest.createRawTransaction(nonce, gasPrice, gasLimit, to, value, data);
+        EthereumRawTransaction rawTransaction = new EthereumRawTransaction(nonce, gasPrice, gasLimit, to, value, data);
 
         assertTrue("RawTransaction is well constructed ", rawTransaction instanceof EthereumRawTransaction);
         assertTrue("RawTransaction web3 instance is well constructed ", rawTransaction.getWeb3Instance() instanceof RawTransaction);
@@ -77,13 +77,13 @@ public class HancockEthereumClientTest {
         assertTrue("RawTransaction has value ", rawTransaction.getData() instanceof String);
 
 
-        rawTransaction = classUnderTest.createRawTransaction(nonce, gasPrice, gasLimit, to, value);
+        rawTransaction = new EthereumRawTransaction(nonce, gasPrice, gasLimit, to, value);
 
         assertTrue("RawTransaction has value ", rawTransaction.getValue() instanceof BigInteger);
         assertTrue("RawTransaction has value ", rawTransaction.getData() == "");
 
 
-        rawTransaction = classUnderTest.createRawTransaction(nonce, gasPrice, gasLimit, to, data);
+        rawTransaction = new EthereumRawTransaction(nonce, gasPrice, gasLimit, to, data);
 
         assertTrue("RawTransaction has value ", rawTransaction.getValue().equals(BigInteger.ZERO));
         assertTrue("RawTransaction has value ", rawTransaction.getData() instanceof String);
@@ -102,7 +102,7 @@ public class HancockEthereumClientTest {
         String to = wallet.getAddress();
         String privateKey = wallet.getPrivateKey();
 
-        EthereumRawTransaction rawTransaction = classUnderTest.createRawTransaction(nonce, gasPrice, gasLimit, to, value);
+        EthereumRawTransaction rawTransaction = new EthereumRawTransaction(nonce, gasPrice, gasLimit, to, value);
         String signedTransaction = classUnderTest.signTransaction(rawTransaction, privateKey);
 
         assertTrue("transaction signed successfully", signedTransaction instanceof String);
@@ -111,46 +111,54 @@ public class HancockEthereumClientTest {
 
     }
 
-    // @Test public void testAdaptTransfer() throws Exception {
+     @Test public void testAdaptTransfer() throws Exception {
 
-    //     HancockConfig config = new HancockConfig.Builder()
-    //             .withAdapter("http://localhost","", 3004)
-    //             .build();
-    //     HancockEthereumClient classUnderTest = new HancockEthereumClient(config);
+         HancockConfig config = new HancockConfig.Builder()
+                 .withAdapter("http:localhost","", 3004)
+                 .build();
+         HancockEthereumClient classUnderTest = new HancockEthereumClient(config);
+         EthereumTransferRequest transferRequest = new EthereumTransferRequest(
+                 "0x6c0a14f7561898b9ddc0c57652a53b2c6665443e",
+                 "0xde8e772f0350e992ddef81bf8f51d94a8ea9216d",
+                 new BigInteger("0260941720000000000").toString(),
+                 "test test"
+         );
 
-    //     EthereumRawTransaction rawtx = classUnderTest.adaptTransfer("0x6c0a14f7561898b9ddc0c57652a53b2c6665443e",
-    //     "0xde8e772f0350e992ddef81bf8f51d94a8ea9216d", 
-    //     "0260941720000000000",
-    //             "test test");
+         EthereumRawTransaction rawtx = classUnderTest.adaptTransfer(transferRequest);
 
-    //     assertTrue("transaction adapted successfully", rawtx instanceof EthereumRawTransaction);
+         assertTrue("transaction adapted successfully", rawtx instanceof EthereumRawTransaction);
 
-    //     System.out.println("rawtx =>" + rawtx);
+         System.out.println("rawtx =>" + rawtx);
 
-    // }
+     }
 
-    // @Test public void testTransfer() throws Exception {
+     @Test public void testTransfer() throws Exception {
 
-    //     HancockConfig config = new HancockConfig.Builder()
-    //             .withAdapter("http://localhost","", 3004)
-    //             .build();
-    //     HancockEthereumClient classUnderTest = new HancockEthereumClient(config);
+         HancockConfig config = new HancockConfig.Builder()
+                 .withAdapter("http:localhost","", 3004)
+                 .build();
+         HancockEthereumClient classUnderTest = new HancockEthereumClient(config);
 
-    //     TransactionConfig txConfig = new TransactionConfig.Builder()
-    //         .withPrivateKey("0x6c47653f66ac9b733f3b8bf09ed3d300520b4d9c78711ba90162744f5906b1f8")
-    //         .build();
+         TransactionConfig txConfig = new TransactionConfig.Builder()
+             .withPrivateKey("0x6c47653f66ac9b733f3b8bf09ed3d300520b4d9c78711ba90162744f5906b1f8")
+             .build();
 
-    //     EthereumTransferRequest txRequest = new EthereumTransferRequest("0x6c0a14f7561898b9ddc0c57652a53b2c6665443e", "0xde8e772f0350e992ddef81bf8f51d94a8ea9216d", "0260941720000000000", "test test");
+         EthereumTransferRequest txRequest = new EthereumTransferRequest(
+            "0x6c0a14f7561898b9ddc0c57652a53b2c6665443e",
+            "0xde8e772f0350e992ddef81bf8f51d94a8ea9216d",
+            new BigInteger("0260941720000000000").toString(),
+            "test test"
+         );
 
-    //     String rawtx = classUnderTest.transfer(txRequest, txConfig);
+         String rawtx = classUnderTest.transfer(txRequest, txConfig);
 
-    //     assertTrue("transaction adapted successfully", rawtx instanceof String);
+         assertTrue("transaction adapted successfully", rawtx instanceof String);
 
-    //     System.out.println("rawtx =>" + rawtx);
+         System.out.println("rawtx =>" + rawtx);
 
-    // }
+     }
 
-    /*@Test public void testGetBalance() throws Exception {
+    @Test public void testGetBalance() throws Exception {
 
         HancockConfig config = new HancockConfig.Builder()
                 .withAdapter("http://localhost","", 3004)
@@ -163,6 +171,6 @@ public class HancockEthereumClientTest {
 
         System.out.println("Balance =>" + balance.toString());
 
-    }*/
+    }
 
 }

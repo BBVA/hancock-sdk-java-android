@@ -18,6 +18,7 @@ public final class EthereumRawTransaction {
     public EthereumRawTransaction(BigInteger nonce, BigInteger gasPrice, BigInteger gasLimit, String to,
                           BigInteger value, String data) {
 
+        data = data != null ? data : "";
         this.rawTx = RawTransaction.createTransaction(nonce, gasPrice, gasLimit, to, value, data);
 
     }

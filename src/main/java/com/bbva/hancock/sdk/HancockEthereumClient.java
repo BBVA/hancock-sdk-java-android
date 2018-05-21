@@ -94,18 +94,6 @@ public class HancockEthereumClient {
 
     }
 
-    public EthereumRawTransaction createRawTransaction(BigInteger nonce, BigInteger gasPrice, BigInteger gasLimit, String to, String data) {
-        return new EthereumRawTransaction(nonce, gasPrice, gasLimit, to, data);
-    }
-
-    public EthereumRawTransaction createRawTransaction(BigInteger nonce, BigInteger gasPrice, BigInteger gasLimit, String to, BigInteger value) {
-        return new EthereumRawTransaction(nonce, gasPrice, gasLimit, to, value);
-    }
-
-    public EthereumRawTransaction createRawTransaction(BigInteger nonce, BigInteger gasPrice, BigInteger gasLimit, String to, BigInteger value, String data) {
-        return new EthereumRawTransaction(nonce, gasPrice, gasLimit, to, value, data);
-    }
-
     public String signTransaction(EthereumRawTransaction rawTransaction, String privateKey) {
 
         Credentials credentials = Credentials.create(privateKey);
@@ -165,22 +153,22 @@ public class HancockEthereumClient {
         String requestUrl = "";
         String signedTransaction = "";
 
-        if(txConfig.getSendLocally()) {
+        if (txConfig.getSendLocally()) {
             requestUrl = txConfig.getNode() != null ? txConfig.getNode() : this.config.getNode().getHost() + ':' + this.config.getNode().getPort();
-        }else{
+        } else {
             //TODO with hancock
         }
 
-        if(txConfig.getPrivateKey() != null) {
+        if (txConfig.getPrivateKey() != null) {
             signedTransaction = this.signTransaction(rawtx, txConfig.getPrivateKey());
-        }else{
+        } else {
             //TODO with provider
         }
 
         return this.sendSignedTransaction(signedTransaction, txConfig.getSendLocally(), requestUrl);
     }
 
-    private EthereumRawTransaction adaptTransfer(EthereumTransferRequest txRequest) throws Exception {
+    public EthereumRawTransaction adaptTransfer(EthereumTransferRequest txRequest) throws Exception {
         OkHttpClient httpClient = new OkHttpClient();
         String url = this.config.getAdapter().getHost() + ':' + this.config.getAdapter().getPort() + this.config.getAdapter().getBase() + this.config.getAdapter().getResources().get("transfer");
 
@@ -194,8 +182,7 @@ public class HancockEthereumClient {
 
         Response response = httpClient.newCall(request).execute();
         EthereumTransferResponse rawTx = checkStatus(response, EthereumTransferResponse.class);
-        EthereumRawTransaction ethrawtx = this.createRawTransaction(rawTx.getNonce(), rawTx.getGasPrice(), rawTx.getGas(), rawTx.getTo(), rawTx.getValue(), rawTx.getData());
-        return ethrawtx;
+        return new EthereumRawTransaction(rawTx.getNonce(), rawTx.getGasPrice(), rawTx.getGas(), rawTx.getTo(), rawTx.getValue(), rawTx.getData());
     }
 
     // TODO: Support yaml load config on android
