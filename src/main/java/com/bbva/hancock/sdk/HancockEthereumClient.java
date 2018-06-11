@@ -3,6 +3,8 @@ package com.bbva.hancock.sdk;
 import com.bbva.hancock.sdk.config.HancockConfig;
 import com.bbva.hancock.sdk.models.EthereumTransferResponse;
 import com.bbva.hancock.sdk.models.GetBalanceResponse;
+import com.bbva.hancock.sdk.models.HancockProtocolRequest;
+import com.bbva.hancock.sdk.models.HancockProtocolResponse;
 import com.bbva.hancock.sdk.models.TransactionConfig;
 import com.bbva.hancock.sdk.models.EthereumTransferRequest;
 import com.google.gson.Gson;
@@ -183,6 +185,29 @@ public class HancockEthereumClient {
         Response response = httpClient.newCall(request).execute();
         EthereumTransferResponse rawTx = checkStatus(response, EthereumTransferResponse.class);
         return new EthereumRawTransaction(rawTx.getNonce(), rawTx.getGasPrice(), rawTx.getGas(), rawTx.getTo(), rawTx.getValue(), rawTx.getData());
+    }
+
+    public HancockProtocolResponse decodeProtocol(String code) throws IOException {
+        OkHttpClient httpClient = new OkHttpClient();
+        String url = this.config.getAdapter().getHost() + ':' + 
+        this.config.getAdapter().getPort() + 
+        this.config.getAdapter().getBase() + 
+        this.config.getAdapter().getResources().get("decode");
+        
+        Gson gson = new Gson();
+        HancockProtocolRequest hancockRequest = new HancockProtocolRequest(code);
+        String json = gson.toJson(hancockRequest);
+        RequestBody body = RequestBody.create(CONTENT_TYPE_JSON, json);
+
+        Request request = new Request.Builder()
+                .url(url)
+                .post(body)
+                .build();
+
+        Response response = httpClient.newCall(request).execute();
+        HancockProtocolResponse responseModel = checkStatus(response, HancockProtocolResponse.class);
+
+        return responseModel;
     }
 
     // TODO: Support yaml load config on android
