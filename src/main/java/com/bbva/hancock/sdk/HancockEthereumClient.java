@@ -3,8 +3,10 @@ package com.bbva.hancock.sdk;
 import com.bbva.hancock.sdk.config.HancockConfig;
 import com.bbva.hancock.sdk.models.EthereumTransferResponse;
 import com.bbva.hancock.sdk.models.GetBalanceResponse;
-import com.bbva.hancock.sdk.models.HancockProtocolRequest;
-import com.bbva.hancock.sdk.models.HancockProtocolResponse;
+import com.bbva.hancock.sdk.models.HancockProtocolDecodeRequest;
+import com.bbva.hancock.sdk.models.HancockProtocolDecodeResponse;
+import com.bbva.hancock.sdk.models.HancockProtocolEncodeRequest;
+import com.bbva.hancock.sdk.models.HancockProtocolEncodeResponse;
 import com.bbva.hancock.sdk.models.TransactionConfig;
 import com.bbva.hancock.sdk.models.EthereumTransferRequest;
 import com.google.gson.Gson;
@@ -187,7 +189,7 @@ public class HancockEthereumClient {
         return new EthereumRawTransaction(rawTx.getNonce(), rawTx.getGasPrice(), rawTx.getGas(), rawTx.getTo(), rawTx.getValue(), rawTx.getData());
     }
 
-    public HancockProtocolResponse decodeProtocol(String code) throws IOException {
+    public HancockProtocolDecodeResponse decodeProtocol(String code) throws IOException {
         OkHttpClient httpClient = new OkHttpClient();
         String url = this.config.getAdapter().getHost() + ':' + 
         this.config.getAdapter().getPort() + 
@@ -195,7 +197,7 @@ public class HancockEthereumClient {
         this.config.getAdapter().getResources().get("decode");
         
         Gson gson = new Gson();
-        HancockProtocolRequest hancockRequest = new HancockProtocolRequest(code);
+        HancockProtocolDecodeRequest hancockRequest = new HancockProtocolDecodeRequest(code);
         String json = gson.toJson(hancockRequest);
         RequestBody body = RequestBody.create(CONTENT_TYPE_JSON, json);
 
@@ -205,7 +207,30 @@ public class HancockEthereumClient {
                 .build();
 
         Response response = httpClient.newCall(request).execute();
-        HancockProtocolResponse responseModel = checkStatus(response, HancockProtocolResponse.class);
+        HancockProtocolDecodeResponse responseModel = checkStatus(response, HancockProtocolDecodeResponse.class);
+
+        return responseModel;
+    }
+
+    public HancockProtocolEncodeResponse encodeProtocol(String action, BigInteger value, String to, String data, String dlt) throws IOException {
+        OkHttpClient httpClient = new OkHttpClient();
+        String url = this.config.getAdapter().getHost() + ':' +
+                this.config.getAdapter().getPort() +
+                this.config.getAdapter().getBase() +
+                this.config.getAdapter().getResources().get("encode");
+
+        Gson gson = new Gson();
+        HancockProtocolEncodeRequest hancockRequest = new HancockProtocolEncodeRequest(action, value, to, data, dlt);
+        String json = gson.toJson(hancockRequest);
+        RequestBody body = RequestBody.create(CONTENT_TYPE_JSON, json);
+
+        Request request = new Request.Builder()
+                .url(url)
+                .post(body)
+                .build();
+
+        Response response = httpClient.newCall(request).execute();
+        HancockProtocolEncodeResponse responseModel = checkStatus(response, HancockProtocolEncodeResponse.class);
 
         return responseModel;
     }

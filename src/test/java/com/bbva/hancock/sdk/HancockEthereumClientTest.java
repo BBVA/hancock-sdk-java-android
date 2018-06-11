@@ -8,7 +8,8 @@ import com.bbva.hancock.sdk.config.HancockConfigAdapter;
 import com.bbva.hancock.sdk.config.HancockConfigNode;
 
 import com.bbva.hancock.sdk.models.EthereumTransferRequest;
-import com.bbva.hancock.sdk.models.HancockProtocolResponse;
+import com.bbva.hancock.sdk.models.HancockProtocolDecodeResponse;
+import com.bbva.hancock.sdk.models.HancockProtocolEncodeResponse;
 import com.bbva.hancock.sdk.models.TransactionConfig;
 import org.junit.Test;
 import org.web3j.crypto.RawTransaction;
@@ -181,11 +182,25 @@ public class HancockEthereumClientTest {
                 .build();
         HancockEthereumClient classUnderTest = new HancockEthereumClient(config);
 
-        HancockProtocolResponse response = classUnderTest.decodeProtocol("%7B%22action%22%3A%22transfer%22%2C%22body%22%3A%7B%22value%22%3A%2210%22%2C%22data%22%3A%22dafsda%22%2C%22to%22%3A%220x1234%22%7D%2C%22dlt%22%3A%22ethereum%22%7D");
+        HancockProtocolDecodeResponse response = classUnderTest.decodeProtocol("hancock://?code=%7B%22action%22%3A%22transfer%22%2C%22body%22%3A%7B%22value%22%3A%2210%22%2C%22data%22%3A%22dafsda%22%2C%22to%22%3A%220x1234%22%7D%2C%22dlt%22%3A%22ethereum%22%7D");
 
         assertTrue("transaction signed successfully", response.getAction().equals("transfer"));
 
         System.out.println("Action =>" + response.getAction());
+
+    }
+
+    @Test public void testEncodeProtocol() throws Exception {
+
+        HancockConfig config = new HancockConfig.Builder()
+                .withAdapter("http://localhost","", 3004)
+                .build();
+        HancockEthereumClient classUnderTest = new HancockEthereumClient(config);
+
+        HancockProtocolEncodeResponse response = classUnderTest.encodeProtocol("transfer", new BigInteger("10"), "0x1234", "dafsda", "ethereum");
+
+        assertTrue("transaction signed successfully", response.getCode().equals("hancock://?code=%7B%22action%22%3A%22transfer%22%2C%22body%22%3A%7B%22value%22%3A%2210%22%2C%22data%22%3A%22dafsda%22%2C%22to%22%3A%220x1234%22%7D%2C%22dlt%22%3A%22ethereum%22%7D"));
+
 
     }
 }

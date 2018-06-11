@@ -1,9 +1,9 @@
 package com.bbva.hancock.sdk.models;
 
-public class HancockProtocolRequest {
+public class HancockProtocolDecodeRequest {
     private String code;
 
-    public HancockProtocolRequest(String code){
+    public HancockProtocolDecodeRequest(String code){
         this.code = code;
     }
     

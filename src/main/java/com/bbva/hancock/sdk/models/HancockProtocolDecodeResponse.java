@@ -2,34 +2,34 @@ package com.bbva.hancock.sdk.models;
 
 import java.math.BigInteger;
 
-class HancockProtocolResponseResult {
+class HancockProtocolDecodeResponseResult {
     public int code;
     public String description;
 }
 
-class HancockProtocolResponseData {
+class HancockProtocolDecodeResponseData {
     public String action;
-    public HancockProtocolResponseBody body;
+    public HancockProtocolDecodeResponseBody body;
     public String dlt;
 
 
 }
 
-class HancockProtocolResponseBody{
+class HancockProtocolDecodeResponseBody{
     public BigInteger value;
     public String data;
     public String to;
 }
 
-public class HancockProtocolResponse {
-    private HancockProtocolResponseResult result;
-    private HancockProtocolResponseData data;
+public class HancockProtocolDecodeResponse {
+    private HancockProtocolDecodeResponseResult result;
+    private HancockProtocolDecodeResponseData data;
 
-	public HancockProtocolResponseResult getResult() {
+	public HancockProtocolDecodeResponseResult getResult() {
 		return result;
     }
     
-	public HancockProtocolResponseData getData() {
+	public HancockProtocolDecodeResponseData getData() {
 		return data;
     }
     
