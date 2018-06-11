@@ -3,8 +3,10 @@ package com.bbva.hancock.sdk;
 import com.bbva.hancock.sdk.config.HancockConfig;
 import com.bbva.hancock.sdk.models.EthereumTransferResponse;
 import com.bbva.hancock.sdk.models.GetBalanceResponse;
+import com.bbva.hancock.sdk.models.HancockProtocolAction;
 import com.bbva.hancock.sdk.models.HancockProtocolDecodeRequest;
 import com.bbva.hancock.sdk.models.HancockProtocolDecodeResponse;
+import com.bbva.hancock.sdk.models.HancockProtocolDlt;
 import com.bbva.hancock.sdk.models.HancockProtocolEncodeRequest;
 import com.bbva.hancock.sdk.models.HancockProtocolEncodeResponse;
 import com.bbva.hancock.sdk.models.TransactionConfig;
@@ -212,7 +214,7 @@ public class HancockEthereumClient {
         return responseModel;
     }
 
-    public HancockProtocolEncodeResponse encodeProtocol(String action, BigInteger value, String to, String data, String dlt) throws IOException {
+    public HancockProtocolEncodeResponse encodeProtocol(HancockProtocolAction action, BigInteger value, String to, String data, HancockProtocolDlt dlt) throws IOException {
         OkHttpClient httpClient = new OkHttpClient();
         String url = this.config.getAdapter().getHost() + ':' +
                 this.config.getAdapter().getPort() +

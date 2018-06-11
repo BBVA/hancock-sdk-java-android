@@ -8,11 +8,9 @@ class HancockProtocolDecodeResponseResult {
 }
 
 class HancockProtocolDecodeResponseData {
-    public String action;
+    public HancockProtocolAction action;
     public HancockProtocolDecodeResponseBody body;
-    public String dlt;
-
-
+    public HancockProtocolDlt dlt;
 }
 
 class HancockProtocolDecodeResponseBody{
@@ -33,11 +31,11 @@ public class HancockProtocolDecodeResponse {
 		return data;
     }
     
-    public String getAction(){
+    public HancockProtocolAction getAction(){
         return getData().action;
     }
     
-    public String getDlt(){
+    public HancockProtocolDlt getDlt(){
         return getData().dlt;
     }
     

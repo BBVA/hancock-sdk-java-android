@@ -15,11 +15,11 @@ class HancockProtocolEncodeBody{
 }
 
 public class HancockProtocolEncodeRequest {
-    private String action;
+    private HancockProtocolAction action;
     private HancockProtocolEncodeBody body;
-    private String dlt;
+    private HancockProtocolDlt dlt;
 
-    public HancockProtocolEncodeRequest(String action, BigInteger value, String to, String data, String dlt){
+    public HancockProtocolEncodeRequest(HancockProtocolAction action, BigInteger value, String to, String data, HancockProtocolDlt dlt){
         this.action = action;
         this.body = new HancockProtocolEncodeBody(value, to, data);
         this.dlt = dlt;
