@@ -3,6 +3,12 @@ package com.bbva.hancock.sdk;
 import com.bbva.hancock.sdk.config.HancockConfig;
 import com.bbva.hancock.sdk.models.EthereumTransferResponse;
 import com.bbva.hancock.sdk.models.GetBalanceResponse;
+import com.bbva.hancock.sdk.models.HancockProtocolAction;
+import com.bbva.hancock.sdk.models.HancockProtocolDecodeRequest;
+import com.bbva.hancock.sdk.models.HancockProtocolDecodeResponse;
+import com.bbva.hancock.sdk.models.HancockProtocolDlt;
+import com.bbva.hancock.sdk.models.HancockProtocolEncodeRequest;
+import com.bbva.hancock.sdk.models.HancockProtocolEncodeResponse;
 import com.bbva.hancock.sdk.models.TransactionConfig;
 import com.bbva.hancock.sdk.models.EthereumTransferRequest;
 import com.google.gson.Gson;
@@ -170,19 +176,64 @@ public class HancockEthereumClient {
 
     public EthereumRawTransaction adaptTransfer(EthereumTransferRequest txRequest) throws Exception {
         OkHttpClient httpClient = new OkHttpClient();
-        String url = this.config.getAdapter().getHost() + ':' + this.config.getAdapter().getPort() + this.config.getAdapter().getBase() + this.config.getAdapter().getResources().get("transfer");
+        String url = getResourceUrl("transfer");
 
         Gson gson = new Gson();
         String json = gson.toJson(txRequest);
         RequestBody body = RequestBody.create(CONTENT_TYPE_JSON, json);
-        Request request = new Request.Builder()
-                .url(url)
-                .post(body)
-                .build();
+        Request request = getRequest(url, body);
 
         Response response = httpClient.newCall(request).execute();
         EthereumTransferResponse rawTx = checkStatus(response, EthereumTransferResponse.class);
         return new EthereumRawTransaction(rawTx.getNonce(), rawTx.getGasPrice(), rawTx.getGas(), rawTx.getTo(), rawTx.getValue(), rawTx.getData());
+    }
+
+    public HancockProtocolDecodeResponse decodeProtocol(String code) throws IOException {
+        OkHttpClient httpClient = new OkHttpClient();
+        String url = getResourceUrl("decode");
+
+        Gson gson = new Gson();
+        HancockProtocolDecodeRequest hancockRequest = new HancockProtocolDecodeRequest(code);
+        String json = gson.toJson(hancockRequest);
+        RequestBody body = RequestBody.create(CONTENT_TYPE_JSON, json);
+
+        Request request = getRequest(url, body);
+
+        Response response = httpClient.newCall(request).execute();
+        HancockProtocolDecodeResponse responseModel = checkStatus(response, HancockProtocolDecodeResponse.class);
+
+        return responseModel;
+    }
+
+    public HancockProtocolEncodeResponse encodeProtocol(HancockProtocolAction action, BigInteger value, String to, String data, HancockProtocolDlt dlt) throws IOException {
+        OkHttpClient httpClient = new OkHttpClient();
+        String url = getResourceUrl("encode");
+
+        Gson gson = new Gson();
+        HancockProtocolEncodeRequest hancockRequest = new HancockProtocolEncodeRequest(action, value, to, data, dlt);
+        String json = gson.toJson(hancockRequest);
+        RequestBody body = RequestBody.create(CONTENT_TYPE_JSON, json);
+
+        Request request = getRequest(url, body);
+
+        Response response = httpClient.newCall(request).execute();
+        HancockProtocolEncodeResponse responseModel = checkStatus(response, HancockProtocolEncodeResponse.class);
+
+        return responseModel;
+    }
+
+    private String getResourceUrl(String encode) {
+        return this.config.getAdapter().getHost() + ':' +
+                this.config.getAdapter().getPort() +
+                this.config.getAdapter().getBase() +
+                this.config.getAdapter().getResources().get(encode);
+    }
+
+    private Request getRequest(String url, RequestBody body) {
+        return new Request.Builder()
+                .url(url)
+                .post(body)
+                .build();
     }
 
     // TODO: Support yaml load config on android

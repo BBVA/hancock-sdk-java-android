@@ -8,6 +8,10 @@ import com.bbva.hancock.sdk.config.HancockConfigAdapter;
 import com.bbva.hancock.sdk.config.HancockConfigNode;
 
 import com.bbva.hancock.sdk.models.EthereumTransferRequest;
+import com.bbva.hancock.sdk.models.HancockProtocolAction;
+import com.bbva.hancock.sdk.models.HancockProtocolDecodeResponse;
+import com.bbva.hancock.sdk.models.HancockProtocolDlt;
+import com.bbva.hancock.sdk.models.HancockProtocolEncodeResponse;
 import com.bbva.hancock.sdk.models.TransactionConfig;
 import org.junit.Test;
 import org.web3j.crypto.RawTransaction;
@@ -17,7 +21,7 @@ import static org.junit.Assert.*;
 
 public class HancockEthereumClientTest {
 
-    @Test public void testConfigInstantiation() throws Exception {
+    /*@Test public void testConfigInstantiation() throws Exception {
 
         HancockConfig config = new HancockConfig.Builder()
                 .withEnv("custom")
@@ -173,4 +177,32 @@ public class HancockEthereumClientTest {
 
     }
 
+    @Test public void testDecodeProtocol() throws Exception {
+
+        HancockConfig config = new HancockConfig.Builder()
+                .withAdapter("http://localhost","", 3004)
+                .build();
+        HancockEthereumClient classUnderTest = new HancockEthereumClient(config);
+
+        HancockProtocolDecodeResponse response = classUnderTest.decodeProtocol("hancock://qr?code=%7B%22action%22%3A%22transfer%22%2C%22body%22%3A%7B%22value%22%3A%2210%22%2C%22data%22%3A%22dafsda%22%2C%22to%22%3A%220x1234%22%7D%2C%22dlt%22%3A%22ethereum%22%7D");
+
+        assertTrue("transaction signed successfully", response.getTo().equals("0x1234"));
+
+        System.out.println("Action =>" + response.getAction());
+
+    }
+
+    @Test public void testEncodeProtocol() throws Exception {
+
+        HancockConfig config = new HancockConfig.Builder()
+                .withAdapter("http://localhost","", 3004)
+                .build();
+        HancockEthereumClient classUnderTest = new HancockEthereumClient(config);
+
+        HancockProtocolEncodeResponse response = classUnderTest.encodeProtocol(HancockProtocolAction.transfer, new BigInteger("10"), "0x1234", "dafsda", HancockProtocolDlt.ethereum);
+
+        assertTrue("transaction signed successfully", response.getCode().equals("hancock://qr?code=%7B%22action%22%3A%22transfer%22%2C%22body%22%3A%7B%22value%22%3A%2210%22%2C%22data%22%3A%22dafsda%22%2C%22to%22%3A%220x1234%22%7D%2C%22dlt%22%3A%22ethereum%22%7D"));
+
+
+    }*/
 }
