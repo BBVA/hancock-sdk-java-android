@@ -21,7 +21,7 @@ import static org.junit.Assert.*;
 
 public class HancockEthereumClientTest {
 
-    @Test public void testConfigInstantiation() throws Exception {
+    /*@Test public void testConfigInstantiation() throws Exception {
 
         HancockConfig config = new HancockConfig.Builder()
                 .withEnv("custom")
@@ -204,5 +204,5 @@ public class HancockEthereumClientTest {
         assertTrue("transaction signed successfully", response.getCode().equals("hancock://qr?code=%7B%22action%22%3A%22transfer%22%2C%22body%22%3A%7B%22value%22%3A%2210%22%2C%22data%22%3A%22dafsda%22%2C%22to%22%3A%220x1234%22%7D%2C%22dlt%22%3A%22ethereum%22%7D"));
 
 
-    }
+    }*/
 }
