@@ -21,6 +21,13 @@ import static org.junit.Assert.*;
 
 public class HancockEthereumClientTest {
 
+    @Test public void testDumb()  {
+
+        String test = "TEST";
+        assertEquals(test, "TEST");
+
+    }
+
     /*@Test public void testConfigInstantiation() throws Exception {
 
         HancockConfig config = new HancockConfig.Builder()
