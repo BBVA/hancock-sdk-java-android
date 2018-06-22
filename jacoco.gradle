@@ -1,0 +1,13 @@
+apply plugin: 'jacoco'
+
+jacoco {
+    toolVersion = "0.8.1"
+    reportsDir = file("tests/reports")
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        html.destination file("tests/reports")
+    }
+}
