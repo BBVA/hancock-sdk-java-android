@@ -11,3 +11,28 @@ jacocoTestReport {
         html.destination file("tests/reports")
     }
 }
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                counter = "CLASS"
+                minimum = 0.6
+            }
+            limit {
+                counter = "METHOD"
+                minimum = 0.6
+            }
+            limit {
+                counter = "BRANCH"
+                minimum = 0.6
+            }
+            limit {
+                counter = "LINE"
+                minimum = 0.6
+            }
+        }
+    }
+}
+
+check.dependsOn jacocoTestCoverageVerification
