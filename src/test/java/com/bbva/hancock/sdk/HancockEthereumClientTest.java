@@ -8,19 +8,74 @@ import com.bbva.hancock.sdk.config.HancockConfigAdapter;
 import com.bbva.hancock.sdk.config.HancockConfigNode;
 
 import com.bbva.hancock.sdk.models.EthereumTransferRequest;
+import com.bbva.hancock.sdk.models.GetBalanceResponse;
 import com.bbva.hancock.sdk.models.HancockProtocolAction;
+import com.bbva.hancock.sdk.models.HancockProtocolDecodeRequest;
 import com.bbva.hancock.sdk.models.HancockProtocolDecodeResponse;
 import com.bbva.hancock.sdk.models.HancockProtocolDlt;
 import com.bbva.hancock.sdk.models.HancockProtocolEncodeResponse;
 import com.bbva.hancock.sdk.models.TransactionConfig;
-import org.junit.Test;
-import org.web3j.crypto.RawTransaction;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+
+import org.junit.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import org.web3j.crypto.*;
+import org.web3j.protocol.core.Response;
+import org.junit.BeforeClass;
+
+import java.io.IOException;
 import java.math.BigInteger;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class HancockEthereumClientTest {
-
+  
+    public static HancockConfig mockedConfig;
+    public static EthereumWallet mockedWallet;
+    public static EthereumRawTransaction mockedEthereumRawTransaction;
+    public static EthereumTransferRequest mockedEthereumTransferRequest;
+    @InjectMocks
+    public static HancockEthereumClient mockedHancockEthereumClient;
+    @Mock
+    private static TransactionEncoder mockedTransactionEncoder;
+//    @Mock
+//    private static Credentials mockedCredentials;
+//    @Mock
+//    private OkHttpClient httpMocks;
+    @BeforeClass
+    public static void setUp() throws Exception{
+      mockedHancockEthereumClient = mock(HancockEthereumClient.class);
+      mockedConfig = new HancockConfig.Builder()
+          .withEnv("custom")
+          .withNode("http://mock.node.com", 9999)
+          .withAdapter("http://mock.adapter.com", "/base", 9999)
+          .build();
+  
+      mockedWallet = new EthereumWallet("0xmockAddress","mockPrivateKey","mockPublicKey");
+      
+      BigInteger nonce = BigInteger.valueOf(1);
+      BigInteger gasPrice = BigInteger.valueOf(111);
+      BigInteger gasLimit = BigInteger.valueOf(222);
+      BigInteger value = BigInteger.valueOf(333);
+      String from = mockedWallet.getAddress();
+      String to = mockedWallet.getAddress();
+      String data = "0xwhatever";
+      
+      mockedEthereumTransferRequest = new EthereumTransferRequest(from, to, value.toString(), data);
+      mockedEthereumRawTransaction = new EthereumRawTransaction(nonce, gasPrice, gasLimit, to, value);
+      //mockedCredentials = Credentials.create("0xde8e772f0350e992ddef81bf8f51d94a8ea9216d");
+  
+      when(mockedHancockEthereumClient.generateWallet()).thenReturn(mockedWallet);
+  
+    }
+  
     @Test public void testDumb()  {
 
         String test = "TEST";
@@ -28,21 +83,16 @@ public class HancockEthereumClientTest {
 
     }
 
-    /*@Test public void testConfigInstantiation() throws Exception {
+    @Test public void testConfigInstantiation() throws Exception {
 
-        HancockConfig config = new HancockConfig.Builder()
-                .withEnv("custom")
-                .withNode("http://mock.node.com", 9999)
-                .withAdapter("http://mock.adapter.com", "/base", 9999)
-                .build();
 
-        assertEquals(config.getEnv(), "custom");
+        assertEquals(mockedConfig.getEnv(), "custom");
 
-        HancockConfigNode node = config.getNode();
+        HancockConfigNode node = mockedConfig.getNode();
         assertEquals(node.getHost(), "http://mock.node.com");
         assertEquals(node.getPort(), 9999);
 
-        HancockConfigAdapter adapter = config.getAdapter();
+        HancockConfigAdapter adapter = mockedConfig.getAdapter();
         assertEquals(adapter.getHost(), "http://mock.adapter.com");
         assertEquals(adapter.getBase(), "/base");
         assertEquals(adapter.getPort(), 9999);
@@ -52,164 +102,165 @@ public class HancockEthereumClientTest {
 
     @Test public void testGenerateWallet() throws Exception {
 
-        HancockEthereumClient classUnderTest = new HancockEthereumClient();
-        EthereumWallet wallet = classUnderTest.generateWallet();
-        assertTrue("Wallet should have an address", wallet.getAddress() instanceof String);
-        assertTrue("Wallet should have an address", wallet.getPublicKey() instanceof String);
-        assertTrue("Wallet should have an address", wallet.getPrivateKey() instanceof String);
-
-        System.out.println("Address =>" + wallet.getAddress());
-        System.out.println("PublicKey =>" + wallet.getPublicKey());
-        System.out.println("PrivateKey =>" + wallet.getPrivateKey());
+        assertTrue("Wallet should have an address", mockedWallet.getAddress() instanceof String);
+        assertTrue("Wallet should have a publicKey", mockedWallet.getPublicKey() instanceof String);
+        assertTrue("Wallet should have a privateKey", mockedWallet.getPrivateKey() instanceof String);
+        
+        assertEquals(mockedWallet.getAddress(), "0xmockAddress");
+        assertEquals(mockedWallet.getPrivateKey(), "mockPrivateKey");
+        assertEquals(mockedWallet.getPublicKey(), "mockPublicKey");
 
     }
 
+    @Test public void testGetBalance() throws Exception {
+
+        when(mockedHancockEthereumClient.getBalance("0xmockAddress")).thenReturn(BigInteger.valueOf(0));
+//        OkHttpClient httpClient = mock(OkHttpClient.class);
+//        okhttp3.Response  mockedResponse = mock(okhttp3.Response.class);
+//        Call response = mock(Call.class); 
+//        System.out.println("Balance =>" + response);
+//        when(httpClient.newCall(any(Request.class))).thenReturn(response);
+//        when(response.execute()).thenReturn(mockedResponse);
+//      
+//        GetBalanceResponse responseModel= mock(GetBalanceResponse.class);
+//        when(mockedHancockEthereumClient.checkStatus(mockedResponse, GetBalanceResponse.class)).thenReturn(responseModel);
+        
+        System.out.println("Balance =>" + mockedHancockEthereumClient.getBalance("0xmockAddress"));
+        assertTrue("Wallet should have a Balance", mockedHancockEthereumClient.getBalance("0xmockAddress") instanceof BigInteger);
+        assertEquals(mockedHancockEthereumClient.getBalance("0xmockAddress"), BigInteger.valueOf(0));
+//        assertEquals(mockedHancockEthereumClient.getBalance("0xmockAddress"), new BigInteger(responseModel.getBalance()));
+
+    }
+    
+    @Test public void testSignTransaction() throws Exception {
+      
+      
+      EthereumWallet wallet = mockedHancockEthereumClient.generateWallet();
+
+      BigInteger nonce = BigInteger.valueOf(1);
+      BigInteger gasPrice = BigInteger.valueOf(111);
+      BigInteger gasLimit = BigInteger.valueOf(222);
+      BigInteger value = BigInteger.valueOf(333);
+      String to = wallet.getAddress();
+      String privateKey = wallet.getPrivateKey();
+
+      System.out.println("oooooooooooook  "+privateKey);
+      EthereumRawTransaction rawTransaction = new EthereumRawTransaction(nonce, gasPrice, gasLimit, to, value);
+
+//        when(mockedCredentials.create("mockPrivateKey")).thenAnswer(new Answer<Credentials>(){
+//
+//        @Override
+//        public Credentials answer(InvocationOnMock invocation) throws Throwable {
+//            
+//            Object[] arguments = invocation.getArguments();
+//            
+//            if (arguments != null && arguments.length > 0 && arguments[0] != null){
+//                
+//              return mockedCredentials;
+//            }
+//            
+//            return null;
+//          }
+//        });
+//      
+        Credentials credential = mock(Credentials.class);
+        //when(credential.create("mockPrivateKey")).thenReturn(credential);
+        RawTransaction raw = mock(RawTransaction.class);
+        when(mockedEthereumRawTransaction.getWeb3Instance()).thenReturn(raw);
+        TransactionEncoder mockeTransactionEncoder = mock(TransactionEncoder.class);
+        System.out.println("oooooooooooook  "+mockeTransactionEncoder);
+        when(mockeTransactionEncoder.signMessage(mockedEthereumRawTransaction.getWeb3Instance(), credential)).thenReturn("mockedsignedTransaction".getBytes());        
+
+        //when(mockedHancockEthereumClient.signTransaction(mockedEthereumRawTransaction,"mockPrivateKey")).thenReturn("mockedsignedTransaction");
+
+        String signedTransaction = mockedHancockEthereumClient.signTransaction(mockedEthereumRawTransaction,"mockPrivateKey");
+        System.out.println("oooooooooooook  "+signedTransaction);
+        assertTrue("transaction signed successfully",  signedTransaction instanceof String);
+        //assertEquals(mockedHancockEthereumClient.signTransaction(mockedEthereumRawTransaction,"mockPrivateKey"), "mockedsignedTransaction");
+
+    }
+    
     @Test public void testCreateRawTransaction() throws Exception {
 
-        HancockEthereumClient classUnderTest = new HancockEthereumClient();
-        EthereumWallet wallet = classUnderTest.generateWallet();
-
-        BigInteger nonce = BigInteger.valueOf(1);
-        BigInteger gasPrice = BigInteger.valueOf(111);
-        BigInteger gasLimit = BigInteger.valueOf(222);
-        BigInteger value = BigInteger.valueOf(333);
-        String to = wallet.getAddress();
-        String data = "0xwhatever";
-
-        EthereumRawTransaction rawTransaction = new EthereumRawTransaction(nonce, gasPrice, gasLimit, to, value, data);
-
-        assertTrue("RawTransaction is well constructed ", rawTransaction instanceof EthereumRawTransaction);
-        assertTrue("RawTransaction web3 instance is well constructed ", rawTransaction.getWeb3Instance() instanceof RawTransaction);
-        assertTrue("RawTransaction has nonce ", rawTransaction.getNonce() instanceof BigInteger);
-        assertTrue("RawTransaction has gasPrice ", rawTransaction.getGasPrice() instanceof BigInteger);
-        assertTrue("RawTransaction has gasLimit ", rawTransaction.getGasPrice() instanceof BigInteger);
-        assertTrue("RawTransaction has to ", rawTransaction.getTo() instanceof String);
-        assertTrue("RawTransaction has value ", rawTransaction.getValue() instanceof BigInteger);
-        assertTrue("RawTransaction has value ", rawTransaction.getData() instanceof String);
-
-
-        rawTransaction = new EthereumRawTransaction(nonce, gasPrice, gasLimit, to, value);
-
-        assertTrue("RawTransaction has value ", rawTransaction.getValue() instanceof BigInteger);
-        assertTrue("RawTransaction has value ", rawTransaction.getData() == "");
-
-
-        rawTransaction = new EthereumRawTransaction(nonce, gasPrice, gasLimit, to, data);
-
-        assertTrue("RawTransaction has value ", rawTransaction.getValue().equals(BigInteger.ZERO));
-        assertTrue("RawTransaction has value ", rawTransaction.getData() instanceof String);
-
-    }
-
-    @Test public void testSignTransaction() throws Exception {
-
-        HancockEthereumClient classUnderTest = new HancockEthereumClient();
-        EthereumWallet wallet = classUnderTest.generateWallet();
-
-        BigInteger nonce = BigInteger.valueOf(1);
-        BigInteger gasPrice = BigInteger.valueOf(111);
-        BigInteger gasLimit = BigInteger.valueOf(222);
-        BigInteger value = BigInteger.valueOf(333);
-        String to = wallet.getAddress();
-        String privateKey = wallet.getPrivateKey();
-
-        EthereumRawTransaction rawTransaction = new EthereumRawTransaction(nonce, gasPrice, gasLimit, to, value);
-        String signedTransaction = classUnderTest.signTransaction(rawTransaction, privateKey);
-
-        assertTrue("transaction signed successfully", signedTransaction instanceof String);
-
-        System.out.println("Signed tx =>" + signedTransaction);
+        assertTrue("RawTransaction is well constructed ", mockedEthereumRawTransaction instanceof EthereumRawTransaction);
+        assertTrue("RawTransaction web3 instance is well constructed ", mockedEthereumRawTransaction.getWeb3Instance() instanceof RawTransaction);
+        assertTrue("RawTransaction has nonce ", mockedEthereumRawTransaction.getNonce() instanceof BigInteger);
+        assertTrue("RawTransaction has gasPrice ", mockedEthereumRawTransaction.getGasPrice() instanceof BigInteger);
+        assertTrue("RawTransaction has gasLimit ", mockedEthereumRawTransaction.getGasPrice() instanceof BigInteger);
+        assertTrue("RawTransaction has to ", mockedEthereumRawTransaction.getTo() instanceof String);
+        assertTrue("RawTransaction has value ", mockedEthereumRawTransaction.getValue() instanceof BigInteger);
+        assertTrue("RawTransaction has value ", mockedEthereumRawTransaction.getData() instanceof String);
 
     }
 
      @Test public void testAdaptTransfer() throws Exception {
 
-         HancockConfig config = new HancockConfig.Builder()
-                 .withAdapter("http:localhost","", 3004)
-                 .build();
-         HancockEthereumClient classUnderTest = new HancockEthereumClient(config);
-         EthereumTransferRequest transferRequest = new EthereumTransferRequest(
-                 "0x6c0a14f7561898b9ddc0c57652a53b2c6665443e",
-                 "0xde8e772f0350e992ddef81bf8f51d94a8ea9216d",
-                 new BigInteger("0260941720000000000").toString(),
-                 "test test"
-         );
+         when(mockedHancockEthereumClient.adaptTransfer(mockedEthereumTransferRequest)).thenReturn(mockedEthereumRawTransaction);
 
-         EthereumRawTransaction rawtx = classUnderTest.adaptTransfer(transferRequest);
-
-         assertTrue("transaction adapted successfully", rawtx instanceof EthereumRawTransaction);
-
-         System.out.println("rawtx =>" + rawtx);
+         //verify(mockedHancockEthereumClient, atLeastOnce());
+         
+         assertTrue("transaction adapted successfully", mockedEthereumRawTransaction instanceof EthereumRawTransaction);
 
      }
 
      @Test public void testTransfer() throws Exception {
-
-         HancockConfig config = new HancockConfig.Builder()
-                 .withAdapter("http:localhost","", 3004)
-                 .build();
-         HancockEthereumClient classUnderTest = new HancockEthereumClient(config);
-
-         TransactionConfig txConfig = new TransactionConfig.Builder()
-             .withPrivateKey("0x6c47653f66ac9b733f3b8bf09ed3d300520b4d9c78711ba90162744f5906b1f8")
-             .build();
-
-         EthereumTransferRequest txRequest = new EthereumTransferRequest(
-            "0x6c0a14f7561898b9ddc0c57652a53b2c6665443e",
-            "0xde8e772f0350e992ddef81bf8f51d94a8ea9216d",
-            new BigInteger("0260941720000000000").toString(),
-            "test test"
-         );
-
-         String rawtx = classUnderTest.transfer(txRequest, txConfig);
+  
+         TransactionConfig mockTransactionConfig = mock(TransactionConfig.class);
+  
+//         when(mockTransactionConfig.getSendLocally()).thenReturn(true);
+//         when(mockTransactionConfig.getPrivateKey()).thenReturn("mockedPrivateKey");
+//         when(mockedHancockEthereumClient.sendSignedTransaction("signedTransaction", mockTransactionConfig.getSendLocally(), "url")).thenReturn("mockedSignedTransaction");
+      
+         when(mockedHancockEthereumClient.transfer(mockedEthereumTransferRequest, mockTransactionConfig)).thenReturn("mockedSignedTransaction");
+  
+         String rawtx = mockedHancockEthereumClient.transfer(mockedEthereumTransferRequest, mockTransactionConfig);         
 
          assertTrue("transaction adapted successfully", rawtx instanceof String);
+         verify(mockedHancockEthereumClient, atLeastOnce()).transfer(mockedEthereumTransferRequest, mockTransactionConfig);
 
          System.out.println("rawtx =>" + rawtx);
 
      }
 
-    @Test public void testGetBalance() throws Exception {
-
-        HancockConfig config = new HancockConfig.Builder()
-                .withAdapter("http://localhost","", 3004)
-                .build();
-        HancockEthereumClient classUnderTest = new HancockEthereumClient(config);
-
-        BigInteger balance = classUnderTest.getBalance("0xde8e772f0350e992ddef81bf8f51d94a8ea9216d");
-
-        assertTrue("transaction signed successfully", balance.compareTo(BigInteger.valueOf(0)) == 1);
-
-        System.out.println("Balance =>" + balance.toString());
-
-    }
-
     @Test public void testDecodeProtocol() throws Exception {
 
-        HancockConfig config = new HancockConfig.Builder()
-                .withAdapter("http://localhost","", 3004)
-                .build();
-        HancockEthereumClient classUnderTest = new HancockEthereumClient(config);
-
-        HancockProtocolDecodeResponse response = classUnderTest.decodeProtocol("hancock://qr?code=%7B%22action%22%3A%22transfer%22%2C%22body%22%3A%7B%22value%22%3A%2210%22%2C%22data%22%3A%22dafsda%22%2C%22to%22%3A%220x1234%22%7D%2C%22dlt%22%3A%22ethereum%22%7D");
-
-        assertTrue("transaction signed successfully", response.getTo().equals("0x1234"));
-
-        System.out.println("Action =>" + response.getAction());
+        HancockProtocolDecodeResponse mockHancockProtocolDecodeResponse = mock(HancockProtocolDecodeResponse.class);
+      
+//        HancockConfig config = new HancockConfig.Builder()
+//                .withAdapter("http://localhost","", 3004)
+//                .build();
+//        HancockEthereumClient classUnderTest = new HancockEthereumClient(config);
+//
+//        HancockProtocolDecodeResponse response = classUnderTest.decodeProtocol("hancock://qr?code=%7B%22action%22%3A%22transfer%22%2C%22body%22%3A%7B%22value%22%3A%2210%22%2C%22data%22%3A%22dafsda%22%2C%22to%22%3A%220x1234%22%7D%2C%22dlt%22%3A%22ethereum%22%7D");
+//
+//        assertTrue("transaction signed successfully", response.getTo().equals("0x1234"));
+        
+        when(mockedHancockEthereumClient.decodeProtocol("mockedCode")).thenReturn(mockHancockProtocolDecodeResponse);
+        
+        assertTrue("transaction decode successfully", mockHancockProtocolDecodeResponse instanceof HancockProtocolDecodeResponse);
+        //verify(mockedHancockEthereumClient, atLeastOnce()).decodeProtocol("mockedCode");
+        System.out.println("Action =>" + mockHancockProtocolDecodeResponse.getAction());
 
     }
 
     @Test public void testEncodeProtocol() throws Exception {
 
-        HancockConfig config = new HancockConfig.Builder()
-                .withAdapter("http://localhost","", 3004)
-                .build();
-        HancockEthereumClient classUnderTest = new HancockEthereumClient(config);
+      HancockProtocolEncodeResponse mockHancockProtocolEncodeResponse = mock(HancockProtocolEncodeResponse.class);
+      
+//        HancockConfig config = new HancockConfig.Builder()
+//                .withAdapter("http://localhost","", 3004)
+//                .build();
+//        HancockEthereumClient classUnderTest = new HancockEthereumClient(config);
+//
+//        HancockProtocolEncodeResponse response = classUnderTest.encodeProtocol(HancockProtocolAction.transfer, new BigInteger("10"), "0x1234", "dafsda", HancockProtocolDlt.ethereum);
+//
+//        assertTrue("transaction signed successfully", response.getCode().equals("hancock://qr?code=%7B%22action%22%3A%22transfer%22%2C%22body%22%3A%7B%22value%22%3A%2210%22%2C%22data%22%3A%22dafsda%22%2C%22to%22%3A%220x1234%22%7D%2C%22dlt%22%3A%22ethereum%22%7D"));
 
-        HancockProtocolEncodeResponse response = classUnderTest.encodeProtocol(HancockProtocolAction.transfer, new BigInteger("10"), "0x1234", "dafsda", HancockProtocolDlt.ethereum);
-
-        assertTrue("transaction signed successfully", response.getCode().equals("hancock://qr?code=%7B%22action%22%3A%22transfer%22%2C%22body%22%3A%7B%22value%22%3A%2210%22%2C%22data%22%3A%22dafsda%22%2C%22to%22%3A%220x1234%22%7D%2C%22dlt%22%3A%22ethereum%22%7D"));
-
-
-    }*/
+      when(mockedHancockEthereumClient.encodeProtocol(HancockProtocolAction.transfer, BigInteger.valueOf(0), mockedWallet.getAddress(), "0xwhatever", HancockProtocolDlt.ethereum)).thenReturn(mockHancockProtocolEncodeResponse);
+      
+      assertTrue("transaction encode successfully", mockHancockProtocolEncodeResponse instanceof HancockProtocolEncodeResponse);
+      //verify(mockedHancockEthereumClient, atLeastOnce()).encodeProtocol(HancockProtocolAction.transfer, BigInteger.valueOf(0), mockedWallet.getAddress(), "0xwhatever", HancockProtocolDlt.ethereum);
+      System.out.println("Action =>" + mockHancockProtocolEncodeResponse.getCode());
+      
+    }
 }

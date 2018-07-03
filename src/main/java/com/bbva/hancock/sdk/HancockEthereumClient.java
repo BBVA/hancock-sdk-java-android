@@ -85,7 +85,7 @@ public class HancockEthereumClient {
 
     }
 
-    private <T> T checkStatus(Response response, Class<T> tClass) throws IOException {
+    protected <T> T checkStatus(Response response, Class<T> tClass) throws IOException {
 
         try (ResponseBody responseBody = response.body()) {
 
