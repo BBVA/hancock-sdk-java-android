@@ -222,14 +222,14 @@ public class HancockEthereumClient {
         return responseModel;
     }
 
-    private String getResourceUrl(String encode) {
+    protected String getResourceUrl(String encode) {
         return this.config.getAdapter().getHost() + ':' +
                 this.config.getAdapter().getPort() +
                 this.config.getAdapter().getBase() +
                 this.config.getAdapter().getResources().get(encode);
     }
 
-    private Request getRequest(String url, RequestBody body) {
+    protected Request getRequest(String url, RequestBody body) {
         return new Request.Builder()
                 .url(url)
                 .post(body)
