@@ -71,15 +71,14 @@ public class HancockEthereumClient {
     }
 
     public BigInteger getBalance(String address) throws IOException {
-
-        OkHttpClient httpClient = new OkHttpClient();
+        
         String url = this.config.getAdapter().getHost() + ':' + this.config.getAdapter().getPort() + this.config.getAdapter().getBase() + this.config.getAdapter().getResources().get("balance").replaceAll("__ADDRESS__", address);
 
         Request request = new Request.Builder()
                 .url(url)
                 .build();
 
-        Response response = httpClient.newCall(request).execute();
+        Response response = makeCall(request);
         GetBalanceResponse responseModel = checkStatus(response, GetBalanceResponse.class);
         return new BigInteger(responseModel.getBalance());
 
@@ -175,7 +174,7 @@ public class HancockEthereumClient {
     }
 
     public EthereumRawTransaction adaptTransfer(EthereumTransferRequest txRequest) throws Exception {
-        OkHttpClient httpClient = new OkHttpClient();
+        
         String url = getResourceUrl("transfer");
 
         Gson gson = new Gson();
@@ -183,13 +182,13 @@ public class HancockEthereumClient {
         RequestBody body = RequestBody.create(CONTENT_TYPE_JSON, json);
         Request request = getRequest(url, body);
 
-        Response response = httpClient.newCall(request).execute();
+        Response response = makeCall(request);
         EthereumTransferResponse rawTx = checkStatus(response, EthereumTransferResponse.class);
         return new EthereumRawTransaction(rawTx.getNonce(), rawTx.getGasPrice(), rawTx.getGas(), rawTx.getTo(), rawTx.getValue(), rawTx.getData());
     }
 
     public HancockProtocolDecodeResponse decodeProtocol(String code) throws IOException {
-        OkHttpClient httpClient = new OkHttpClient();
+        
         String url = getResourceUrl("decode");
 
         Gson gson = new Gson();
@@ -199,14 +198,14 @@ public class HancockEthereumClient {
 
         Request request = getRequest(url, body);
 
-        Response response = httpClient.newCall(request).execute();
+        Response response = makeCall(request);
         HancockProtocolDecodeResponse responseModel = checkStatus(response, HancockProtocolDecodeResponse.class);
 
         return responseModel;
     }
 
     public HancockProtocolEncodeResponse encodeProtocol(HancockProtocolAction action, BigInteger value, String to, String data, HancockProtocolDlt dlt) throws IOException {
-        OkHttpClient httpClient = new OkHttpClient();
+       
         String url = getResourceUrl("encode");
 
         Gson gson = new Gson();
@@ -216,7 +215,7 @@ public class HancockEthereumClient {
 
         Request request = getRequest(url, body);
 
-        Response response = httpClient.newCall(request).execute();
+        Response response = makeCall(request);
         HancockProtocolEncodeResponse responseModel = checkStatus(response, HancockProtocolEncodeResponse.class);
 
         return responseModel;
@@ -234,6 +233,12 @@ public class HancockEthereumClient {
                 .url(url)
                 .post(body)
                 .build();
+    }
+    
+    protected Response makeCall(Request request) throws IOException {
+      OkHttpClient httpClient = new OkHttpClient();
+      Response response = httpClient.newCall(request).execute();
+      return response;
     }
 
     // TODO: Support yaml load config on android
