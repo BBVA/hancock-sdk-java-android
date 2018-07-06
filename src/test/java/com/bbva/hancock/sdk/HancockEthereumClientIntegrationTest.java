@@ -15,32 +15,45 @@ import com.bbva.hancock.sdk.models.HancockProtocolDlt;
 import com.bbva.hancock.sdk.models.HancockProtocolEncodeResponse;
 import com.bbva.hancock.sdk.models.TransactionConfig;
 
+import okhttp3.Call;
+import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
+import okhttp3.mockwebserver.MockResponse;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.modules.junit4.PowerMockRunner;
+import org.web3j.crypto.Credentials;
 import org.web3j.crypto.RawTransaction;
+import org.web3j.crypto.TransactionEncoder;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.math.BigInteger;
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.powermock.api.mockito.PowerMockito.mock;
 
-@RunWith(MockitoJUnitRunner.class)
+@PowerMockIgnore("javax.net.ssl.*")
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({OkHttpClient.class,Call.class,okhttp3.Response.class,okhttp3.Request.class})
 public class HancockEthereumClientIntegrationTest {
 
-  @Mock
-  public static HancockEthereumClient mockedHancockEthereumClient;
+//  @Mock
+//  public static HancockEthereumClient mockedHancockEthereumClient;
   
     @BeforeClass
     public static void setUp() throws Exception{
-      HancockConfig mockConfig = mock(HancockConfig.class);
-      
-      mockedHancockEthereumClient = new HancockEthereumClient(mockConfig);
+//      HancockConfig mockConfig = mock(HancockConfig.class);
+//      
+//      mockedHancockEthereumClient = new HancockEthereumClient(mockConfig);
+      //MockWebServer server = new MockWebServer();
   
     }
   
@@ -145,32 +158,31 @@ public class HancockEthereumClientIntegrationTest {
 
     }
 
-     @Test public void testAdaptTransfer() throws Exception {
+    @Test public void testAdaptTransfer() throws Exception { 
+      
+      HancockConfig config = new HancockConfig.Builder() 
+              .withAdapter("http:localhost","", 3004) 
+              .build(); 
+      //HancockEthereumClient classUnderTest = new HancockEthereumClient(config); 
+      EthereumTransferRequest transferRequest = new EthereumTransferRequest( 
+              "0x6c0a14f7561898b9ddc0c57652a53b2c6665443e", 
+              "0xde8e772f0350e992ddef81bf8f51d94a8ea9216d", 
+              new BigInteger("0260941720000000000").toString(), 
+              "test test" 
+      ); 
 
-//         HancockConfig config = new HancockConfig.Builder()
-//                 .withAdapter("http:localhost","", 3004)
-//                 .build();
-         //HancockConfig mockConfig = mock(HancockConfig.class);
-       
-         //HancockEthereumClient classUnderTest = new HancockEthereumClient(mockConfig);
-         EthereumTransferRequest transferRequest = new EthereumTransferRequest(
-                 "0x6c0a14f7561898b9ddc0c57652a53b2c6665443e",
-                 "0xde8e772f0350e992ddef81bf8f51d94a8ea9216d",
-                 new BigInteger("0260941720000000000").toString(),
-                 "test test"
-         );
+      MockResponse responseMock= new MockResponse().setResponseCode(200).setBody("version=9");
+      HancockEthereumClient auxHancockEthereumClient = new HancockEthereumClient();
+      HancockEthereumClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
+      PowerMockito.doReturn(responseMock).when(spy_var).makeCall(any(okhttp3.Request.class));
+      
+      EthereumRawTransaction rawtx = spy_var.adaptTransfer(transferRequest); 
 
-         when(mockedHancockEthereumClient.getResourceUrl("transfer")).thenReturn("mockedResource");
-         when(mockedHancockEthereumClient.getRequest("url", mock(RequestBody.class))).thenReturn(mock(okhttp3.Request.class));
-         when(mockedHancockEthereumClient.checkStatus(mock(okhttp3.Response.class), GetBalanceResponse.class)).thenReturn(mock(GetBalanceResponse.class));
-         
-         EthereumRawTransaction rawtx = mockedHancockEthereumClient.adaptTransfer(transferRequest);
-         System.out.println("raw: "+rawtx);
-         assertTrue("transaction adapted successfully", rawtx instanceof EthereumRawTransaction);
+      assertTrue("transaction adapted successfully", rawtx instanceof EthereumRawTransaction); 
 
-         System.out.println("rawtx =>" + rawtx);
+      System.out.println("rawtx =>" + rawtx); 
 
-     }
+  } 
 
 //     @Test public void testTransfer() throws Exception {
 //

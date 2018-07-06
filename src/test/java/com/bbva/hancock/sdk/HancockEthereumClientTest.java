@@ -57,21 +57,13 @@ public class HancockEthereumClientTest {
   
     public static HancockConfig mockedConfig;
     public static EthereumWallet mockedWallet;
-//    @Mock
     public static EthereumRawTransaction mockedEthereumRawTransaction;
     public static EthereumTransferRequest mockedEthereumTransferRequest;
-    //@InjectMocks
-    //@Mock
     public static HancockEthereumClient mockedHancockEthereumClient;
-    //@Mock
-    //private static TransactionEncoder mockedTransactionEncoder;
-//    @Mock
-//    private static Credentials mockedCredentials;
-//    @Mock
-//    private OkHttpClient httpMocks;
+
     @BeforeClass
     public static void setUp() throws Exception{
-      //mockedHancockEthereumClient = mock(HancockEthereumClient.class);
+
       mockedConfig = new HancockConfig.Builder()
           .withEnv("custom")
           .withNode("http://mock.node.com", 9999)
@@ -90,9 +82,6 @@ public class HancockEthereumClientTest {
       
       mockedEthereumTransferRequest = new EthereumTransferRequest(from, to, value.toString(), data);
       mockedEthereumRawTransaction = new EthereumRawTransaction(nonce, gasPrice, gasLimit, to, value);
-      //mockedCredentials = Credentials.create("0xde8e772f0350e992ddef81bf8f51d94a8ea9216d");
-  
-      //when(mockedHancockEthereumClient.generateWallet()).thenReturn(mockedWallet);
   
     }
   
@@ -140,70 +129,33 @@ public class HancockEthereumClientTest {
         HancockEthereumClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
         PowerMockito.doReturn(responseMock).when(spy_var).makeCall(any(okhttp3.Request.class));
         PowerMockito.doReturn(responseModel).when(spy_var).checkStatus(any(okhttp3.Response.class), eq(GetBalanceResponse.class)); 
-        //when(auxHancockEthereumClient.checkStatus(any(okhttp3.Response.class), eq(GetBalanceResponse.class))).thenReturn(responseModel);
         when(responseModel.getBalance()).thenReturn("0");
         
         BigInteger balance = spy_var.getBalance("0xmockAddress");
         System.out.println("balance  "+balance);
         assertTrue("Wallet should have a Balance", balance instanceof BigInteger);
         assertEquals(balance, BigInteger.valueOf(0));
-//        assertEquals(mockedHancockEthereumClient.getBalance("0xmockAddress"), new BigInteger(responseModel.getBalance()));
 
     }
     
     @Test public void testSignTransaction() throws Exception {
       
       
-      //EthereumWallet wallet = mockedHancockEthereumClient.generateWallet();
-
-//      BigInteger nonce = BigInteger.valueOf(1);
-//      BigInteger gasPrice = BigInteger.valueOf(111);
-//      BigInteger gasLimit = BigInteger.valueOf(222);
-//      BigInteger value = BigInteger.valueOf(333);
-//      String to = mockedWallet.getAddress();
-//      String privateKey = mockedWallet.getPrivateKey();
-//
-//      System.out.println("oooooooooooook  "+privateKey);
-//      EthereumRawTransaction rawTransaction = new EthereumRawTransaction(nonce, gasPrice, gasLimit, to, value);
-
-//        when(mockedCredentials.create("mockPrivateKey")).thenAnswer(new Answer<Credentials>(){
-//
-//        @Override
-//        public Credentials answer(InvocationOnMock invocation) throws Throwable {
-//            
-//            Object[] arguments = invocation.getArguments();
-//            
-//            if (arguments != null && arguments.length > 0 && arguments[0] != null){
-//                
-//              return mockedCredentials;
-//            }
-//            
-//            return null;
-//          }
-//        });
-//      
-        //Credentials credential = mock(Credentials.class);
         PowerMockito.mockStatic(Credentials.class);
         when(Credentials.create("mockPrivateKey")).thenReturn(mock(Credentials.class));
-        //when(credential.create("mockPrivateKey")).thenReturn(credential);
-//        EthereumRawTransaction raw = mock(EthereumRawTransaction.class);
-//        RawTransaction mockRaw = raw.getWeb3Instance();
+
         PowerMockito.mockStatic(RawTransaction.class);
         EthereumRawTransaction mockEthereumRawTransaction = mock(EthereumRawTransaction.class);
         when(mockEthereumRawTransaction.getWeb3Instance()).thenReturn(mock(RawTransaction.class));
-        //TransactionEncoder mockeTransactionEncoder = mock(TransactionEncoder.class);
-        //System.out.println("oooooooooooook  "+mockedTransactionEncoder);
+
         byte[] aux = "mockedsignedTransaction".getBytes();
-//        System.out.println("oooooooooooook  "+Numeric.toHexString(aux));
+
         PowerMockito.mockStatic(TransactionEncoder.class);
         when(TransactionEncoder.signMessage(any(RawTransaction.class), any(Credentials.class))).thenReturn(aux);        
-
-        //when(mockedHancockEthereumClient.signTransaction(mockedEthereumRawTransaction,"mockPrivateKey")).thenReturn("mockedsignedTransaction");
 
         String signedTransaction = mockedHancockEthereumClient.signTransaction(mockEthereumRawTransaction,"mockPrivateKey");
         System.out.println("sign  "+signedTransaction);
         assertTrue("transaction signed successfully",  signedTransaction instanceof String);
-        //assertEquals(mockedHancockEthereumClient.signTransaction(mockedEthereumRawTransaction,"mockPrivateKey"), "mockedsignedTransaction");
         assertEquals(signedTransaction,  Numeric.toHexString(aux));
 
     }
@@ -235,11 +187,9 @@ public class HancockEthereumClientTest {
        PowerMockito.whenNew(EthereumRawTransaction.class).withAnyArguments().thenReturn(mockedEthereumRawTransaction);
        
        EthereumRawTransaction transfer = spy_var.adaptTransfer(mockedEthereumTransferRequest);
-       System.out.println("Adapter  "+transfer.getNonce()+ mockedEthereumRawTransaction.getNonce());
+       System.out.println("Adapter  "+ mockedEthereumRawTransaction.getNonce());
        assertTrue("Wallet should have a Balance", transfer instanceof EthereumRawTransaction);
 //       assertEquals(transfer, mockedEthereumRawTransaction);
-//       assertEquals(mockedHancockEthereumClient.getBalance("0xmockAddress"), new BigInteger(responseModel.getBalance()));
-
        
      }
 
@@ -248,8 +198,6 @@ public class HancockEthereumClientTest {
        HancockEthereumClient auxHancockEthereumClient = new HancockEthereumClient();
        HancockEthereumClient spy_var=PowerMockito.spy(auxHancockEthereumClient);       
        PowerMockito.doReturn("mockSignedTransaction").when(spy_var).sendSignedTransaction(any(String.class), any(boolean.class), any(String.class)); 
-
-       //when(mockedHancockEthereumClient.sendSignedTransaction(eq("mockSignedTransaction"), eq(true), any(String.class))).thenReturn("mockSignedTransaction");       
        
        String mockResult = spy_var.sendSignedTransaction("mockSignedTransaction", true);
        System.out.println("sendSigned: "+ mockResult);
@@ -287,7 +235,6 @@ public class HancockEthereumClientTest {
 //        PowerMockito.doReturn(spy_call).when(spy_http).newCall(any(okhttp3.Request.class));
 //        PowerMockito.doReturn(mock(okhttp3.Response.class)).when(spy_call).execute();
       
-        //HancockProtocolDecodeResponse mockHancockProtocolDecodeResponse = mock(HancockProtocolDecodeResponse.class);
         okhttp3.Request requestMock= mock(okhttp3.Request.class);
         okhttp3.Response responseMock= mock(okhttp3.Response.class);
         HancockProtocolDecodeResponse responseModel= mock(HancockProtocolDecodeResponse.class);
@@ -321,7 +268,6 @@ public class HancockEthereumClientTest {
       PowerMockito.doReturn(responseModel).when(spy_var).checkStatus(any(okhttp3.Response.class), eq(HancockProtocolEncodeResponse.class)); 
 
       HancockProtocolEncodeResponse mockResult = spy_var.encodeProtocol(HancockProtocolAction.transfer, new BigInteger("10"), "0x1234", "dafsda", HancockProtocolDlt.ethereum);
-      //when(mockedHancockEthereumClient.encodeProtocol(HancockProtocolAction.transfer, BigInteger.valueOf(0), mockedWallet.getAddress(), "0xwhatever", HancockProtocolDlt.ethereum)).thenReturn(mockHancockProtocolEncodeResponse);
       
       assertTrue("transaction encode successfully", mockResult instanceof HancockProtocolEncodeResponse);
       System.out.println("transaction encode: ");
