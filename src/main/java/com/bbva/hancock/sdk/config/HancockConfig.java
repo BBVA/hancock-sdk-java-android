@@ -5,7 +5,7 @@ import org.yaml.snakeyaml.Yaml;
 import java.io.*;
 import java.util.Map;
 
-
+@SuppressWarnings("unchecked")
 public class HancockConfig implements Serializable {
 
     private String env;
@@ -96,12 +96,12 @@ public class HancockConfig implements Serializable {
         }
 
 
-        private Builder withAdapter(String host, String base, int port, Map<String, String> resources) {
+        protected Builder withAdapter(String host, String base, int port, Map<String, String> resources) {
             this.adapter = new HancockConfigAdapter(host, base, port, resources);
             return this;
         }
 
-        private Builder fromConfigFile() {
+        protected Builder fromConfigFile() {
 
             InputStream input = getClass().getClassLoader().getResourceAsStream("application.yml");
             Yaml yaml = new Yaml();

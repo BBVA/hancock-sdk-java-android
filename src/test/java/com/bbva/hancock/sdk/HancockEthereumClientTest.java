@@ -52,7 +52,7 @@ import static org.mockito.Mockito.*;
 //@RunWith(MockitoJUnitRunner.class)
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({TransactionEncoder.class,Credentials.class,EthereumRawTransaction.class,RawTransaction.class,
-  OkHttpClient.class,Call.class,okhttp3.Response.class,okhttp3.Request.class,GetBalanceResponse.class})
+  OkHttpClient.class,Call.class,okhttp3.Response.class,okhttp3.Request.class,GetBalanceResponse.class,HancockConfig.class})
 public class HancockEthereumClientTest {
   
     public static HancockConfig mockedConfig;
@@ -90,6 +90,16 @@ public class HancockEthereumClientTest {
         String test = "TEST";
         assertEquals(test, "TEST");
 
+    }
+    
+    @Test public void testConfig() throws Exception {
+        HancockConfig.Builder builder = new HancockConfig.Builder();
+        //builder.withAdapter("host", "base", 80);
+        HancockConfig.Builder spy_var=PowerMockito.spy(builder);
+        PowerMockito.doReturn(mockedConfig).when(spy_var).build();        
+        HancockConfig result = spy_var.build(); 
+        System.out.println("config  "+result.getEnv());
+        assertTrue("Config OK", result instanceof HancockConfig);
     }
 
     @Test public void testConfigInstantiation() throws Exception {
