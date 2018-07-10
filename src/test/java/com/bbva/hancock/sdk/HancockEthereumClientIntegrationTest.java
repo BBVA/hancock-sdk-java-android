@@ -41,6 +41,7 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -303,6 +304,36 @@ public class HancockEthereumClientIntegrationTest {
         System.out.println("Balance =>" + balance.toString());
 
     }
+    
+    @Test (expected = IOException.class)
+    public void testGetBalanceFail() throws Exception {
+
+      HancockConfig config = new HancockConfig.Builder()
+              .withAdapter("http://localhost","", 3004)
+              .build();
+      //HancockEthereumClient classUnderTest = new HancockEthereumClient(config);
+      
+      Request.Builder requestBuilder = new Request.Builder();
+      requestBuilder.get();
+      requestBuilder.url("http://localhost");
+      
+      Response.Builder responseBuilder = new Response.Builder();
+      responseBuilder.code(400);
+      responseBuilder.protocol(Protocol.HTTP_1_1);
+      responseBuilder.body(ResponseBody.create(MediaType.parse("application/json"), "{\"balance\": \"10000\"}"));
+      responseBuilder.request(requestBuilder.build());
+      responseBuilder.message("Smart Contract - Fail");
+      
+      
+      GetBalanceResponse responseModel= PowerMockito.mock(GetBalanceResponse.class);
+      HancockEthereumClient auxHancockEthereumClient = new HancockEthereumClient();
+      HancockEthereumClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
+      PowerMockito.doReturn(responseBuilder.build()).when(spy_var).makeCall(any(okhttp3.Request.class));
+      
+      
+      BigInteger balance = spy_var.getBalance("0xde8e772f0350e992ddef81bf8f51d94a8ea9216d");
+
+  }
 
     @Test public void testDecodeProtocol() throws Exception {
 
