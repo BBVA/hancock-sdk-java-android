@@ -128,12 +128,12 @@ public class HancockEthereumClient {
 
     }
 
-    private String sendSignedTransactionLocally(String signedTransaction) throws InterruptedException, ExecutionException {
+    protected String sendSignedTransactionLocally(String signedTransaction) throws InterruptedException, ExecutionException {
         String nodeUrl = this.config.getNode().getHost() + ':' + this.config.getNode().getPort();
         return this.sendSignedTransactionLocally(signedTransaction, nodeUrl);
     }
 
-    private String sendSignedTransactionLocally(String signedTransaction, String nodeUrl) throws InterruptedException, ExecutionException {
+    protected String sendSignedTransactionLocally(String signedTransaction, String nodeUrl) throws InterruptedException, ExecutionException {
 
         // defaults to http://localhost:8545/
         Web3j web3j = Web3jFactory.build(new HttpService(nodeUrl));
@@ -146,7 +146,7 @@ public class HancockEthereumClient {
 
     }
 
-    private String sendSignedTransactionRemotely(String signedTransaction, String backUrl) throws Exception {
+    protected String sendSignedTransactionRemotely(String signedTransaction, String backUrl) throws Exception {
 
        throw new Exception("Not implemented");
 

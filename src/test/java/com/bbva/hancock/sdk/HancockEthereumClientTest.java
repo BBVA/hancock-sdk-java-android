@@ -34,7 +34,12 @@ import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.spy;
 import static org.powermock.api.mockito.PowerMockito.when;
 import org.web3j.crypto.*;
+import org.web3j.protocol.Web3j;
+import org.web3j.protocol.Web3jFactory;
+import org.web3j.protocol.Web3jService;
 import org.web3j.protocol.core.Response;
+import org.web3j.protocol.core.methods.response.EthSendTransaction;
+import org.web3j.protocol.http.HttpService;
 import org.web3j.utils.Numeric;
 import org.junit.BeforeClass;
 import org.powermock.api.mockito.PowerMockito;
@@ -51,7 +56,7 @@ import static org.mockito.Mockito.*;
 @PowerMockIgnore("javax.net.ssl.*")
 //@RunWith(MockitoJUnitRunner.class)
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({TransactionEncoder.class,Credentials.class,EthereumRawTransaction.class,RawTransaction.class,
+@PrepareForTest({TransactionEncoder.class,Credentials.class,EthereumRawTransaction.class,RawTransaction.class,Web3jFactory.class,
   OkHttpClient.class,Call.class,okhttp3.Response.class,okhttp3.Request.class,GetBalanceResponse.class,HancockConfig.class})
 public class HancockEthereumClientTest {
   
@@ -213,6 +218,56 @@ public class HancockEthereumClientTest {
        System.out.println("sendSigned: "+ mockResult);
        assertEquals(mockResult, "mockSignedTransaction");
        assertTrue("transaction send and signed successfully", mockResult instanceof String);
+
+     }
+     
+     @Test public void testsendSignedTransactionWith() throws Exception {
+
+       HancockEthereumClient auxHancockEthereumClient = new HancockEthereumClient();
+       HancockEthereumClient spy_var=PowerMockito.spy(auxHancockEthereumClient);       
+       PowerMockito.doReturn("mockSignedTransactionLocal").when(spy_var).sendSignedTransactionLocally(any(String.class), any(String.class));
+       PowerMockito.doReturn("mockSignedTransactionRemote").when(spy_var).sendSignedTransactionRemotely(any(String.class), any(String.class)); 
+       
+       String mockResulttrue = spy_var.sendSignedTransaction("mockSignedTransaction", true, "mockurl");
+       String mockResultfalse = spy_var.sendSignedTransaction("mockSignedTransaction", false, "mockurl");
+       System.out.println("sendSignedWith: "+ mockResulttrue + " / " + mockResultfalse);
+       assertEquals(mockResulttrue, "mockSignedTransactionLocal");
+       assertTrue("transaction send and signed successfully local", mockResulttrue instanceof String);
+       assertEquals(mockResultfalse, "mockSignedTransactionRemote");
+       assertTrue("transaction send and signed successfully remote", mockResultfalse instanceof String);
+
+     }
+     
+     @Test public void testsendSignedTransactionLocal() throws Exception {
+
+//       Web3j web3j = mock(Web3j.class);    
+//       Web3jFactory web = new Web3jFactory();
+//       doReturn(web3j).when(web).build(new HttpService("http://mock.node.com"));
+//       HancockEthereumClient testHancockEthereumClient = new HancockEthereumClient();
+//       HancockEthereumClient spytest_var=PowerMockito.spy(testHancockEthereumClient);            
+//       EthSendTransaction responseModel= mock(EthSendTransaction.class);
+//       doReturn(responseModel).when(web3j).ethSendRawTransaction(any(String.class)).sendAsync().get();
+//       doReturn("mockhash").when(responseModel).getTransactionHash();
+       
+       HancockEthereumClient testHancockEthereumClient = new HancockEthereumClient();
+       HancockEthereumClient spytest_var=PowerMockito.spy(testHancockEthereumClient);
+       PowerMockito.doReturn("mockSignedTransactionLocal").when(spytest_var).sendSignedTransactionLocally(any(String.class), any(String.class));
+       
+       String mockResult = spytest_var.sendSignedTransactionLocally("mockSignedTransaction");
+       System.out.println("sendSignedLocal: "+ mockResult );
+       assertEquals(mockResult, "mockSignedTransactionLocal");
+       assertTrue("transaction send and signed successfully local", mockResult instanceof String);
+
+     }
+     
+     @Test (expected = Exception.class)
+     public void testsendSignedTransactionRemote() throws Exception {
+     
+     HancockEthereumClient testHancockEthereumClient = new HancockEthereumClient();
+     HancockEthereumClient spytest_var=PowerMockito.spy(testHancockEthereumClient);
+     //PowerMockito.doThrow(new Exception("Not implemented")).when(spytest_var).sendSignedTransactionRemotely(any(String.class), any(String.class));
+     
+     String mockResult = spytest_var.sendSignedTransactionRemotely("signedTransaction", "backUrl");
 
    }
      
