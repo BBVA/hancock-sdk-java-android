@@ -71,21 +71,20 @@ public class HancockEthereumClient {
     }
 
     public BigInteger getBalance(String address) throws IOException {
-
-        OkHttpClient httpClient = new OkHttpClient();
+        
         String url = this.config.getAdapter().getHost() + ':' + this.config.getAdapter().getPort() + this.config.getAdapter().getBase() + this.config.getAdapter().getResources().get("balance").replaceAll("__ADDRESS__", address);
 
         Request request = new Request.Builder()
                 .url(url)
                 .build();
 
-        Response response = httpClient.newCall(request).execute();
+        Response response = makeCall(request);
         GetBalanceResponse responseModel = checkStatus(response, GetBalanceResponse.class);
         return new BigInteger(responseModel.getBalance());
 
     }
 
-    private <T> T checkStatus(Response response, Class<T> tClass) throws IOException {
+    protected <T> T checkStatus(Response response, Class<T> tClass) throws IOException {
 
         try (ResponseBody responseBody = response.body()) {
 
@@ -129,12 +128,12 @@ public class HancockEthereumClient {
 
     }
 
-    private String sendSignedTransactionLocally(String signedTransaction) throws InterruptedException, ExecutionException {
+    protected String sendSignedTransactionLocally(String signedTransaction) throws InterruptedException, ExecutionException {
         String nodeUrl = this.config.getNode().getHost() + ':' + this.config.getNode().getPort();
         return this.sendSignedTransactionLocally(signedTransaction, nodeUrl);
     }
 
-    private String sendSignedTransactionLocally(String signedTransaction, String nodeUrl) throws InterruptedException, ExecutionException {
+    protected String sendSignedTransactionLocally(String signedTransaction, String nodeUrl) throws InterruptedException, ExecutionException {
 
         // defaults to http://localhost:8545/
         Web3j web3j = Web3jFactory.build(new HttpService(nodeUrl));
@@ -147,7 +146,7 @@ public class HancockEthereumClient {
 
     }
 
-    private String sendSignedTransactionRemotely(String signedTransaction, String backUrl) throws Exception {
+    protected String sendSignedTransactionRemotely(String signedTransaction, String backUrl) throws Exception {
 
        throw new Exception("Not implemented");
 
@@ -175,7 +174,7 @@ public class HancockEthereumClient {
     }
 
     public EthereumRawTransaction adaptTransfer(EthereumTransferRequest txRequest) throws Exception {
-        OkHttpClient httpClient = new OkHttpClient();
+        
         String url = getResourceUrl("transfer");
 
         Gson gson = new Gson();
@@ -183,13 +182,13 @@ public class HancockEthereumClient {
         RequestBody body = RequestBody.create(CONTENT_TYPE_JSON, json);
         Request request = getRequest(url, body);
 
-        Response response = httpClient.newCall(request).execute();
+        Response response = makeCall(request);
         EthereumTransferResponse rawTx = checkStatus(response, EthereumTransferResponse.class);
         return new EthereumRawTransaction(rawTx.getNonce(), rawTx.getGasPrice(), rawTx.getGas(), rawTx.getTo(), rawTx.getValue(), rawTx.getData());
     }
 
     public HancockProtocolDecodeResponse decodeProtocol(String code) throws IOException {
-        OkHttpClient httpClient = new OkHttpClient();
+        
         String url = getResourceUrl("decode");
 
         Gson gson = new Gson();
@@ -199,14 +198,14 @@ public class HancockEthereumClient {
 
         Request request = getRequest(url, body);
 
-        Response response = httpClient.newCall(request).execute();
+        Response response = makeCall(request);
         HancockProtocolDecodeResponse responseModel = checkStatus(response, HancockProtocolDecodeResponse.class);
 
         return responseModel;
     }
 
     public HancockProtocolEncodeResponse encodeProtocol(HancockProtocolAction action, BigInteger value, String to, String data, HancockProtocolDlt dlt) throws IOException {
-        OkHttpClient httpClient = new OkHttpClient();
+       
         String url = getResourceUrl("encode");
 
         Gson gson = new Gson();
@@ -216,24 +215,30 @@ public class HancockEthereumClient {
 
         Request request = getRequest(url, body);
 
-        Response response = httpClient.newCall(request).execute();
+        Response response = makeCall(request);
         HancockProtocolEncodeResponse responseModel = checkStatus(response, HancockProtocolEncodeResponse.class);
 
         return responseModel;
     }
 
-    private String getResourceUrl(String encode) {
+    protected String getResourceUrl(String encode) {
         return this.config.getAdapter().getHost() + ':' +
                 this.config.getAdapter().getPort() +
                 this.config.getAdapter().getBase() +
                 this.config.getAdapter().getResources().get(encode);
     }
 
-    private Request getRequest(String url, RequestBody body) {
+    protected Request getRequest(String url, RequestBody body) {
         return new Request.Builder()
                 .url(url)
                 .post(body)
                 .build();
+    }
+    
+    protected Response makeCall(Request request) throws IOException {
+      OkHttpClient httpClient = new OkHttpClient();
+      Response response = httpClient.newCall(request).execute();
+      return response;
     }
 
     // TODO: Support yaml load config on android

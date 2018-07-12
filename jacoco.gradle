@@ -7,12 +7,36 @@ jacoco {
 
 jacocoTestReport {
     reports {
-        xml.enabled true
+        xml {
+            enabled true 
+        }
+        csv {
+            enabled true 
+        }
+        html {
+            enabled true
+        }
         html.destination file("tests/reports")
+    }
+    afterEvaluate {
+        classDirectories = files(classDirectories.files.collect {
+            fileTree(dir: it, 
+             			exclude: ['src/test/**',
+                              '**/models/**',
+                              '**/resources/**'])
+        })
     }
 }
 
 jacocoTestCoverageVerification {
+	afterEvaluate {
+        classDirectories = files(classDirectories.files.collect {
+            fileTree(dir: it, 
+             			exclude: ['src/test/**',
+                              '**/models/**',
+                              '**/resources/**'])
+        })
+    }
     violationRules {
         rule {
             limit {
