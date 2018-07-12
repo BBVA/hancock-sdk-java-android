@@ -190,6 +190,13 @@ public class HancockEthereumClientTest {
 
      @Test public void testAdaptTransfer() throws Exception {
      
+       BigInteger nonce = BigInteger.valueOf(1);
+       BigInteger gasPrice = BigInteger.valueOf(111);
+       BigInteger gasLimit = BigInteger.valueOf(222);
+       BigInteger value = BigInteger.valueOf(333);
+       String to = mockedWallet.getAddress();
+       String data = "0xwhatever";
+       
        EthereumTransferResponse responseModel= mock(EthereumTransferResponse.class);
        okhttp3.Request requestMock= mock(okhttp3.Request.class);
        okhttp3.Response responseMock= mock(okhttp3.Response.class);
@@ -199,12 +206,21 @@ public class HancockEthereumClientTest {
        PowerMockito.doReturn(requestMock).when(spy_var).getRequest(any(String.class), any(okhttp3.RequestBody.class));
        PowerMockito.doReturn(responseMock).when(spy_var).makeCall(any(okhttp3.Request.class));
        PowerMockito.doReturn(responseModel).when(spy_var).checkStatus(any(okhttp3.Response.class), eq(EthereumTransferResponse.class)); 
+       PowerMockito.when(responseModel.getNonce()).thenReturn(nonce);
+       PowerMockito.when(responseModel.getGasPrice()).thenReturn(gasPrice);
+       PowerMockito.when(responseModel.getGas()).thenReturn(gasLimit);
+       PowerMockito.when(responseModel.getTo()).thenReturn(to);
+       PowerMockito.when(responseModel.getValue()).thenReturn(value);
+       PowerMockito.when(responseModel.getData()).thenReturn(data);
        PowerMockito.whenNew(EthereumRawTransaction.class).withAnyArguments().thenReturn(mockedEthereumRawTransaction);
        
        EthereumRawTransaction transfer = spy_var.adaptTransfer(mockedEthereumTransferRequest);
        System.out.println("Adapter  "+ mockedEthereumRawTransaction.getNonce());
        assertTrue("Wallet should have a Balance", transfer instanceof EthereumRawTransaction);
-//       assertEquals(transfer, mockedEthereumRawTransaction);
+       assertEquals(transfer.getGasPrice(), mockedEthereumRawTransaction.getGasPrice());
+       assertEquals(transfer.getTo(), mockedEthereumRawTransaction.getTo());
+       assertEquals(transfer.getValue(), mockedEthereumRawTransaction.getValue());
+       assertEquals(transfer.getNonce(), mockedEthereumRawTransaction.getNonce());
        
      }
 
@@ -317,8 +333,7 @@ public class HancockEthereumClientTest {
         PowerMockito.doReturn(responseModel).when(spy_var).checkStatus(any(okhttp3.Response.class), eq(HancockProtocolDecodeResponse.class)); 
 
         HancockProtocolDecodeResponse mockResult = spy_var.decodeProtocol("mockedCode");
-        System.out.println("transaction decode: ");
-        //assertEquals(mockResult, "mockSignedTransaction");
+        System.out.println("transaction decode: ");        
         assertTrue("transaction decode successfully", mockResult instanceof HancockProtocolDecodeResponse);
 
 
