@@ -8,8 +8,8 @@ javaPipeline{
         //TOPO Generate reports in the folder reports directly
         container("jdk"){
           sh """
-            ./gradlew test
-            ./gradlew jacocoTestReport
+            ./gradlew test --stacktrace
+            ./gradlew jacocoTestReport jacocoTestCoverageVerification --stacktrace
             mkdir tests/reports/unit
             mkdir tests/reports/coverage
             cp -r build/test-results/test/ tests/reports/unit/ 
