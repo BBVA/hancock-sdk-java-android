@@ -7,14 +7,7 @@ import com.bbva.hancock.sdk.config.HancockConfig;
 import com.bbva.hancock.sdk.config.HancockConfigAdapter;
 import com.bbva.hancock.sdk.config.HancockConfigNode;
 
-import com.bbva.hancock.sdk.models.EthereumTransferRequest;
-import com.bbva.hancock.sdk.models.EthereumTransferResponse;
-import com.bbva.hancock.sdk.models.GetBalanceResponse;
-import com.bbva.hancock.sdk.models.HancockProtocolAction;
-import com.bbva.hancock.sdk.models.HancockProtocolDecodeResponse;
-import com.bbva.hancock.sdk.models.HancockProtocolDlt;
-import com.bbva.hancock.sdk.models.HancockProtocolEncodeResponse;
-import com.bbva.hancock.sdk.models.TransactionConfig;
+import com.bbva.hancock.sdk.models.*;
 import com.google.gson.Gson;
 
 import okhttp3.Call;
@@ -56,7 +49,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @PrepareForTest({OkHttpClient.class,Call.class,okhttp3.Response.class,okhttp3.Request.class})
 public class HancockEthereumClientIntegrationTest {
 
-  
+
 //    @BeforeClass
 //    public static void setUp() throws Exception{
 //      HancockConfig mockConfig = mock(HancockConfig.class);
@@ -65,7 +58,7 @@ public class HancockEthereumClientIntegrationTest {
 //      //MockWebServer server = new MockWebServer();
 //  
 //    }
-  
+
     @Test public void testDumb()  {
 
         String test = "TEST";
@@ -169,129 +162,129 @@ public class HancockEthereumClientIntegrationTest {
 
         assertTrue("transaction signed successfully", signedTransaction instanceof String);
         assertEquals(signedTransaction.substring(0, 6), "0xf860");
-        
+
         System.out.println("Signed tx =>" + signedTransaction);
 
     }
 
-    @Test public void testAdaptTransfer() throws Exception { 
-      
-      BigInteger nonce = BigInteger.valueOf(1);
-      BigInteger gasPrice = BigInteger.valueOf(111);
-      BigInteger gasLimit = BigInteger.valueOf(222);
-      BigInteger value = BigInteger.valueOf(333);
-      String to = "0xmockAddress";
-      String data = "0xwhatever";
-      
-      HancockConfig config = new HancockConfig.Builder() 
-              .withAdapter("http:localhost","", 3004) 
-              .build(); 
-      //HancockEthereumClient classUnderTest = new HancockEthereumClient(config); 
-      EthereumTransferRequest transferRequest = new EthereumTransferRequest( 
-              "0x6c0a14f7561898b9ddc0c57652a53b2c6665443e", 
-              "0xde8e772f0350e992ddef81bf8f51d94a8ea9216d", 
-              new BigInteger("0260941720000000000").toString(), 
-              "test test" 
-      ); 
+    @Test public void testAdaptTransfer() throws Exception {
 
-      //MockResponse responseMock = new MockResponse().setResponseCode(200).setBody("version=9");
-      Request.Builder requestBuilder = new Request.Builder();
-      requestBuilder.get();
-      requestBuilder.url("http://localhost");
+        BigInteger nonce = BigInteger.valueOf(1);
+        BigInteger gasPrice = BigInteger.valueOf(111);
+        BigInteger gasLimit = BigInteger.valueOf(222);
+        BigInteger value = BigInteger.valueOf(333);
+        String to = "0xmockAddress";
+        String data = "0xwhatever";
 
-      EthereumTransferResponse responseModel= PowerMockito.mock(EthereumTransferResponse.class);
-      
-      Response.Builder responseBuilder = new Response.Builder();
-      responseBuilder.code(200);
-      responseBuilder.protocol(Protocol.HTTP_1_1);
-      responseBuilder.body(ResponseBody.create(MediaType.parse("application/json"), "{\"from\": \"0xde8e772f0350e992ddef81bf8f51d94a8ea9216d\",\"data\": \"0xa9059cbb0000000000000000000000006c0a14f7561898b9ddc0c57652a53b2c6665443e0000000000000000000000000000000000000000000000000000000000000001\",\"gasPrice\": \"0x4A817C800\",\"gas\": \"0xc7c5\",\"to\": \"0xe3aee62f5bb4abab8b614fd80f1d92dbdbfd2f9a\",\"nonce\": \"0x3a\"}"));
-      responseBuilder.request(requestBuilder.build());
-      responseBuilder.message("Smart Contract - Success");
-      HancockEthereumClient auxHancockEthereumClient = new HancockEthereumClient();
-      HancockEthereumClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
-      PowerMockito.doReturn(responseBuilder.build()).when(spy_var).makeCall(any(okhttp3.Request.class));
+        HancockConfig config = new HancockConfig.Builder()
+                .withAdapter("http:localhost","", 3004)
+                .build();
+        //HancockEthereumClient classUnderTest = new HancockEthereumClient(config);
+        EthereumTransferRequest transferRequest = new EthereumTransferRequest(
+                "0x6c0a14f7561898b9ddc0c57652a53b2c6665443e",
+                "0xde8e772f0350e992ddef81bf8f51d94a8ea9216d",
+                new BigInteger("0260941720000000000").toString(),
+                "test test"
+        );
+
+        //MockResponse responseMock = new MockResponse().setResponseCode(200).setBody("version=9");
+        Request.Builder requestBuilder = new Request.Builder();
+        requestBuilder.get();
+        requestBuilder.url("http://localhost");
+
+        EthereumTransferResponse responseModel= PowerMockito.mock(EthereumTransferResponse.class);
+
+        Response.Builder responseBuilder = new Response.Builder();
+        responseBuilder.code(200);
+        responseBuilder.protocol(Protocol.HTTP_1_1);
+        responseBuilder.body(ResponseBody.create(MediaType.parse("application/json"), "{\"from\": \"0xde8e772f0350e992ddef81bf8f51d94a8ea9216d\",\"data\": \"0xa9059cbb0000000000000000000000006c0a14f7561898b9ddc0c57652a53b2c6665443e0000000000000000000000000000000000000000000000000000000000000001\",\"gasPrice\": \"0x4A817C800\",\"gas\": \"0xc7c5\",\"to\": \"0xe3aee62f5bb4abab8b614fd80f1d92dbdbfd2f9a\",\"nonce\": \"0x3a\"}"));
+        responseBuilder.request(requestBuilder.build());
+        responseBuilder.message("Smart Contract - Success");
+        HancockEthereumClient auxHancockEthereumClient = new HancockEthereumClient();
+        HancockEthereumClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
+        PowerMockito.doReturn(responseBuilder.build()).when(spy_var).makeCall(any(okhttp3.Request.class));
 //      Gson gson = new Gson();
 //      EthereumTransferResponse responseModel = gson.fromJson(responseBuilder.build().body().string(), EthereumTransferResponse.class);
-      PowerMockito.doReturn(responseModel).when(spy_var).checkStatus(any(okhttp3.Response.class), eq(EthereumTransferResponse.class)); 
-      PowerMockito.when(responseModel.getNonce()).thenReturn(nonce);
-      PowerMockito.when(responseModel.getGasPrice()).thenReturn(gasPrice);
-      PowerMockito.when(responseModel.getGas()).thenReturn(gasLimit);
-      PowerMockito.when(responseModel.getTo()).thenReturn(to);
-      PowerMockito.when(responseModel.getValue()).thenReturn(value);
-      PowerMockito.when(responseModel.getData()).thenReturn(data);
-      EthereumRawTransaction rawtx = spy_var.adaptTransfer(transferRequest); 
-      
-      assertTrue("transaction adapted successfully", rawtx instanceof EthereumRawTransaction); 
+        PowerMockito.doReturn(responseModel).when(spy_var).checkStatus(any(okhttp3.Response.class), eq(EthereumTransferResponse.class));
+        PowerMockito.when(responseModel.getNonce()).thenReturn(nonce);
+        PowerMockito.when(responseModel.getGasPrice()).thenReturn(gasPrice);
+        PowerMockito.when(responseModel.getGas()).thenReturn(gasLimit);
+        PowerMockito.when(responseModel.getTo()).thenReturn(to);
+        PowerMockito.when(responseModel.getValue()).thenReturn(value);
+        PowerMockito.when(responseModel.getData()).thenReturn(data);
+        EthereumRawTransaction rawtx = spy_var.adaptTransfer(transferRequest);
 
-      System.out.println("rawtx =>" + rawtx); 
-      assertEquals(rawtx.getGasPrice(), gasPrice);
-      assertEquals(rawtx.getTo(), to);
-      assertEquals(rawtx.getValue(), value);
-      assertEquals(rawtx.getNonce(), nonce);
+        assertTrue("transaction adapted successfully", rawtx instanceof EthereumRawTransaction);
 
-  } 
+        System.out.println("rawtx =>" + rawtx);
+        assertEquals(rawtx.getGasPrice(), gasPrice);
+        assertEquals(rawtx.getTo(), to);
+        assertEquals(rawtx.getValue(), value);
+        assertEquals(rawtx.getNonce(), nonce);
 
-     @Test public void testTransfer() throws Exception {
+    }
 
-         HancockConfig config = new HancockConfig.Builder()
-                 .withAdapter("http:localhost","", 3004)
-                 .build();
+    @Test public void testTransfer() throws Exception {
 
-         TransactionConfig txConfig = new TransactionConfig.Builder()
-             .withPrivateKey("0x6c47653f66ac9b733f3b8bf09ed3d300520b4d9c78711ba90162744f5906b1f8")
-             .build();
+        HancockConfig config = new HancockConfig.Builder()
+                .withAdapter("http:localhost","", 3004)
+                .build();
 
-         EthereumTransferRequest txRequest = new EthereumTransferRequest(
-            "0x6c0a14f7561898b9ddc0c57652a53b2c6665443e",
-            "0xde8e772f0350e992ddef81bf8f51d94a8ea9216d",
-            new BigInteger("0260941720000000000").toString(),
-            "test test"
-         );
-         
-         Request.Builder requestBuilder = new Request.Builder();
-         requestBuilder.get();
-         requestBuilder.url("http://localhost");
-         
-         Response.Builder responseBuilder = new Response.Builder();
-         responseBuilder.code(200);
-         responseBuilder.protocol(Protocol.HTTP_1_1);
-         responseBuilder.body(ResponseBody.create(MediaType.parse("application/json"), "{\"from\": \"0xde8e772f0350e992ddef81bf8f51d94a8ea9216d\",\"dat\": \"0xa9059cbb0000000000000000000000006c0a14f7561898b9ddc0c57652a53b2c6665443e0000000000000000000000000000000000000000000000000000000000000001\",\"gasPrice\": \"0x4A817C800\",\"gas\": \"0xc7c5\",\"to\": \"0xe3aee62f5bb4abab8b614fd80f1d92dbdbfd2f9a\",\"nonce\": \"0x3a\"}"));
-         responseBuilder.request(requestBuilder.build());
-         responseBuilder.message("Smart Contract - Success");
-         
-         BigInteger nonce = BigInteger.valueOf(1);
-         BigInteger gasPrice = BigInteger.valueOf(111);
-         BigInteger gasLimit = BigInteger.valueOf(222);
-         BigInteger value = BigInteger.valueOf(333);
-         String to = "0xmockAddress";
-         String data = "0xwhatever";
-         EthereumRawTransaction mockedEthereumRawTransaction = new EthereumRawTransaction(nonce, gasPrice, gasLimit, to, value);
-         
-         EthereumTransferResponse responseTransfer= PowerMockito.mock(EthereumTransferResponse.class);
-         HancockEthereumClient auxHancockEthereumClient = new HancockEthereumClient();
-         HancockEthereumClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
-         PowerMockito.doReturn(responseBuilder.build()).when(spy_var).makeCall(any(okhttp3.Request.class));
-         PowerMockito.doReturn(responseTransfer).when(spy_var).checkStatus(any(okhttp3.Response.class), eq(EthereumTransferResponse.class)); 
-         
-         PowerMockito.when(responseTransfer.getNonce()).thenReturn(nonce);
-         PowerMockito.when(responseTransfer.getGasPrice()).thenReturn(gasPrice);
-         PowerMockito.when(responseTransfer.getGas()).thenReturn(gasLimit);
-         PowerMockito.when(responseTransfer.getTo()).thenReturn(to);
-         PowerMockito.when(responseTransfer.getValue()).thenReturn(value);
-         PowerMockito.when(responseTransfer.getData()).thenReturn(data);
-         
-         PowerMockito.whenNew(EthereumRawTransaction.class).withAnyArguments().thenReturn(mockedEthereumRawTransaction);
-         
-         PowerMockito.doReturn("mockSignedTransactionLocal").when(spy_var).sendSignedTransactionLocally(any(String.class), any(String.class));
-         
-         String rawtx = spy_var.transfer(txRequest, txConfig);
+        TransactionConfig txConfig = new TransactionConfig.Builder()
+                .withPrivateKey("0x6c47653f66ac9b733f3b8bf09ed3d300520b4d9c78711ba90162744f5906b1f8")
+                .build();
 
-         assertTrue("transaction adapted successfully", rawtx instanceof String);
-         assertEquals(rawtx, "mockSignedTransactionLocal");
+        EthereumTransferRequest txRequest = new EthereumTransferRequest(
+                "0x6c0a14f7561898b9ddc0c57652a53b2c6665443e",
+                "0xde8e772f0350e992ddef81bf8f51d94a8ea9216d",
+                new BigInteger("0260941720000000000").toString(),
+                "test test"
+        );
 
-         System.out.println("rawtx transaction =>" + rawtx);
+        Request.Builder requestBuilder = new Request.Builder();
+        requestBuilder.get();
+        requestBuilder.url("http://localhost");
 
-     }
+        Response.Builder responseBuilder = new Response.Builder();
+        responseBuilder.code(200);
+        responseBuilder.protocol(Protocol.HTTP_1_1);
+        responseBuilder.body(ResponseBody.create(MediaType.parse("application/json"), "{\"from\": \"0xde8e772f0350e992ddef81bf8f51d94a8ea9216d\",\"dat\": \"0xa9059cbb0000000000000000000000006c0a14f7561898b9ddc0c57652a53b2c6665443e0000000000000000000000000000000000000000000000000000000000000001\",\"gasPrice\": \"0x4A817C800\",\"gas\": \"0xc7c5\",\"to\": \"0xe3aee62f5bb4abab8b614fd80f1d92dbdbfd2f9a\",\"nonce\": \"0x3a\"}"));
+        responseBuilder.request(requestBuilder.build());
+        responseBuilder.message("Smart Contract - Success");
+
+        BigInteger nonce = BigInteger.valueOf(1);
+        BigInteger gasPrice = BigInteger.valueOf(111);
+        BigInteger gasLimit = BigInteger.valueOf(222);
+        BigInteger value = BigInteger.valueOf(333);
+        String to = "0xmockAddress";
+        String data = "0xwhatever";
+        EthereumRawTransaction mockedEthereumRawTransaction = new EthereumRawTransaction(nonce, gasPrice, gasLimit, to, value);
+
+        EthereumTransferResponse responseTransfer= PowerMockito.mock(EthereumTransferResponse.class);
+        HancockEthereumClient auxHancockEthereumClient = new HancockEthereumClient();
+        HancockEthereumClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
+        PowerMockito.doReturn(responseBuilder.build()).when(spy_var).makeCall(any(okhttp3.Request.class));
+        PowerMockito.doReturn(responseTransfer).when(spy_var).checkStatus(any(okhttp3.Response.class), eq(EthereumTransferResponse.class));
+
+        PowerMockito.when(responseTransfer.getNonce()).thenReturn(nonce);
+        PowerMockito.when(responseTransfer.getGasPrice()).thenReturn(gasPrice);
+        PowerMockito.when(responseTransfer.getGas()).thenReturn(gasLimit);
+        PowerMockito.when(responseTransfer.getTo()).thenReturn(to);
+        PowerMockito.when(responseTransfer.getValue()).thenReturn(value);
+        PowerMockito.when(responseTransfer.getData()).thenReturn(data);
+
+        PowerMockito.whenNew(EthereumRawTransaction.class).withAnyArguments().thenReturn(mockedEthereumRawTransaction);
+
+        PowerMockito.doReturn("mockSignedTransactionLocal").when(spy_var).sendSignedTransactionLocally(any(String.class), any(String.class));
+
+        String rawtx = spy_var.transfer(txRequest, txConfig);
+
+        assertTrue("transaction adapted successfully", rawtx instanceof String);
+        assertEquals(rawtx, "mockSignedTransactionLocal");
+
+        System.out.println("rawtx transaction =>" + rawtx);
+
+    }
 
     @Test public void testGetBalance() throws Exception {
 
@@ -299,27 +292,27 @@ public class HancockEthereumClientIntegrationTest {
                 .withAdapter("http://localhost","", 3004)
                 .build();
         //HancockEthereumClient classUnderTest = new HancockEthereumClient(config);
-        
+
         Request.Builder requestBuilder = new Request.Builder();
         requestBuilder.get();
         requestBuilder.url("http://localhost");
-        
+
         Response.Builder responseBuilder = new Response.Builder();
         responseBuilder.code(200);
         responseBuilder.protocol(Protocol.HTTP_1_1);
         responseBuilder.body(ResponseBody.create(MediaType.parse("application/json"), "{\"balance\": \"10000\"}"));
         responseBuilder.request(requestBuilder.build());
         responseBuilder.message("Smart Contract - Success");
-        
-        
+
+
         GetBalanceResponse responseModel= PowerMockito.mock(GetBalanceResponse.class);
         HancockEthereumClient auxHancockEthereumClient = new HancockEthereumClient();
         HancockEthereumClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
         PowerMockito.doReturn(responseBuilder.build()).when(spy_var).makeCall(any(okhttp3.Request.class));
-        PowerMockito.doReturn(responseModel).when(spy_var).checkStatus(any(okhttp3.Response.class), eq(GetBalanceResponse.class)); 
+        PowerMockito.doReturn(responseModel).when(spy_var).checkStatus(any(okhttp3.Response.class), eq(GetBalanceResponse.class));
         PowerMockito.when(responseModel.getBalance()).thenReturn("0");
-        
-        
+
+
         BigInteger balance = spy_var.getBalance("0xde8e772f0350e992ddef81bf8f51d94a8ea9216d");
 
         assertTrue("transaction signed successfully", balance instanceof BigInteger);
@@ -327,36 +320,36 @@ public class HancockEthereumClientIntegrationTest {
         System.out.println("Balance =>" + balance.toString());
 
     }
-    
+
     @Test (expected = IOException.class)
     public void testGetBalanceFail() throws Exception {
 
-      HancockConfig config = new HancockConfig.Builder()
-              .withAdapter("http://localhost","", 3004)
-              .build();
-      //HancockEthereumClient classUnderTest = new HancockEthereumClient(config);
-      
-      Request.Builder requestBuilder = new Request.Builder();
-      requestBuilder.get();
-      requestBuilder.url("http://localhost");
-      
-      Response.Builder responseBuilder = new Response.Builder();
-      responseBuilder.code(400);
-      responseBuilder.protocol(Protocol.HTTP_1_1);
-      responseBuilder.body(ResponseBody.create(MediaType.parse("application/json"), "{\"balance\": \"10000\"}"));
-      responseBuilder.request(requestBuilder.build());
-      responseBuilder.message("Smart Contract - Fail");
-      
-      
-      GetBalanceResponse responseModel= PowerMockito.mock(GetBalanceResponse.class);
-      HancockEthereumClient auxHancockEthereumClient = new HancockEthereumClient();
-      HancockEthereumClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
-      PowerMockito.doReturn(responseBuilder.build()).when(spy_var).makeCall(any(okhttp3.Request.class));
-      
-      
-      BigInteger balance = spy_var.getBalance("0xde8e772f0350e992ddef81bf8f51d94a8ea9216d");
+        HancockConfig config = new HancockConfig.Builder()
+                .withAdapter("http://localhost","", 3004)
+                .build();
+        //HancockEthereumClient classUnderTest = new HancockEthereumClient(config);
 
-  }
+        Request.Builder requestBuilder = new Request.Builder();
+        requestBuilder.get();
+        requestBuilder.url("http://localhost");
+
+        Response.Builder responseBuilder = new Response.Builder();
+        responseBuilder.code(400);
+        responseBuilder.protocol(Protocol.HTTP_1_1);
+        responseBuilder.body(ResponseBody.create(MediaType.parse("application/json"), "{\"balance\": \"10000\"}"));
+        responseBuilder.request(requestBuilder.build());
+        responseBuilder.message("Smart Contract - Fail");
+
+
+        GetBalanceResponse responseModel= PowerMockito.mock(GetBalanceResponse.class);
+        HancockEthereumClient auxHancockEthereumClient = new HancockEthereumClient();
+        HancockEthereumClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
+        PowerMockito.doReturn(responseBuilder.build()).when(spy_var).makeCall(any(okhttp3.Request.class));
+
+
+        BigInteger balance = spy_var.getBalance("0xde8e772f0350e992ddef81bf8f51d94a8ea9216d");
+
+    }
 
     @Test public void testDecodeProtocol() throws Exception {
 
@@ -368,18 +361,18 @@ public class HancockEthereumClientIntegrationTest {
         Request.Builder requestBuilder = new Request.Builder();
         requestBuilder.get();
         requestBuilder.url("http://localhost");
-        
+
         Response.Builder responseBuilder = new Response.Builder();
         responseBuilder.code(200);
         responseBuilder.protocol(Protocol.HTTP_1_1);
         responseBuilder.body(ResponseBody.create(MediaType.parse("application/json"), "{\"from\": \"0xde8e772f0350e992ddef81bf8f51d94a8ea9216d\",\"dat\": \"0xa9059cbb0000000000000000000000006c0a14f7561898b9ddc0c57652a53b2c6665443e0000000000000000000000000000000000000000000000000000000000000001\",\"gasPrice\": \"0x4A817C800\",\"gas\": \"0xc7c5\",\"to\": \"0x1234\",\"nonce\": \"0x3a\"}"));
         responseBuilder.request(requestBuilder.build());
         responseBuilder.message("Smart Contract - Success");
-        
+
         HancockEthereumClient auxHancockEthereumClient = new HancockEthereumClient();
         HancockEthereumClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
         PowerMockito.doReturn(responseBuilder.build()).when(spy_var).makeCall(any(okhttp3.Request.class));
-        
+
         HancockProtocolDecodeResponse response = spy_var.decodeProtocol("hancock://qr?code=%7B%22action%22%3A%22transfer%22%2C%22body%22%3A%7B%22value%22%3A%2210%22%2C%22data%22%3A%22dafsda%22%2C%22to%22%3A%220x1234%22%7D%2C%22dlt%22%3A%22ethereum%22%7D");
 
 //        assertTrue("transaction signed successfully", response.getTo().equals("0x1234"));
@@ -399,24 +392,55 @@ public class HancockEthereumClientIntegrationTest {
         Request.Builder requestBuilder = new Request.Builder();
         requestBuilder.get();
         requestBuilder.url("http://localhost");
-        
+
         Response.Builder responseBuilder = new Response.Builder();
         responseBuilder.code(200);
         responseBuilder.protocol(Protocol.HTTP_1_1);
         responseBuilder.body(ResponseBody.create(MediaType.parse("application/json"), "{\"from\": \"0xde8e772f0350e992ddef81bf8f51d94a8ea9216d\",\"dat\": \"0xa9059cbb0000000000000000000000006c0a14f7561898b9ddc0c57652a53b2c6665443e0000000000000000000000000000000000000000000000000000000000000001\",\"gasPrice\": \"0x4A817C800\",\"gas\": \"0xc7c5\",\"to\": \"0x1234\",\"nonce\": \"0x3a\"}"));
         responseBuilder.request(requestBuilder.build());
         responseBuilder.message("Smart Contract - Success");
-        
+
         HancockEthereumClient auxHancockEthereumClient = new HancockEthereumClient();
         HancockEthereumClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
         PowerMockito.doReturn(responseBuilder.build()).when(spy_var).makeCall(any(okhttp3.Request.class));
-        
+
         HancockProtocolEncodeResponse response = spy_var.encodeProtocol(HancockProtocolAction.transfer, new BigInteger("10"), "0x1234", "dafsda", HancockProtocolDlt.ethereum);
 
         //assertTrue("transaction signed successfully", response.getCode().equals("hancock://qr?code=%7B%22action%22%3A%22transfer%22%2C%22body%22%3A%7B%22value%22%3A%2210%22%2C%22data%22%3A%22dafsda%22%2C%22to%22%3A%220x1234%22%7D%2C%22dlt%22%3A%22ethereum%22%7D"));
         assertTrue("transaction encode successfully", response instanceof HancockProtocolEncodeResponse);
-        
+
         System.out.println("Action Encode=>" + response.toString());
 
     }
+
+    @Test public void testTokenRegister() throws Exception {
+
+        HancockConfig config = new HancockConfig.Builder()
+                .withAdapter("http://localhost","", 3004)
+                .build();
+
+        Request request = new Request.Builder()
+                .get()
+                .url("http://localhost")
+                .build();
+
+        Response response = new Response.Builder()
+                .code(200)
+                .protocol(Protocol.HTTP_1_1)
+                .body(ResponseBody.create(MediaType.parse("application/json"), "{\"result\":{\"code\":200,\"description\":\"Token Register - Success\"}}"))
+                .request(request)
+                .message("Token Register - Success")
+                .build();
+
+        HancockEthereumClient auxHancockEthereumClient = new HancockEthereumClient();
+        HancockEthereumClient spyHancockClient=PowerMockito.spy(auxHancockEthereumClient);
+
+        PowerMockito.doReturn(response).when(spyHancockClient).makeCall(any(okhttp3.Request.class));
+
+        HancockTokenRegisterResponse result = spyHancockClient.tokenRegister("mocked-alias", "0x1234");
+
+        assertTrue("token registered successfully", result instanceof HancockTokenRegisterResponse);
+
+    }
+
 }

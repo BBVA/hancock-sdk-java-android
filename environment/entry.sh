@@ -12,6 +12,11 @@ then
 
   ./gradlew test --stacktrace
 
+elif [ "$1" = 'coverage' ]
+then
+
+  ./gradlew jacocoTestReport jacocoTestCoverageVerification --stacktrace
+
 elif [ "$1" = 'docs' ]
 then
 
