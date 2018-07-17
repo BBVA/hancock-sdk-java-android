@@ -7,6 +7,7 @@ import com.bbva.hancock.sdk.config.HancockConfig;
 import com.bbva.hancock.sdk.config.HancockConfigAdapter;
 import com.bbva.hancock.sdk.config.HancockConfigNode;
 
+import com.bbva.hancock.sdk.models.EthereumTokenTransferRequest;
 import com.bbva.hancock.sdk.models.EthereumTransferRequest;
 import com.bbva.hancock.sdk.models.EthereumTransferResponse;
 import com.bbva.hancock.sdk.models.GetBalanceResponse;
@@ -64,6 +65,7 @@ public class HancockEthereumClientTest {
     public static EthereumWallet mockedWallet;
     public static EthereumRawTransaction mockedEthereumRawTransaction;
     public static EthereumTransferRequest mockedEthereumTransferRequest;
+    public static EthereumTokenTransferRequest mockedEthereumTokenTransferRequest;
     public static HancockEthereumClient mockedHancockEthereumClient;
 
     @BeforeClass
@@ -84,8 +86,10 @@ public class HancockEthereumClientTest {
       String from = mockedWallet.getAddress();
       String to = mockedWallet.getAddress();
       String data = "0xwhatever";
+      String addressOrAlias = "mockedAlias";
       
       mockedEthereumTransferRequest = new EthereumTransferRequest(from, to, value.toString(), data);
+      mockedEthereumTokenTransferRequest = new EthereumTokenTransferRequest(from, to, value.toString(), addressOrAlias);
       mockedEthereumRawTransaction = new EthereumRawTransaction(nonce, gasPrice, gasLimit, to, value);
   
     }
@@ -288,40 +292,87 @@ public class HancockEthereumClientTest {
    }
      
      @Test public void testTransfer() throws Exception {
-      
-       TransactionConfig txConfig = new TransactionConfig.Builder()
-           .withPrivateKey("0x6c47653f66ac9b733f3b8bf09ed3d300520b4d9c78711ba90162744f5906b1f8")
-           .build();
-       
-       txConfig.setSendLocally(true);
-       HancockEthereumClient auxHancockEthereumClient = new HancockEthereumClient();
-       HancockEthereumClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
-       PowerMockito.doReturn(mock(EthereumRawTransaction.class)).when(spy_var).adaptTransfer(any(EthereumTransferRequest.class),"mockUrl");
-       PowerMockito.doReturn("mockSigned").when(spy_var).signTransaction(any(EthereumRawTransaction.class),eq("0x6c47653f66ac9b733f3b8bf09ed3d300520b4d9c78711ba90162744f5906b1f8"));
-       PowerMockito.doReturn("mockSignedTransaction").when(spy_var).sendSignedTransaction(eq("mockSigned"), any(boolean.class), any(String.class));  
-       
-       String mockResult = spy_var.transfer(mockedEthereumTransferRequest, txConfig);
-       System.out.println("transfer: "+ mockResult);
-       assertEquals(mockResult, "mockSignedTransaction");
-       assertTrue("transaction send and signed successfully", mockResult instanceof String);       
-              
+
+        TransactionConfig txConfig = new TransactionConfig.Builder()
+                .withPrivateKey("0x6c47653f66ac9b733f3b8bf09ed3d300520b4d9c78711ba90162744f5906b1f8")
+                .build();
+
+        txConfig.setSendLocally(true);
+        HancockEthereumClient auxHancockEthereumClient = new HancockEthereumClient();
+        HancockEthereumClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
+        PowerMockito.doReturn(mock(EthereumRawTransaction.class)).when(spy_var).adaptTransfer(any(EthereumTransferRequest.class), any(String.class));
+        PowerMockito.doReturn("mockSignedTransaction").when(spy_var).sendTransfer(any(TransactionConfig.class), any(EthereumRawTransaction.class));
+
+        String mockResult = spy_var.transfer(mockedEthereumTransferRequest, txConfig);
+        System.out.println("transfer: "+ mockResult);
+        assertEquals(mockResult, "mockSignedTransaction");
+        assertTrue("transaction send and signed successfully", mockResult instanceof String);
+
 //       String mockResultLocal = spy_var.transfer(mockedEthereumTransferRequest, txConfig);
 //       System.out.println("transfer local: "+ mockResultLocal);
 //       assertEquals(mockResultLocal, "mockSignedTransaction");
 //       assertTrue("transaction send and signed successfully", mockResultLocal instanceof String);
 
-     }
+    }
+
+    @Test public void testTokenTransfer() throws Exception {
+
+        TransactionConfig txConfig = new TransactionConfig.Builder()
+                .withPrivateKey("0x6c47653f66ac9b733f3b8bf09ed3d300520b4d9c78711ba90162744f5906b1f8")
+                .build();
+
+        txConfig.setSendLocally(true);
+        HancockEthereumClient auxHancockEthereumClient = new HancockEthereumClient();
+        HancockEthereumClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
+        PowerMockito.doReturn(mock(EthereumRawTransaction.class)).when(spy_var).adaptTransfer(any(EthereumTokenTransferRequest.class), any(String.class));
+        PowerMockito.doReturn("mockSignedTransaction").when(spy_var).sendTransfer(any(TransactionConfig.class), any(EthereumRawTransaction.class));
+
+        String mockResult = spy_var.tokenTransfer(mockedEthereumTokenTransferRequest, txConfig);
+        System.out.println("transfer: "+ mockResult);
+        assertEquals(mockResult, "mockSignedTransaction");
+        assertTrue("transaction send and signed successfully", mockResult instanceof String);
+
+//       String mockResultLocal = spy_var.transfer(mockedEthereumTransferRequest, txConfig);
+//       System.out.println("transfer local: "+ mockResultLocal);
+//       assertEquals(mockResultLocal, "mockSignedTransaction");
+//       assertTrue("transaction send and signed successfully", mockResultLocal instanceof String);
+
+    }
+
+    @Test public void testSendTransfer() throws Exception {
+
+        TransactionConfig txConfig = new TransactionConfig.Builder()
+                .withPrivateKey("0x6c47653f66ac9b733f3b8bf09ed3d300520b4d9c78711ba90162744f5906b1f8")
+                .build();
+
+        txConfig.setSendLocally(true);
+        HancockEthereumClient auxHancockEthereumClient = new HancockEthereumClient();
+        HancockEthereumClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
+        PowerMockito.doReturn("mockSigned").when(spy_var).signTransaction(any(EthereumRawTransaction.class),eq("0x6c47653f66ac9b733f3b8bf09ed3d300520b4d9c78711ba90162744f5906b1f8"));
+        PowerMockito.doReturn("mockSignedTransaction").when(spy_var).sendSignedTransaction(eq("mockSigned"), any(boolean.class), any(String.class));
+
+        String mockResult = spy_var.sendTransfer(txConfig, mock(EthereumRawTransaction.class));
+        System.out.println("transfer: "+ mockResult);
+        assertEquals(mockResult, "mockSignedTransaction");
+        assertTrue("transaction send and signed successfully", mockResult instanceof String);
+
+//       String mockResultLocal = spy_var.transfer(mockedEthereumTransferRequest, txConfig);
+//       System.out.println("transfer local: "+ mockResultLocal);
+//       assertEquals(mockResultLocal, "mockSignedTransaction");
+//       assertTrue("transaction send and signed successfully", mockResultLocal instanceof String);
+
+    }
   
     @Test public void testDecodeProtocol() throws Exception {
-        
+
 //        OkHttpClient httpClient = new OkHttpClient();
-//        Call response = mock(Call.class);          
+//        Call response = mock(Call.class);
 //        PowerMockito.whenNew(OkHttpClient.class).withAnyArguments().thenReturn(httpClient);
 //        OkHttpClient spy_http=PowerMockito.spy(httpClient);
 //        Call spy_call=PowerMockito.spy(response);
 //        PowerMockito.doReturn(spy_call).when(spy_http).newCall(any(okhttp3.Request.class));
 //        PowerMockito.doReturn(mock(okhttp3.Response.class)).when(spy_call).execute();
-      
+
         okhttp3.Request requestMock= mock(okhttp3.Request.class);
         okhttp3.Response responseMock= mock(okhttp3.Response.class);
         HancockProtocolDecodeResponse responseModel= mock(HancockProtocolDecodeResponse.class);
@@ -330,10 +381,10 @@ public class HancockEthereumClientTest {
         PowerMockito.doReturn("mockUrl").when(spy_var).getResourceUrl("decode");
         PowerMockito.doReturn(requestMock).when(spy_var).getRequest(any(String.class), any(okhttp3.RequestBody.class));
         PowerMockito.doReturn(responseMock).when(spy_var).makeCall(any(okhttp3.Request.class));
-        PowerMockito.doReturn(responseModel).when(spy_var).checkStatus(any(okhttp3.Response.class), eq(HancockProtocolDecodeResponse.class)); 
+        PowerMockito.doReturn(responseModel).when(spy_var).checkStatus(any(okhttp3.Response.class), eq(HancockProtocolDecodeResponse.class));
 
         HancockProtocolDecodeResponse mockResult = spy_var.decodeProtocol("mockedCode");
-        System.out.println("transaction decode: ");        
+        System.out.println("transaction decode: ");
         assertTrue("transaction decode successfully", mockResult instanceof HancockProtocolDecodeResponse);
 
 
