@@ -7,17 +7,7 @@ import com.bbva.hancock.sdk.config.HancockConfig;
 import com.bbva.hancock.sdk.config.HancockConfigAdapter;
 import com.bbva.hancock.sdk.config.HancockConfigNode;
 
-import com.bbva.hancock.sdk.models.EthereumTokenTransferRequest;
-import com.bbva.hancock.sdk.models.EthereumTransferRequest;
-import com.bbva.hancock.sdk.models.EthereumTransferResponse;
-import com.bbva.hancock.sdk.models.GetBalanceResponse;
-import com.bbva.hancock.sdk.models.HancockProtocolAction;
-import com.bbva.hancock.sdk.models.HancockProtocolDecodeRequest;
-import com.bbva.hancock.sdk.models.HancockProtocolDecodeResponse;
-import com.bbva.hancock.sdk.models.HancockProtocolDlt;
-import com.bbva.hancock.sdk.models.HancockProtocolEncodeRequest;
-import com.bbva.hancock.sdk.models.HancockProtocolEncodeResponse;
-import com.bbva.hancock.sdk.models.TransactionConfig;
+import com.bbva.hancock.sdk.models.*;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -58,9 +48,9 @@ import static org.mockito.Mockito.*;
 //@RunWith(MockitoJUnitRunner.class)
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({TransactionEncoder.class,Credentials.class,EthereumRawTransaction.class,RawTransaction.class,Web3jFactory.class,
-  OkHttpClient.class,Call.class,okhttp3.Response.class,okhttp3.Request.class,GetBalanceResponse.class,HancockConfig.class})
+        OkHttpClient.class,Call.class,okhttp3.Response.class,okhttp3.Request.class,GetBalanceResponse.class,HancockConfig.class})
 public class HancockEthereumClientTest {
-  
+
     public static HancockConfig mockedConfig;
     public static EthereumWallet mockedWallet;
     public static EthereumRawTransaction mockedEthereumRawTransaction;
@@ -71,42 +61,42 @@ public class HancockEthereumClientTest {
     @BeforeClass
     public static void setUp() throws Exception{
 
-      mockedConfig = new HancockConfig.Builder()
-          .withEnv("custom")
-          .withNode("http://mock.node.com", 9999)
-          .withAdapter("http://mock.adapter.com", "/base", 9999)
-          .build();
-      mockedHancockEthereumClient = new HancockEthereumClient();
-      mockedWallet = new EthereumWallet("0xmockAddress","mockPrivateKey","mockPublicKey");
+        mockedConfig = new HancockConfig.Builder()
+                .withEnv("custom")
+                .withNode("http://mock.node.com", 9999)
+                .withAdapter("http://mock.adapter.com", "/base", 9999)
+                .build();
+        mockedHancockEthereumClient = new HancockEthereumClient();
+        mockedWallet = new EthereumWallet("0xmockAddress","mockPrivateKey","mockPublicKey");
+
+        BigInteger nonce = BigInteger.valueOf(1);
+        BigInteger gasPrice = BigInteger.valueOf(111);
+        BigInteger gasLimit = BigInteger.valueOf(222);
+        BigInteger value = BigInteger.valueOf(333);
+        String from = mockedWallet.getAddress();
+        String to = mockedWallet.getAddress();
+        String data = "0xwhatever";
+        String addressOrAlias = "mockedAlias";
       
-      BigInteger nonce = BigInteger.valueOf(1);
-      BigInteger gasPrice = BigInteger.valueOf(111);
-      BigInteger gasLimit = BigInteger.valueOf(222);
-      BigInteger value = BigInteger.valueOf(333);
-      String from = mockedWallet.getAddress();
-      String to = mockedWallet.getAddress();
-      String data = "0xwhatever";
-      String addressOrAlias = "mockedAlias";
-      
-      mockedEthereumTransferRequest = new EthereumTransferRequest(from, to, value.toString(), data);
-      mockedEthereumTokenTransferRequest = new EthereumTokenTransferRequest(from, to, value.toString(), addressOrAlias);
-      mockedEthereumRawTransaction = new EthereumRawTransaction(nonce, gasPrice, gasLimit, to, value);
-  
+        mockedEthereumTokenTransferRequest = new EthereumTokenTransferRequest(from, to, value.toString(), addressOrAlias);
+        mockedEthereumTransferRequest = new EthereumTransferRequest(from, to, value.toString(), data);
+        mockedEthereumRawTransaction = new EthereumRawTransaction(nonce, gasPrice, gasLimit, to, value);
+
     }
-  
+
     @Test public void testDumb()  {
 
         String test = "TEST";
         assertEquals(test, "TEST");
 
     }
-    
+
     @Test public void testConfig() throws Exception {
         HancockConfig.Builder builder = new HancockConfig.Builder();
         //builder.withAdapter("host", "base", 80);
-        HancockConfig.Builder spy_var=PowerMockito.spy(builder);
-        PowerMockito.doReturn(mockedConfig).when(spy_var).build();        
-        HancockConfig result = spy_var.build(); 
+        HancockConfig.Builder spy_var = PowerMockito.spy(builder);
+        PowerMockito.doReturn(mockedConfig).when(spy_var).build();
+        HancockConfig result = spy_var.build();
         System.out.println("config  "+result.getEnv());
         assertTrue("Config OK", result instanceof HancockConfig);
     }
@@ -133,7 +123,7 @@ public class HancockEthereumClientTest {
         assertTrue("Wallet should have an address", mockedWallet.getAddress() instanceof String);
         assertTrue("Wallet should have a publicKey", mockedWallet.getPublicKey() instanceof String);
         assertTrue("Wallet should have a privateKey", mockedWallet.getPrivateKey() instanceof String);
-        
+
         assertEquals(mockedWallet.getAddress(), "0xmockAddress");
         assertEquals(mockedWallet.getPrivateKey(), "mockPrivateKey");
         assertEquals(mockedWallet.getPublicKey(), "mockPublicKey");
@@ -141,25 +131,25 @@ public class HancockEthereumClientTest {
     }
 
     @Test public void testGetBalance() throws Exception {
-      
-        GetBalanceResponse responseModel= mock(GetBalanceResponse.class);
-        okhttp3.Response responseMock= mock(okhttp3.Response.class);
+
+        GetBalanceResponse responseModel = mock(GetBalanceResponse.class);
+        okhttp3.Response responseMock = mock(okhttp3.Response.class);
         HancockEthereumClient auxHancockEthereumClient = new HancockEthereumClient();
-        HancockEthereumClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
+        HancockEthereumClient spy_var = PowerMockito.spy(auxHancockEthereumClient);
         PowerMockito.doReturn(responseMock).when(spy_var).makeCall(any(okhttp3.Request.class));
-        PowerMockito.doReturn(responseModel).when(spy_var).checkStatus(any(okhttp3.Response.class), eq(GetBalanceResponse.class)); 
+        PowerMockito.doReturn(responseModel).when(spy_var).checkStatus(any(okhttp3.Response.class), eq(GetBalanceResponse.class));
         when(responseModel.getBalance()).thenReturn("0");
-        
+
         BigInteger balance = spy_var.getBalance("0xmockAddress");
         System.out.println("balance  "+balance);
         assertTrue("Wallet should have a Balance", balance instanceof BigInteger);
         assertEquals(balance, BigInteger.valueOf(0));
 
     }
-    
+
     @Test public void testSignTransaction() throws Exception {
-      
-      
+
+
         PowerMockito.mockStatic(Credentials.class);
         when(Credentials.create("mockPrivateKey")).thenReturn(mock(Credentials.class));
 
@@ -170,7 +160,7 @@ public class HancockEthereumClientTest {
         byte[] aux = "mockedsignedTransaction".getBytes();
 
         PowerMockito.mockStatic(TransactionEncoder.class);
-        when(TransactionEncoder.signMessage(any(RawTransaction.class), any(Credentials.class))).thenReturn(aux);        
+        when(TransactionEncoder.signMessage(any(RawTransaction.class), any(Credentials.class))).thenReturn(aux);
 
         String signedTransaction = mockedHancockEthereumClient.signTransaction(mockEthereumRawTransaction,"mockPrivateKey");
         System.out.println("sign  "+signedTransaction);
@@ -178,7 +168,7 @@ public class HancockEthereumClientTest {
         assertEquals(signedTransaction,  Numeric.toHexString(aux));
 
     }
-    
+
     @Test public void testCreateRawTransaction() throws Exception {
 
         assertTrue("RawTransaction is well constructed ", mockedEthereumRawTransaction instanceof EthereumRawTransaction);
@@ -264,8 +254,8 @@ public class HancockEthereumClientTest {
 //       Web3jFactory web = new Web3jFactory();
 //       doReturn(web3j).when(web).build(new HttpService("http://mock.node.com"));
 //       HancockEthereumClient testHancockEthereumClient = new HancockEthereumClient();
-//       HancockEthereumClient spytest_var=PowerMockito.spy(testHancockEthereumClient);            
-//       EthSendTransaction responseModel= mock(EthSendTransaction.class);
+//       HancockEthereumClient spytest_var = PowerMockito.spy(testHancockEthereumClient);
+//       EthSendTransaction responseModel = mock(EthSendTransaction.class);
 //       doReturn(responseModel).when(web3j).ethSendRawTransaction(any(String.class)).sendAsync().get();
 //       doReturn("mockhash").when(responseModel).getTransactionHash();
        
@@ -368,16 +358,16 @@ public class HancockEthereumClientTest {
 //        OkHttpClient httpClient = new OkHttpClient();
 //        Call response = mock(Call.class);
 //        PowerMockito.whenNew(OkHttpClient.class).withAnyArguments().thenReturn(httpClient);
-//        OkHttpClient spy_http=PowerMockito.spy(httpClient);
-//        Call spy_call=PowerMockito.spy(response);
+//        OkHttpClient spy_http= PowerMockito.spy(httpClient);
+//        Call spy_call= PowerMockito.spy(response);
 //        PowerMockito.doReturn(spy_call).when(spy_http).newCall(any(okhttp3.Request.class));
 //        PowerMockito.doReturn(mock(okhttp3.Response.class)).when(spy_call).execute();
 
-        okhttp3.Request requestMock= mock(okhttp3.Request.class);
-        okhttp3.Response responseMock= mock(okhttp3.Response.class);
-        HancockProtocolDecodeResponse responseModel= mock(HancockProtocolDecodeResponse.class);
+        okhttp3.Request requestMock = mock(okhttp3.Request.class);
+        okhttp3.Response responseMock = mock(okhttp3.Response.class);
+        HancockProtocolDecodeResponse responseModel = mock(HancockProtocolDecodeResponse.class);
         HancockEthereumClient auxHancockEthereumClient = new HancockEthereumClient();
-        HancockEthereumClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
+        HancockEthereumClient spy_var = PowerMockito.spy(auxHancockEthereumClient);
         PowerMockito.doReturn("mockUrl").when(spy_var).getResourceUrl("decode");
         PowerMockito.doReturn(requestMock).when(spy_var).getRequest(any(String.class), any(okhttp3.RequestBody.class));
         PowerMockito.doReturn(responseMock).when(spy_var).makeCall(any(okhttp3.Request.class));
@@ -392,22 +382,63 @@ public class HancockEthereumClientTest {
 
     @Test public void testEncodeProtocol() throws Exception {
 
-      okhttp3.Request requestMock= mock(okhttp3.Request.class);
-      okhttp3.Response responseMock= mock(okhttp3.Response.class);
-      HancockProtocolEncodeResponse responseModel= mock(HancockProtocolEncodeResponse.class);
-      HancockEthereumClient auxHancockEthereumClient = new HancockEthereumClient();
-      PowerMockito.whenNew(HancockProtocolEncodeRequest.class).withAnyArguments().thenReturn(mock(HancockProtocolEncodeRequest.class));
+        okhttp3.Request requestMock = mock(okhttp3.Request.class);
+        okhttp3.Response responseMock = mock(okhttp3.Response.class);
+        HancockProtocolEncodeResponse responseModel = mock(HancockProtocolEncodeResponse.class);
+        HancockEthereumClient auxHancockEthereumClient = new HancockEthereumClient();
+        PowerMockito.whenNew(HancockProtocolEncodeRequest.class).withAnyArguments().thenReturn(mock(HancockProtocolEncodeRequest.class));
 
-      HancockEthereumClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
-      PowerMockito.doReturn("mockUrl").when(spy_var).getResourceUrl("encode");
-      PowerMockito.doReturn(requestMock).when(spy_var).getRequest(any(String.class), any(okhttp3.RequestBody.class));
-      PowerMockito.doReturn(responseMock).when(spy_var).makeCall(any(okhttp3.Request.class));
-      PowerMockito.doReturn(responseModel).when(spy_var).checkStatus(any(okhttp3.Response.class), eq(HancockProtocolEncodeResponse.class)); 
+        HancockEthereumClient spy_var = PowerMockito.spy(auxHancockEthereumClient);
+        PowerMockito.doReturn("mockUrl").when(spy_var).getResourceUrl("encode");
+        PowerMockito.doReturn(requestMock).when(spy_var).getRequest(any(String.class), any(okhttp3.RequestBody.class));
+        PowerMockito.doReturn(responseMock).when(spy_var).makeCall(any(okhttp3.Request.class));
+        PowerMockito.doReturn(responseModel).when(spy_var).checkStatus(any(okhttp3.Response.class), eq(HancockProtocolEncodeResponse.class));
 
-      HancockProtocolEncodeResponse mockResult = spy_var.encodeProtocol(HancockProtocolAction.transfer, new BigInteger("10"), "0x1234", "dafsda", HancockProtocolDlt.ethereum);
-      
-      assertTrue("transaction encode successfully", mockResult instanceof HancockProtocolEncodeResponse);
-      System.out.println("transaction encode: ");
-      
+        HancockProtocolEncodeResponse mockResult = spy_var.encodeProtocol(HancockProtocolAction.transfer, new BigInteger("10"), "0x1234", "dafsda", HancockProtocolDlt.ethereum);
+
+        assertTrue("transaction encode successfully", mockResult instanceof HancockProtocolEncodeResponse);
+        System.out.println("transaction encode: ");
+
+    }
+
+    @Test public void testTokenRegister() throws Exception {
+
+        okhttp3.Request requestMock = mock(okhttp3.Request.class);
+        okhttp3.Response responseMock = mock(okhttp3.Response.class);
+        HancockTokenRegisterResponse responseModelMock = mock(HancockTokenRegisterResponse.class);
+        HancockTokenRegisterRequest requestModelMock = mock(HancockTokenRegisterRequest.class);
+
+        HancockEthereumClient auxHancockEthereumClient = new HancockEthereumClient();
+        HancockEthereumClient spyHancockClient = PowerMockito.spy(auxHancockEthereumClient);
+
+        PowerMockito
+                .whenNew(HancockTokenRegisterRequest.class)
+                .withAnyArguments()
+                .thenReturn(requestModelMock);
+
+        PowerMockito
+                .doReturn("mockUrl")
+                .when(spyHancockClient)
+                .getResourceUrl("tokenRegister");
+
+        PowerMockito
+                .doReturn(requestMock)
+                .when(spyHancockClient)
+                .getRequest(any(String.class), any(okhttp3.RequestBody.class));
+
+        PowerMockito
+                .doReturn(responseMock)
+                .when(spyHancockClient)
+                .makeCall(any(okhttp3.Request.class));
+
+        PowerMockito
+                .doReturn(responseModelMock)
+                .when(spyHancockClient)
+                .checkStatus(any(okhttp3.Response.class), eq(HancockTokenRegisterResponse.class));
+
+        HancockTokenRegisterResponse result = spyHancockClient.tokenRegister("alias", "0x1234");
+
+        assertTrue("tokenRegister called successfully", result instanceof HancockTokenRegisterResponse);
+
     }
 }
