@@ -146,6 +146,23 @@ public class HancockEthereumClientTest {
         assertEquals(balance, BigInteger.valueOf(0));
 
     }
+    
+    @Test public void testGetTokenBalance() throws Exception {
+
+        TokenBalanceResponse responseModel = mock(TokenBalanceResponse.class);
+        okhttp3.Response responseMock = mock(okhttp3.Response.class);
+        HancockEthereumClient auxHancockEthereumClient = new HancockEthereumClient();
+        HancockEthereumClient spy_var = PowerMockito.spy(auxHancockEthereumClient);
+        PowerMockito.doReturn(responseMock).when(spy_var).makeCall(any(okhttp3.Request.class));
+        PowerMockito.doReturn(responseModel).when(spy_var).checkStatus(any(okhttp3.Response.class), eq(TokenBalanceResponse.class));
+        when(responseModel.getBalance()).thenReturn(BigInteger.valueOf(0));
+  
+        TokenBalanceResponse balance = spy_var.getTokenBalance("0xmockQuery","0xmockAddress");
+        System.out.println("token balance  "+balance.getBalance().toString());
+        assertTrue("Wallet should have a Balance", balance instanceof TokenBalanceResponse);
+        assertEquals(balance.getBalance(), BigInteger.valueOf(0));
+
+    }
 
     @Test public void testSignTransaction() throws Exception {
 
