@@ -6,6 +6,7 @@ adapter:
   resources:
     balance: '/ethereum/balance/__ADDRESS__'
     transfer: '/ethereum/transfers'
+    tokenTransfer: '/ethereum/token/__ADDRESS_OR_ALIAS__/transfers'
     tokenRegister: '/ethereum/token/register'
     decode: '/protocol/decode'
     encode: '/protocol/encode'

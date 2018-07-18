@@ -145,7 +145,36 @@ public class HancockEthereumClient {
 
     public String transfer(EthereumTransferRequest request, TransactionConfig txConfig) throws Exception{
         EthereumRawTransaction rawtx = this.adaptTransfer(request);
+        return sendTransfer(txConfig, rawtx);
+    }
 
+    public String tokenTransfer(EthereumTokenTransferRequest request, TransactionConfig txConfig) throws Exception{
+        EthereumRawTransaction rawtx = this.adaptTransfer(request);
+        return sendTransfer(txConfig, rawtx);
+    }
+
+    public EthereumRawTransaction adaptTransfer(EthereumTransferRequest txRequest) throws Exception {
+        String url = getTransferUrl(txRequest);
+        Gson gson = new Gson();
+        String json = gson.toJson(txRequest);
+        RequestBody body = RequestBody.create(CONTENT_TYPE_JSON, json);
+        Request request = getRequest(url, body);
+
+        Response response = makeCall(request);
+        EthereumTransferResponse rawTx = checkStatus(response, EthereumTransferResponse.class);
+        return new EthereumRawTransaction(rawTx.getNonce(), rawTx.getGasPrice(), rawTx.getGas(), rawTx.getTo(), rawTx.getValue(), rawTx.getData());
+    }
+
+    protected String getTransferUrl(EthereumTransferRequest txRequest){
+        String url = getResourceUrl("transfer");
+
+        if(txRequest instanceof EthereumTokenTransferRequest)
+            url = getResourceUrl("tokenTransfer").replaceAll("__ADDRESS_OR_ALIAS__", ((EthereumTokenTransferRequest) txRequest).getAddressOrAlias());
+
+        return url;
+    }
+
+    protected String sendTransfer(TransactionConfig txConfig, EthereumRawTransaction rawtx) throws Exception {
         String requestUrl = "";
         String signedTransaction = "";
 
@@ -162,20 +191,6 @@ public class HancockEthereumClient {
         }
 
         return this.sendSignedTransaction(signedTransaction, txConfig.getSendLocally(), requestUrl);
-    }
-
-    public EthereumRawTransaction adaptTransfer(EthereumTransferRequest txRequest) throws Exception {
-
-        String url = getResourceUrl("transfer");
-
-        Gson gson = new Gson();
-        String json = gson.toJson(txRequest);
-        RequestBody body = RequestBody.create(CONTENT_TYPE_JSON, json);
-        Request request = getRequest(url, body);
-
-        Response response = makeCall(request);
-        EthereumTransferResponse rawTx = checkStatus(response, EthereumTransferResponse.class);
-        return new EthereumRawTransaction(rawTx.getNonce(), rawTx.getGasPrice(), rawTx.getGas(), rawTx.getTo(), rawTx.getValue(), rawTx.getData());
     }
 
     public HancockProtocolDecodeResponse decodeProtocol(String code) throws IOException {
