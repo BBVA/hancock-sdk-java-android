@@ -144,21 +144,17 @@ public class HancockEthereumClient {
     }
 
     public String transfer(EthereumTransferRequest request, TransactionConfig txConfig) throws Exception{
-        String url = getResourceUrl("transfer");
-        EthereumRawTransaction rawtx = this.adaptTransfer(request, url);
-
+        EthereumRawTransaction rawtx = this.adaptTransfer(request);
         return sendTransfer(txConfig, rawtx);
     }
 
     public String tokenTransfer(EthereumTokenTransferRequest request, TransactionConfig txConfig) throws Exception{
-        String url = getResourceUrl("tokenTransfer").replaceAll("__ADDRESS_OR_ALIAS__", request.getAddressOrAlias());
-        EthereumRawTransaction rawtx = this.adaptTransfer(request, url);
-
+        EthereumRawTransaction rawtx = this.adaptTransfer(request);
         return sendTransfer(txConfig, rawtx);
     }
 
-    public EthereumRawTransaction adaptTransfer(EthereumTransferRequest txRequest, String url) throws Exception {
-
+    public EthereumRawTransaction adaptTransfer(EthereumTransferRequest txRequest) throws Exception {
+        String url = getTransferUrl(txRequest);
         Gson gson = new Gson();
         String json = gson.toJson(txRequest);
         RequestBody body = RequestBody.create(CONTENT_TYPE_JSON, json);
@@ -167,6 +163,15 @@ public class HancockEthereumClient {
         Response response = makeCall(request);
         EthereumTransferResponse rawTx = checkStatus(response, EthereumTransferResponse.class);
         return new EthereumRawTransaction(rawTx.getNonce(), rawTx.getGasPrice(), rawTx.getGas(), rawTx.getTo(), rawTx.getValue(), rawTx.getData());
+    }
+
+    protected String getTransferUrl(EthereumTransferRequest txRequest){
+        String url = getResourceUrl("transfer");
+
+        if(txRequest instanceof EthereumTokenTransferRequest)
+            url = getResourceUrl("tokenTransfer").replaceAll("__ADDRESS_OR_ALIAS__", ((EthereumTokenTransferRequest) txRequest).getAddressOrAlias());
+
+        return url;
     }
 
     protected String sendTransfer(TransactionConfig txConfig, EthereumRawTransaction rawtx) throws Exception {

@@ -208,7 +208,7 @@ public class HancockEthereumClientTest {
        PowerMockito.when(responseModel.getData()).thenReturn(data);
        PowerMockito.whenNew(EthereumRawTransaction.class).withAnyArguments().thenReturn(mockedEthereumRawTransaction);
        
-       EthereumRawTransaction transfer = spy_var.adaptTransfer(mockedEthereumTransferRequest, "mockUrl");
+       EthereumRawTransaction transfer = spy_var.adaptTransfer(mockedEthereumTransferRequest);
        System.out.println("Adapter  "+ mockedEthereumRawTransaction.getNonce());
        assertTrue("Wallet should have a Balance", transfer instanceof EthereumRawTransaction);
        assertEquals(transfer.getGasPrice(), mockedEthereumRawTransaction.getGasPrice());
@@ -218,10 +218,31 @@ public class HancockEthereumClientTest {
        
      }
 
+    @Test public void testGetTransferUrl() throws Exception {
+
+        HancockEthereumClient auxHancockEthereumClient = new HancockEthereumClient();
+        HancockEthereumClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
+        PowerMockito.doReturn("urlTransfer").when(spy_var).getResourceUrl(eq("transfer"));
+
+        String mockResult = spy_var.getTransferUrl(mockedEthereumTransferRequest);
+
+        assertEquals(mockResult, "urlTransfer");
+        assertTrue("getTransferUrl correctly", mockResult instanceof String);
+
+
+        PowerMockito.doReturn("urlTokenTransfer").when(spy_var).getResourceUrl(eq("tokenTransfer"));
+
+        String mockResultToken = spy_var.getTransferUrl(mockedEthereumTokenTransferRequest);
+
+        assertEquals(mockResultToken, "urlTokenTransfer");
+        assertTrue("getTokenTransferUrl correctly", mockResultToken instanceof String);
+
+    }
+
      @Test public void testsendSignedTransaction() throws Exception {
 
        HancockEthereumClient auxHancockEthereumClient = new HancockEthereumClient();
-       HancockEthereumClient spy_var=PowerMockito.spy(auxHancockEthereumClient);       
+       HancockEthereumClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
        PowerMockito.doReturn("mockSignedTransaction").when(spy_var).sendSignedTransaction(any(String.class), any(boolean.class), any(String.class)); 
        
        String mockResult = spy_var.sendSignedTransaction("mockSignedTransaction", true);
@@ -293,7 +314,7 @@ public class HancockEthereumClientTest {
 
         PowerMockito.doReturn(mock(EthereumRawTransaction.class))
                 .when(spy_var)
-                .adaptTransfer(any(EthereumTransferRequest.class), any(String.class));
+                .adaptTransfer(any(EthereumTransferRequest.class));
 
         PowerMockito.doReturn("mockSignedTransaction")
                 .when(spy_var)
@@ -318,7 +339,7 @@ public class HancockEthereumClientTest {
 
         PowerMockito.doReturn(mock(EthereumRawTransaction.class))
                 .when(spy_var)
-                .adaptTransfer(any(EthereumTokenTransferRequest.class), any(String.class));
+                .adaptTransfer(any(EthereumTokenTransferRequest.class));
 
         PowerMockito.doReturn("mockSignedTransaction")
                 .when(spy_var)

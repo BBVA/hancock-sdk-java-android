@@ -212,7 +212,7 @@ public class HancockEthereumClientIntegrationTest {
       PowerMockito.when(responseModel.getTo()).thenReturn(to);
       PowerMockito.when(responseModel.getValue()).thenReturn(value);
       PowerMockito.when(responseModel.getData()).thenReturn(data);
-      EthereumRawTransaction rawtx = spy_var.adaptTransfer(transferRequest, "http://localhost");
+      EthereumRawTransaction rawtx = spy_var.adaptTransfer(transferRequest);
 
       assertTrue("transaction adapted successfully", rawtx instanceof EthereumRawTransaction);
 
