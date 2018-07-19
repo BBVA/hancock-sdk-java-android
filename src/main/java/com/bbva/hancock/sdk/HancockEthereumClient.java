@@ -75,17 +75,17 @@ public class HancockEthereumClient {
 
     }
 
-    public TokenBalanceResponse getTokenBalance(String query, String address) throws IOException {
+    public TokenBalanceResponse getTokenBalance(String addressOrAlias, String address) throws IOException {
 
-      String url = this.config.getAdapter().getHost() + ':' + this.config.getAdapter().getPort() + this.config.getAdapter().getBase() + this.config.getAdapter().getResources().get("tokenBalance").replaceAll("__ADDRESS__", address).replaceAll("__ADDRESS_OR_ALIAS__", query);
+      String url = this.config.getAdapter().getHost() + ':' + this.config.getAdapter().getPort() + this.config.getAdapter().getBase() + this.config.getAdapter().getResources().get("tokenBalance").replaceAll("__ADDRESS__", address).replaceAll("__ADDRESS_OR_ALIAS__", addressOrAlias);
 
       Request request = new Request.Builder()
               .url(url)
               .build();
 
       Response response = makeCall(request);
-      TokenBalanceResponse responseModel = checkStatus(response, TokenBalanceResponse.class);
-      return responseModel;
+      GetTokenBalanceResponse responseModel = checkStatus(response, GetTokenBalanceResponse.class);
+      return responseModel.getTokenBalance();
 
   }
     

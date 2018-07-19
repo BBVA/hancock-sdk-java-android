@@ -4,13 +4,13 @@ import java.math.BigInteger;
 
 public class TokenBalanceResponse {
     private  BigInteger balance;
-    private  BigInteger accuracy;
+    private  Integer decimals;
 
     public BigInteger getBalance() {
       return balance;
     }
     
-    public BigInteger getAccuracy() {
-      return accuracy;
+    public Integer getDecimals() {
+      return decimals;
     }
 }

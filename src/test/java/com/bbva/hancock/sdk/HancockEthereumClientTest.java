@@ -149,13 +149,15 @@ public class HancockEthereumClientTest {
     
     @Test public void testGetTokenBalance() throws Exception {
 
-        TokenBalanceResponse responseModel = mock(TokenBalanceResponse.class);
+        TokenBalanceResponse aux = mock(TokenBalanceResponse.class);
+        GetTokenBalanceResponse responseModel = mock(GetTokenBalanceResponse.class);
         okhttp3.Response responseMock = mock(okhttp3.Response.class);
         HancockEthereumClient auxHancockEthereumClient = new HancockEthereumClient();
         HancockEthereumClient spy_var = PowerMockito.spy(auxHancockEthereumClient);
         PowerMockito.doReturn(responseMock).when(spy_var).makeCall(any(okhttp3.Request.class));
-        PowerMockito.doReturn(responseModel).when(spy_var).checkStatus(any(okhttp3.Response.class), eq(TokenBalanceResponse.class));
-        when(responseModel.getBalance()).thenReturn(BigInteger.valueOf(0));
+        PowerMockito.doReturn(responseModel).when(spy_var).checkStatus(any(okhttp3.Response.class), eq(GetTokenBalanceResponse.class));
+        when(responseModel.getTokenBalance()).thenReturn(aux);
+        when(aux.getBalance()).thenReturn(BigInteger.valueOf(0)); 
   
         TokenBalanceResponse balance = spy_var.getTokenBalance("0xmockQuery","0xmockAddress");
         System.out.println("token balance  "+balance.getBalance().toString());

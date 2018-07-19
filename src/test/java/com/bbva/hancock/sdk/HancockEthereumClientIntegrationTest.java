@@ -394,12 +394,14 @@ public class HancockEthereumClientIntegrationTest {
       responseBuilder.message("Smart Contract - Success");
 
 
-      TokenBalanceResponse responseModel= PowerMockito.mock(TokenBalanceResponse.class);
+      TokenBalanceResponse aux = PowerMockito.mock(TokenBalanceResponse.class);
+      GetTokenBalanceResponse responseModel= PowerMockito.mock(GetTokenBalanceResponse.class);
       HancockEthereumClient auxHancockEthereumClient = new HancockEthereumClient();
       HancockEthereumClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
       PowerMockito.doReturn(responseBuilder.build()).when(spy_var).makeCall(any(okhttp3.Request.class));
-      PowerMockito.doReturn(responseModel).when(spy_var).checkStatus(any(okhttp3.Response.class), eq(TokenBalanceResponse.class));
-      PowerMockito.when(responseModel.getBalance()).thenReturn(BigInteger.valueOf(0));
+      PowerMockito.doReturn(responseModel).when(spy_var).checkStatus(any(okhttp3.Response.class), eq(GetTokenBalanceResponse.class));
+      PowerMockito.when(responseModel.getTokenBalance()).thenReturn(aux);
+      PowerMockito.when(aux.getBalance()).thenReturn(BigInteger.valueOf(0)); 
 
 
       TokenBalanceResponse balance = spy_var.getTokenBalance("0xde8e772f0350e992ddef81bf8f51d94a8ea9216d", "0xde8e772f0350e992ddef81bf8f51d94a8ea9216d");
