@@ -8,6 +8,8 @@ import com.bbva.hancock.sdk.config.HancockConfigAdapter;
 import com.bbva.hancock.sdk.config.HancockConfigNode;
 
 import com.bbva.hancock.sdk.models.*;
+import com.bbva.hancock.sdk.models.token.metadata.GetTokenMetadataResponse;
+import com.bbva.hancock.sdk.models.token.metadata.GetTokenMetadataResponseData;
 import com.google.gson.Gson;
 
 import okhttp3.Call;
@@ -374,41 +376,83 @@ public class HancockEthereumClientIntegrationTest {
         System.out.println("Balance =>" + balance.toString());
 
     }
-    
+
     @Test public void testGetTokenBalance() throws Exception {
 
-      HancockConfig config = new HancockConfig.Builder()
-              .withAdapter("http://localhost","", 3004)
-              .build();
-      //HancockEthereumClient classUnderTest = new HancockEthereumClient(config);
+        HancockConfig config = new HancockConfig.Builder()
+                .withAdapter("http://localhost","", 3004)
+                .build();
+        //HancockEthereumClient classUnderTest = new HancockEthereumClient(config);
 
-      Request.Builder requestBuilder = new Request.Builder();
-      requestBuilder.get();
-      requestBuilder.url("http://localhost");
+        Request.Builder requestBuilder = new Request.Builder();
+        requestBuilder.get();
+        requestBuilder.url("http://localhost");
 
-      Response.Builder responseBuilder = new Response.Builder();
-      responseBuilder.code(200);
-      responseBuilder.protocol(Protocol.HTTP_1_1);
-      responseBuilder.body(ResponseBody.create(MediaType.parse("application/json"), "{\"token\": \"10000\"\"balance\": \"10000\"}"));
-      responseBuilder.request(requestBuilder.build());
-      responseBuilder.message("Smart Contract - Success");
-
-
-      TokenBalanceResponse aux = PowerMockito.mock(TokenBalanceResponse.class);
-      GetTokenBalanceResponse responseModel= PowerMockito.mock(GetTokenBalanceResponse.class);
-      HancockEthereumClient auxHancockEthereumClient = new HancockEthereumClient();
-      HancockEthereumClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
-      PowerMockito.doReturn(responseBuilder.build()).when(spy_var).makeCall(any(okhttp3.Request.class));
-      PowerMockito.doReturn(responseModel).when(spy_var).checkStatus(any(okhttp3.Response.class), eq(GetTokenBalanceResponse.class));
-      PowerMockito.when(responseModel.getTokenBalance()).thenReturn(aux);
-      PowerMockito.when(aux.getBalance()).thenReturn(BigInteger.valueOf(0)); 
+        Response.Builder responseBuilder = new Response.Builder();
+        responseBuilder.code(200);
+        responseBuilder.protocol(Protocol.HTTP_1_1);
+        responseBuilder.body(ResponseBody.create(MediaType.parse("application/json"), "{\"token\": \"10000\"\"balance\": \"10000\"}"));
+        responseBuilder.request(requestBuilder.build());
+        responseBuilder.message("Smart Contract - Success");
 
 
-      TokenBalanceResponse balance = spy_var.getTokenBalance("0xde8e772f0350e992ddef81bf8f51d94a8ea9216d", "0xde8e772f0350e992ddef81bf8f51d94a8ea9216d");
+        TokenBalanceResponse aux = PowerMockito.mock(TokenBalanceResponse.class);
+        GetTokenBalanceResponse responseModel= PowerMockito.mock(GetTokenBalanceResponse.class);
+        HancockEthereumClient auxHancockEthereumClient = new HancockEthereumClient();
+        HancockEthereumClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
+        PowerMockito.doReturn(responseBuilder.build()).when(spy_var).makeCall(any(okhttp3.Request.class));
+        PowerMockito.doReturn(responseModel).when(spy_var).checkStatus(any(okhttp3.Response.class), eq(GetTokenBalanceResponse.class));
+        PowerMockito.when(responseModel.getTokenBalance()).thenReturn(aux);
+        PowerMockito.when(aux.getBalance()).thenReturn(BigInteger.valueOf(0));
 
-      assertTrue("transaction signed successfully", balance instanceof TokenBalanceResponse);
-      assertEquals(balance.getBalance(), BigInteger.valueOf(0));
-      System.out.println("Token Balance =>" + balance.getBalance().toString());
+
+        TokenBalanceResponse balance = spy_var.getTokenBalance("0xde8e772f0350e992ddef81bf8f51d94a8ea9216d", "0xde8e772f0350e992ddef81bf8f51d94a8ea9216d");
+
+        assertTrue("transaction signed successfully", balance instanceof TokenBalanceResponse);
+        assertEquals(balance.getBalance(), BigInteger.valueOf(0));
+        System.out.println("Token Balance =>" + balance.getBalance().toString());
+
+    }
+
+    @Test public void testGetTokenMetadata() throws Exception {
+
+        HancockConfig config = new HancockConfig.Builder()
+                .withAdapter("http://localhost","", 3004)
+                .build();
+
+        Request.Builder requestBuilder = new Request.Builder();
+        requestBuilder.get();
+        requestBuilder.url("http://localhost");
+
+        Response.Builder responseBuilder = new Response.Builder();
+        responseBuilder.code(200);
+        responseBuilder.protocol(Protocol.HTTP_1_1);
+        responseBuilder.body(ResponseBody.create(MediaType.parse("application/json"), "{\"name\": \"mockedName\",\"symbol\": \"mockedSymbol\",\"decimals\": 10 ,\"totalSupply\": 10000}"));
+        responseBuilder.request(requestBuilder.build());
+        responseBuilder.message("Smart Contract - Success");
+
+
+        GetTokenMetadataResponseData aux = PowerMockito.mock(GetTokenMetadataResponseData.class);
+        GetTokenMetadataResponse responseModel= PowerMockito.mock(GetTokenMetadataResponse.class);
+        HancockEthereumClient auxHancockEthereumClient = new HancockEthereumClient();
+        HancockEthereumClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
+        PowerMockito.doReturn(responseBuilder.build()).when(spy_var).makeCall(any(okhttp3.Request.class));
+        PowerMockito.doReturn(responseModel).when(spy_var).checkStatus(any(okhttp3.Response.class), eq(GetTokenMetadataResponse.class));
+        PowerMockito.when(responseModel.getTokenMetadata()).thenReturn(aux);
+        PowerMockito.when(aux.getName()).thenReturn("mockedName");
+        PowerMockito.when(aux.getSymbol()).thenReturn("mockedSymbol");
+        PowerMockito.when(aux.getDecimals()).thenReturn(10);
+        PowerMockito.when(aux.getTotalSupply()).thenReturn(10000);
+
+
+        GetTokenMetadataResponseData metadata = spy_var.getTokenMetadata("0xde8e772f0350e992ddef81bf8f51d94a8ea9216d");
+
+        assertTrue("metadata obtained successfully", metadata instanceof GetTokenMetadataResponseData);
+        assertEquals(metadata.getName(), "mockedName");
+        assertEquals(metadata.getSymbol(), "mockedSymbol");
+        assertEquals(metadata.getDecimals(), Integer.valueOf(10));
+        assertEquals(metadata.getTotalSupply(), Integer.valueOf(10000));
+
 
     }
 

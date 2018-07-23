@@ -8,6 +8,8 @@ import com.bbva.hancock.sdk.config.HancockConfigAdapter;
 import com.bbva.hancock.sdk.config.HancockConfigNode;
 
 import com.bbva.hancock.sdk.models.*;
+import com.bbva.hancock.sdk.models.token.metadata.GetTokenMetadataResponse;
+import com.bbva.hancock.sdk.models.token.metadata.GetTokenMetadataResponseData;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -146,7 +148,7 @@ public class HancockEthereumClientTest {
         assertEquals(balance, BigInteger.valueOf(0));
 
     }
-    
+
     @Test public void testGetTokenBalance() throws Exception {
 
         TokenBalanceResponse aux = mock(TokenBalanceResponse.class);
@@ -157,13 +159,46 @@ public class HancockEthereumClientTest {
         PowerMockito.doReturn(responseMock).when(spy_var).makeCall(any(okhttp3.Request.class));
         PowerMockito.doReturn(responseModel).when(spy_var).checkStatus(any(okhttp3.Response.class), eq(GetTokenBalanceResponse.class));
         when(responseModel.getTokenBalance()).thenReturn(aux);
-        when(aux.getBalance()).thenReturn(BigInteger.valueOf(0)); 
-  
+        when(aux.getBalance()).thenReturn(BigInteger.valueOf(0));
+
         TokenBalanceResponse balance = spy_var.getTokenBalance("0xmockQuery","0xmockAddress");
         System.out.println("token balance  "+balance.getBalance().toString());
         assertTrue("Wallet should have a Balance", balance instanceof TokenBalanceResponse);
         assertEquals(balance.getBalance(), BigInteger.valueOf(0));
 
+    }
+
+    @Test public void testGetTokenMetadata() throws Exception {
+
+        GetTokenMetadataResponseData aux = mock(GetTokenMetadataResponseData.class);
+        GetTokenMetadataResponse responseModel = mock(GetTokenMetadataResponse.class);
+
+        okhttp3.Response responseMock = mock(okhttp3.Response.class);
+
+        HancockEthereumClient auxHancockEthereumClient = new HancockEthereumClient();
+        HancockEthereumClient spy_var = PowerMockito.spy(auxHancockEthereumClient);
+
+        PowerMockito.doReturn(responseMock)
+                .when(spy_var)
+                .makeCall(any(okhttp3.Request.class));
+
+        PowerMockito.doReturn(responseModel)
+                .when(spy_var)
+                .checkStatus(any(okhttp3.Response.class), eq(GetTokenMetadataResponse.class));
+
+        when(responseModel.getTokenMetadata()).thenReturn(aux);
+        when(aux.getName()).thenReturn("mockedName");
+        when(aux.getSymbol()).thenReturn("mockedSymbol");
+        when(aux.getDecimals()).thenReturn(10);
+        when(aux.getTotalSupply()).thenReturn(10000);
+
+        GetTokenMetadataResponseData metadata = spy_var.getTokenMetadata("0xmockQuery");
+
+        assertTrue("Wallet should have a Balance", metadata instanceof GetTokenMetadataResponseData);
+        assertEquals(metadata.getName(), "mockedName");
+        assertEquals(metadata.getSymbol(), "mockedSymbol");
+        assertEquals(metadata.getDecimals(), Integer.valueOf(10));
+        assertEquals(metadata.getTotalSupply(), Integer.valueOf(10000));
     }
 
     @Test public void testSignTransaction() throws Exception {

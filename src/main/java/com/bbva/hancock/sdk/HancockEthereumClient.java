@@ -2,6 +2,8 @@ package com.bbva.hancock.sdk;
 
 import com.bbva.hancock.sdk.config.HancockConfig;
 import com.bbva.hancock.sdk.models.*;
+import com.bbva.hancock.sdk.models.token.metadata.GetTokenMetadataResponse;
+import com.bbva.hancock.sdk.models.token.metadata.GetTokenMetadataResponseData;
 import com.google.gson.Gson;
 import okhttp3.*;
 import org.web3j.crypto.*;
@@ -87,7 +89,21 @@ public class HancockEthereumClient {
       GetTokenBalanceResponse responseModel = checkStatus(response, GetTokenBalanceResponse.class);
       return responseModel.getTokenBalance();
 
-  }
+    }
+
+    public GetTokenMetadataResponseData getTokenMetadata(String addressOrAlias) throws IOException {
+
+        String url = this.config.getAdapter().getHost() + ':' + this.config.getAdapter().getPort() + this.config.getAdapter().getBase() + this.config.getAdapter().getResources().get("tokenMetadata").replaceAll("__ADDRESS_OR_ALIAS__", addressOrAlias);
+
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+
+        Response response = makeCall(request);
+        GetTokenMetadataResponse responseModel = checkStatus(response, GetTokenMetadataResponse.class);
+        return responseModel.getTokenMetadata();
+
+    }
     
     protected <T> T checkStatus(Response response, Class<T> tClass) throws IOException {
 
