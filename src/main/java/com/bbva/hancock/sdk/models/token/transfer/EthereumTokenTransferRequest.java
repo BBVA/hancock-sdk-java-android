@@ -1,4 +1,6 @@
-package com.bbva.hancock.sdk.models;
+package com.bbva.hancock.sdk.models.token.transfer;
+
+import com.bbva.hancock.sdk.models.EthereumTransferRequest;
 
 public class EthereumTokenTransferRequest extends EthereumTransferRequest {
 

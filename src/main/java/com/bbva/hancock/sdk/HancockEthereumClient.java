@@ -2,8 +2,10 @@ package com.bbva.hancock.sdk;
 
 import com.bbva.hancock.sdk.config.HancockConfig;
 import com.bbva.hancock.sdk.models.*;
+import com.bbva.hancock.sdk.models.token.allowance.EthereumTokenAllowanceRequest;
 import com.bbva.hancock.sdk.models.token.metadata.GetTokenMetadataResponse;
 import com.bbva.hancock.sdk.models.token.metadata.GetTokenMetadataResponseData;
+import com.bbva.hancock.sdk.models.token.transfer.EthereumTokenTransferRequest;
 import com.google.gson.Gson;
 import okhttp3.*;
 import org.web3j.crypto.*;
@@ -183,6 +185,11 @@ public class HancockEthereumClient {
         return sendTransfer(txConfig, rawtx);
     }
 
+    public String tokenAllowance(EthereumTokenAllowanceRequest request, TransactionConfig txConfig) throws Exception{
+        EthereumRawTransaction rawtx = this.adaptTransfer(request);
+        return sendTransfer(txConfig, rawtx);
+    }
+
     public EthereumRawTransaction adaptTransfer(EthereumTransferRequest txRequest) throws Exception {
         String url = getTransferUrl(txRequest);
         Gson gson = new Gson();
@@ -191,16 +198,19 @@ public class HancockEthereumClient {
         Request request = getRequest(url, body);
 
         Response response = makeCall(request);
-        EthereumTransferResponse rawTx = checkStatus(response, EthereumTransferResponse.class);
+        EthereumTransactionResponse rawTx = checkStatus(response, EthereumTransactionResponse.class);
         return new EthereumRawTransaction(rawTx.getNonce(), rawTx.getGasPrice(), rawTx.getGas(), rawTx.getTo(), rawTx.getValue(), rawTx.getData());
     }
 
     protected String getTransferUrl(EthereumTransferRequest txRequest){
-        String url = getResourceUrl("transfer");
-
-        if(txRequest instanceof EthereumTokenTransferRequest)
+        String url;
+        if(txRequest instanceof EthereumTokenTransferRequest){
             url = getResourceUrl("tokenTransfer").replaceAll("__ADDRESS_OR_ALIAS__", ((EthereumTokenTransferRequest) txRequest).getAddressOrAlias());
-
+        }else if(txRequest instanceof EthereumTokenAllowanceRequest){
+            url = getResourceUrl("tokenAllowance").replaceAll("__ADDRESS_OR_ALIAS__", ((EthereumTokenAllowanceRequest) txRequest).getAddressOrAlias());
+        }else{
+            url = getResourceUrl("transfer");
+        }
         return url;
     }
 
