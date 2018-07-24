@@ -9,6 +9,7 @@ adapter:
     tokenTransfer: '/ethereum/token/__ADDRESS_OR_ALIAS__/transfers'
     tokenBalance: '/ethereum/token/__ADDRESS_OR_ALIAS__/balance/__ADDRESS__'
     tokenMetadata: '/ethereum/token/__ADDRESS_OR_ALIAS__/metadata'
+    tokenAllowance: '/ethereum/token/__ADDRESS_OR_ALIAS__/allowance'
     tokenRegister: '/ethereum/token/register'
     decode: '/protocol/decode'
     encode: '/protocol/encode'

@@ -20,6 +20,10 @@ public class EthereumTransferRequest {
         this.value = value;
     }
 
+    public EthereumTransferRequest(String from) {
+        this.from = from;
+    }
+
     public String getFrom() {
         return from;
     }
