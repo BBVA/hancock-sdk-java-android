@@ -12,6 +12,7 @@ import com.bbva.hancock.sdk.models.token.allowance.EthereumTokenAllowanceRequest
 import com.bbva.hancock.sdk.models.token.metadata.GetTokenMetadataResponse;
 import com.bbva.hancock.sdk.models.token.metadata.GetTokenMetadataResponseData;
 import com.bbva.hancock.sdk.models.token.transfer.EthereumTokenTransferRequest;
+import com.bbva.hancock.sdk.models.token.approve.EthereumTokenApproveRequest;
 
 import okhttp3.Call;
 import okhttp3.OkHttpClient;
@@ -52,6 +53,7 @@ public class HancockEthereumClientTest {
     public static EthereumTransferRequest mockedEthereumTransferRequest;
     public static EthereumTokenTransferRequest mockedEthereumTokenTransferRequest;
     public static EthereumTokenAllowanceRequest mockedEthereumTokenAllowanceRequest;
+    public static EthereumTokenApproveRequest mockedEthereumTokenApproveRequest;
     public static HancockEthereumClient mockedHancockEthereumClient;
 
     @BeforeClass
@@ -80,6 +82,7 @@ public class HancockEthereumClientTest {
         mockedEthereumTransferRequest = new EthereumTransferRequest(from, to, value.toString(), data);
         mockedEthereumRawTransaction = new EthereumRawTransaction(nonce, gasPrice, gasLimit, to, value);
         mockedEthereumTokenAllowanceRequest = new EthereumTokenAllowanceRequest(from, tokenOwner, spender, addressOrAlias);
+        mockedEthereumTokenApproveRequest = new EthereumTokenApproveRequest(from, spender, data, addressOrAlias);
 
     }
 
@@ -425,6 +428,31 @@ public class HancockEthereumClientTest {
 
         assertEquals(mockResult, "mockSignedTransaction");
         assertTrue("transaction send and signed successfully", mockResult instanceof String);
+
+    }
+    
+    @Test public void testTokenApprove() throws Exception {
+
+      TransactionConfig txConfig = new TransactionConfig.Builder()
+              .withPrivateKey("0x6c47653f66ac9b733f3b8bf09ed3d300520b4d9c78711ba90162744f5906b1f8")
+              .build();
+
+      txConfig.setSendLocally(true);
+      HancockEthereumClient auxHancockEthereumClient = new HancockEthereumClient();
+      HancockEthereumClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
+
+      PowerMockito.doReturn(mock(EthereumRawTransaction.class))
+              .when(spy_var)
+              .adaptTransfer(any(EthereumTokenApproveRequest.class));
+
+      PowerMockito.doReturn("mockSignedTransaction")
+              .when(spy_var)
+              .sendTransfer(any(TransactionConfig.class), any(EthereumRawTransaction.class));
+
+      String mockResult = spy_var.tokenApprove(mockedEthereumTokenApproveRequest, txConfig);
+
+      assertEquals(mockResult, "mockSignedTransaction");
+      assertTrue("transaction send and signed successfully", mockResult instanceof String);
 
     }
 
