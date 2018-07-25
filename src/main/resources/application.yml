@@ -6,7 +6,8 @@ adapter:
   resources:
     balance: '/ethereum/balance/__ADDRESS__'
     transfer: '/ethereum/transfers'
-    tokenTransfer: '/ethereum/token/__ADDRESS_OR_ALIAS__/transfers'
+    tokenTransfer: '/ethereum/token/__ADDRESS_OR_ALIAS__/transfer'
+    tokenTransferFrom: '/ethereum/token/__ADDRESS_OR_ALIAS__/transferFrom'
     tokenBalance: '/ethereum/token/__ADDRESS_OR_ALIAS__/balance/__ADDRESS__'
     tokenMetadata: '/ethereum/token/__ADDRESS_OR_ALIAS__/metadata'
     tokenAllowance: '/ethereum/token/__ADDRESS_OR_ALIAS__/allowance'
