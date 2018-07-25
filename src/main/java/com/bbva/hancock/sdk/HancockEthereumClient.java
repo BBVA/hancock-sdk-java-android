@@ -7,6 +7,8 @@ import com.bbva.hancock.sdk.models.token.metadata.GetTokenMetadataResponse;
 import com.bbva.hancock.sdk.models.token.metadata.GetTokenMetadataResponseData;
 import com.bbva.hancock.sdk.models.token.transfer.EthereumTokenTransferRequest;
 import com.bbva.hancock.sdk.models.token.approve.EthereumTokenApproveRequest;
+import com.bbva.hancock.sdk.models.token.transferFrom.EthereumTokenTransferFromRequest;
+
 import com.google.gson.Gson;
 import okhttp3.*;
 import org.web3j.crypto.*;
@@ -186,6 +188,11 @@ public class HancockEthereumClient {
         return sendTransfer(txConfig, rawtx);
     }
 
+    public String tokenTransferFrom(EthereumTokenTransferFromRequest request, TransactionConfig txConfig) throws Exception{
+        EthereumRawTransaction rawtx = this.adaptTransfer(request);
+        return sendTransfer(txConfig, rawtx);
+    }
+
     public String tokenAllowance(EthereumTokenAllowanceRequest request, TransactionConfig txConfig) throws Exception{
         EthereumRawTransaction rawtx = this.adaptTransfer(request);
         return sendTransfer(txConfig, rawtx);
@@ -210,15 +217,26 @@ public class HancockEthereumClient {
 
     protected String getTransferUrl(EthereumTransferRequest txRequest){
         String url;
-        if(txRequest instanceof EthereumTokenTransferRequest){
+
+        if (txRequest instanceof EthereumTokenTransferFromRequest) {
+
+            url = getResourceUrl("tokenTransferFrom").replaceAll("__ADDRESS_OR_ALIAS__", ((EthereumTokenTransferFromRequest) txRequest).getAddressOrAlias());
+
+        } else if (txRequest instanceof EthereumTokenTransferRequest) {
+
             url = getResourceUrl("tokenTransfer").replaceAll("__ADDRESS_OR_ALIAS__", ((EthereumTokenTransferRequest) txRequest).getAddressOrAlias());
-        }else if(txRequest instanceof EthereumTokenAllowanceRequest){
+
+        } else if (txRequest instanceof EthereumTokenAllowanceRequest) {
+
             url = getResourceUrl("tokenAllowance").replaceAll("__ADDRESS_OR_ALIAS__", ((EthereumTokenAllowanceRequest) txRequest).getAddressOrAlias());
         }else if(txRequest instanceof EthereumTokenApproveRequest){
-          url = getResourceUrl("tokenApprove").replaceAll("__ADDRESS_OR_ALIAS__", ((EthereumTokenApproveRequest) txRequest).getAddressOrAlias());    
+          
+            url = getResourceUrl("tokenApprove").replaceAll("__ADDRESS_OR_ALIAS__", ((EthereumTokenApproveRequest) txRequest).getAddressOrAlias());    
         }else{
             url = getResourceUrl("transfer");
+
         }
+
         return url;
     }
 
