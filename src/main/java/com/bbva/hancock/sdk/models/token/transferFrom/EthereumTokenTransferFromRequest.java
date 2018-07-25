@@ -4,7 +4,6 @@ import com.bbva.hancock.sdk.models.token.transfer.EthereumTokenTransferRequest;
 
 public class EthereumTokenTransferFromRequest extends EthereumTokenTransferRequest {
 
-    private String addressOrAlias;
     private String sender;
 
     public EthereumTokenTransferFromRequest(String from, String sender, String to, String value, String addressOrAlias) {

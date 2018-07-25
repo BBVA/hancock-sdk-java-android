@@ -13,6 +13,7 @@ import com.bbva.hancock.sdk.models.token.metadata.GetTokenMetadataResponse;
 import com.bbva.hancock.sdk.models.token.metadata.GetTokenMetadataResponseData;
 import com.bbva.hancock.sdk.models.token.transfer.EthereumTokenTransferRequest;
 
+import com.bbva.hancock.sdk.models.token.transferFrom.EthereumTokenTransferFromRequest;
 import okhttp3.Call;
 import okhttp3.OkHttpClient;
 
@@ -51,6 +52,7 @@ public class HancockEthereumClientTest {
     public static EthereumRawTransaction mockedEthereumRawTransaction;
     public static EthereumTransferRequest mockedEthereumTransferRequest;
     public static EthereumTokenTransferRequest mockedEthereumTokenTransferRequest;
+    public static EthereumTokenTransferFromRequest mockedEthereumTokenTransferFromRequest;
     public static EthereumTokenAllowanceRequest mockedEthereumTokenAllowanceRequest;
     public static HancockEthereumClient mockedHancockEthereumClient;
 
@@ -70,6 +72,7 @@ public class HancockEthereumClientTest {
         BigInteger gasLimit = BigInteger.valueOf(222);
         BigInteger value = BigInteger.valueOf(333);
         String from = mockedWallet.getAddress();
+        String sender = mockedWallet.getAddress();
         String to = mockedWallet.getAddress();
         String data = "0xwhatever";
         String addressOrAlias = "mockedAlias";
@@ -77,6 +80,7 @@ public class HancockEthereumClientTest {
         String spender = "0xmockedSpender";
       
         mockedEthereumTokenTransferRequest = new EthereumTokenTransferRequest(from, to, value.toString(), addressOrAlias);
+        mockedEthereumTokenTransferFromRequest = new EthereumTokenTransferFromRequest(from, sender, to, value.toString(), addressOrAlias);
         mockedEthereumTransferRequest = new EthereumTransferRequest(from, to, value.toString(), data);
         mockedEthereumRawTransaction = new EthereumRawTransaction(nonce, gasPrice, gasLimit, to, value);
         mockedEthereumTokenAllowanceRequest = new EthereumTokenAllowanceRequest(from, tokenOwner, spender, addressOrAlias);
@@ -403,6 +407,31 @@ public class HancockEthereumClientTest {
 
     }
 
+    @Test public void testTokenTransferFrom() throws Exception {
+
+        TransactionConfig txConfig = new TransactionConfig.Builder()
+                .withSendLocally(true)
+                .withPrivateKey("0x6c47653f66ac9b733f3b8bf09ed3d300520b4d9c78711ba90162744f5906b1f8")
+                .build();
+
+        HancockEthereumClient auxHancockEthereumClient = new HancockEthereumClient();
+        HancockEthereumClient spyHancockClient = PowerMockito.spy(auxHancockEthereumClient);
+
+        PowerMockito.doReturn(mock(EthereumRawTransaction.class))
+                .when(spyHancockClient)
+                .adaptTransfer(any(EthereumTokenTransferFromRequest.class));
+
+        PowerMockito.doReturn("mockSignedTransaction")
+                .when(spyHancockClient)
+                .sendTransfer(any(TransactionConfig.class), any(EthereumRawTransaction.class));
+
+        String mockResult = spyHancockClient.tokenTransferFrom(mockedEthereumTokenTransferFromRequest, txConfig);
+
+        assertEquals(mockResult, "mockSignedTransaction");
+        assertTrue("transaction send and signed successfully", mockResult instanceof String);
+
+    }
+
     @Test public void testTokenAllowance() throws Exception {
 
         TransactionConfig txConfig = new TransactionConfig.Builder()
@@ -541,4 +570,5 @@ public class HancockEthereumClientTest {
         assertTrue("tokenRegister called successfully", result instanceof HancockTokenRegisterResponse);
 
     }
+
 }
