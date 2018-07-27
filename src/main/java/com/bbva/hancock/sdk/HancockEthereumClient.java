@@ -1,6 +1,7 @@
 package com.bbva.hancock.sdk;
 
 import com.bbva.hancock.sdk.config.HancockConfig;
+import com.bbva.hancock.sdk.excetion.HancockException;
 import com.bbva.hancock.sdk.models.*;
 import com.bbva.hancock.sdk.models.token.allowance.EthereumTokenAllowanceRequest;
 import com.bbva.hancock.sdk.models.token.metadata.GetTokenMetadataResponse;
@@ -11,6 +12,8 @@ import com.bbva.hancock.sdk.models.token.transferFrom.EthereumTokenTransferFromR
 
 import com.google.gson.Gson;
 import okhttp3.*;
+import okhttp3.internal.http2.ErrorCode;
+
 import org.web3j.crypto.*;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
@@ -46,7 +49,7 @@ public class HancockEthereumClient {
         this.config = config;
     }
 
-    public EthereumWallet generateWallet() throws Exception {
+    public EthereumWallet generateWallet() throws HancockException {
 
         try {
 
@@ -62,7 +65,7 @@ public class HancockEthereumClient {
         } catch (Exception error) {
 
             System.out.println("error: " + error.toString());
-            throw new Exception("Error generating wallet");
+            throw new HancockException(HancockException.ERROR_WALLET , HancockException.ERROR_WALLET, "SDKINT_001", error, ErrorCode.INTERNAL_ERROR);
 
         }
 
@@ -322,10 +325,18 @@ public class HancockEthereumClient {
                 .build();
     }
 
-    protected Response makeCall(Request request) throws IOException {
+    protected Response makeCall(Request request) throws HancockException {
+      
+      try{
         OkHttpClient httpClient = new OkHttpClient();
         Response response = httpClient.newCall(request).execute();
         return response;
+      } catch (Exception error) {
+
+        System.out.println("Hancock error: " + error.toString());
+        throw new HancockException(error.getMessage() , error.getLocalizedMessage(), "SDKINT_001", error, ErrorCode.CONNECT_ERROR);
+
+      }
     }
 
     // TODO: Support yaml load config on android
