@@ -119,15 +119,16 @@ public class HancockEthereumClient {
         try (ResponseBody responseBody = response.body()) {
 
             // HTTP status code between 200 and 299
-            if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
-
+            if (!response.isSuccessful()) 
+              throw new HancockException(response.message() , response.body().toString(), "SDKAPI_"+response.code(),ErrorCode.CONNECT_ERROR);
 
             Gson gson = new Gson();
             return gson.fromJson(responseBody.string(), tClass);
 
-        }catch (Exception error) {
+        }
+        catch (IOException error) {
 
-          System.out.println("Hancock error: " + error.toString());
+          System.out.println("Gson error: " + error.toString());
           throw new HancockException(error.getMessage() , error.getLocalizedMessage(), "SDKINT_002", error, ErrorCode.CONNECT_ERROR);
 
         }
@@ -339,7 +340,7 @@ public class HancockEthereumClient {
         return response;
       } catch (Exception error) {
 
-        System.out.println("Hancock error: " + error.toString());
+        System.out.println("Hancock error: " + error.toString() +" /// "+ error.getMessage()+" /// "+error.getLocalizedMessage());
         throw new HancockException(error.getMessage() , error.getLocalizedMessage(), "SDKINT_003", error, ErrorCode.CONNECT_ERROR);
 
       }
