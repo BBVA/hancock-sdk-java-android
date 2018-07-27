@@ -1,7 +1,8 @@
 package com.bbva.hancock.sdk;
 
 import com.bbva.hancock.sdk.config.HancockConfig;
-import com.bbva.hancock.sdk.excetion.HancockException;
+import com.bbva.hancock.sdk.exception.HancockErrorEnum;
+import com.bbva.hancock.sdk.exception.HancockException;
 import com.bbva.hancock.sdk.models.*;
 import com.bbva.hancock.sdk.models.token.allowance.EthereumTokenAllowanceRequest;
 import com.bbva.hancock.sdk.models.token.metadata.GetTokenMetadataResponse;
@@ -62,16 +63,16 @@ public class HancockEthereumClient {
 
             return new EthereumWallet(address, privateKey, publicKey);
 
-        } catch (Exception error) {
+        }catch (Exception error) {
 
-            System.out.println("error: " + error.toString());
-            throw new HancockException(HancockException.ERROR_WALLET , HancockException.ERROR_WALLET, "SDKINT_001", error, ErrorCode.INTERNAL_ERROR);
+            System.out.println("Wallet error: " + error.toString());
+            throw new HancockException(HancockErrorEnum.ERROR_WALLET.getSystem() , HancockErrorEnum.ERROR_WALLET.getSystem(), "SDKINT_001", error, ErrorCode.INTERNAL_ERROR);
 
         }
 
     }
 
-    public BigInteger getBalance(String address) throws IOException {
+    public BigInteger getBalance(String address) throws HancockException {
 
         String url = this.config.getAdapter().getHost() + ':' + this.config.getAdapter().getPort() + this.config.getAdapter().getBase() + this.config.getAdapter().getResources().get("balance").replaceAll("__ADDRESS__", address);
 
@@ -85,7 +86,7 @@ public class HancockEthereumClient {
 
     }
 
-    public TokenBalanceResponse getTokenBalance(String addressOrAlias, String address) throws IOException {
+    public TokenBalanceResponse getTokenBalance(String addressOrAlias, String address) throws HancockException {
 
       String url = this.config.getAdapter().getHost() + ':' + this.config.getAdapter().getPort() + this.config.getAdapter().getBase() + this.config.getAdapter().getResources().get("tokenBalance").replaceAll("__ADDRESS__", address).replaceAll("__ADDRESS_OR_ALIAS__", addressOrAlias);
 
@@ -99,7 +100,7 @@ public class HancockEthereumClient {
 
     }
 
-    public GetTokenMetadataResponseData getTokenMetadata(String addressOrAlias) throws IOException {
+    public GetTokenMetadataResponseData getTokenMetadata(String addressOrAlias) throws HancockException {
 
         String url = this.config.getAdapter().getHost() + ':' + this.config.getAdapter().getPort() + this.config.getAdapter().getBase() + this.config.getAdapter().getResources().get("tokenMetadata").replaceAll("__ADDRESS_OR_ALIAS__", addressOrAlias);
 
@@ -113,7 +114,7 @@ public class HancockEthereumClient {
 
     }
     
-    protected <T> T checkStatus(Response response, Class<T> tClass) throws IOException {
+    protected <T> T checkStatus(Response response, Class<T> tClass) throws HancockException {
 
         try (ResponseBody responseBody = response.body()) {
 
@@ -123,6 +124,11 @@ public class HancockEthereumClient {
 
             Gson gson = new Gson();
             return gson.fromJson(responseBody.string(), tClass);
+
+        }catch (Exception error) {
+
+          System.out.println("Hancock error: " + error.toString());
+          throw new HancockException(error.getMessage() , error.getLocalizedMessage(), "SDKINT_002", error, ErrorCode.CONNECT_ERROR);
 
         }
 
@@ -262,7 +268,7 @@ public class HancockEthereumClient {
         return this.sendSignedTransaction(signedTransaction, txConfig.getSendLocally(), requestUrl);
     }
 
-    public HancockProtocolDecodeResponse decodeProtocol(String code) throws IOException {
+    public HancockProtocolDecodeResponse decodeProtocol(String code) throws HancockException {
 
         String url = getResourceUrl("decode");
 
@@ -279,7 +285,7 @@ public class HancockEthereumClient {
         return responseModel;
     }
 
-    public HancockProtocolEncodeResponse encodeProtocol(HancockProtocolAction action, BigInteger value, String to, String data, HancockProtocolDlt dlt) throws IOException {
+    public HancockProtocolEncodeResponse encodeProtocol(HancockProtocolAction action, BigInteger value, String to, String data, HancockProtocolDlt dlt) throws HancockException {
 
         String url = getResourceUrl("encode");
 
@@ -334,7 +340,7 @@ public class HancockEthereumClient {
       } catch (Exception error) {
 
         System.out.println("Hancock error: " + error.toString());
-        throw new HancockException(error.getMessage() , error.getLocalizedMessage(), "SDKINT_001", error, ErrorCode.CONNECT_ERROR);
+        throw new HancockException(error.getMessage() , error.getLocalizedMessage(), "SDKINT_003", error, ErrorCode.CONNECT_ERROR);
 
       }
     }

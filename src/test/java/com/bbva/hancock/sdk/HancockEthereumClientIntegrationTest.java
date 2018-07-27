@@ -6,7 +6,7 @@ package com.bbva.hancock.sdk;
 import com.bbva.hancock.sdk.config.HancockConfig;
 import com.bbva.hancock.sdk.config.HancockConfigAdapter;
 import com.bbva.hancock.sdk.config.HancockConfigNode;
-
+import com.bbva.hancock.sdk.exception.HancockException;
 import com.bbva.hancock.sdk.models.*;
 import com.bbva.hancock.sdk.models.token.allowance.EthereumTokenAllowanceRequest;
 import com.bbva.hancock.sdk.models.token.metadata.GetTokenMetadataResponse;
@@ -27,19 +27,24 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.web3j.crypto.Credentials;
+import org.web3j.crypto.ECKeyPair;
+import org.web3j.crypto.Keys;
 import org.web3j.crypto.RawTransaction;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.security.InvalidAlgorithmParameterException;
+
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 
-@PowerMockIgnore("javax.net.ssl.*")
+@PowerMockIgnore({"javax.net.ssl.*"})
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({OkHttpClient.class,Call.class,okhttp3.Response.class,okhttp3.Request.class})
+@PrepareForTest({OkHttpClient.class,Call.class,okhttp3.Response.class,okhttp3.Request.class,org.web3j.crypto.Keys.class})
 public class HancockEthereumClientIntegrationTest {
 
 
@@ -94,6 +99,17 @@ public class HancockEthereumClientIntegrationTest {
         System.out.println("PrivateKey =>" + wallet.getPrivateKey());
 
     }
+    
+    @Test (expected = HancockException.class)
+    public void testGenerateWalletFail() throws Exception {
+      
+      PowerMockito.mockStatic(Keys.class);
+      PowerMockito.when(Keys.createEcKeyPair()).thenThrow(new InvalidAlgorithmParameterException());
+      
+      HancockEthereumClient classUnderTest = new HancockEthereumClient();
+      EthereumWallet wallet = classUnderTest.generateWallet();
+
+  }
 
     @Test public void testCreateRawTransaction() throws Exception {
 
@@ -634,7 +650,7 @@ public class HancockEthereumClientIntegrationTest {
 
     }
 
-    @Test (expected = IOException.class)
+    @Test (expected = HancockException.class)
     public void testGetBalanceFail() throws Exception {
 
         HancockConfig config = new HancockConfig.Builder()

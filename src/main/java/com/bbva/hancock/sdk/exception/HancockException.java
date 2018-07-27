@@ -1,4 +1,4 @@
-package com.bbva.hancock.sdk.excetion;
+package com.bbva.hancock.sdk.exception;
 
 import okhttp3.internal.http2.ErrorCode;
 
@@ -9,8 +9,6 @@ public class HancockException extends Exception {
   private final ErrorCode code;
   private final String internalCode;
   private final String extendedMessage;
-  
-  public final static String ERROR_WALLET = "Error generating wallet";
 
   public HancockException(ErrorCode code) {
     super();
