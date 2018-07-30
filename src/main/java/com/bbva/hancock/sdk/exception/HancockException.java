@@ -6,44 +6,44 @@ public class HancockException extends Exception {
 
   private static final long serialVersionUID = 1L;
   
-  private final ErrorCode code;
-  private final String internalCode;
+  private final ErrorCode error;
+  private final String internalError;
   private final String extendedMessage;
 
-  public HancockException(ErrorCode code) {
+  public HancockException(ErrorCode error) {
     super();
-    this.code = code;
-    this.internalCode = "";
+    this.error = error;
+    this.internalError = "";
     this.extendedMessage = "";
   }
 
-  public HancockException(String message, String extendedMessage, String internalCode, Throwable cause, ErrorCode code) {
+  public HancockException(String message, String extendedMessage, String internalError, Throwable cause, ErrorCode error) {
     super(message, cause);
-    this.code = code;
-    this.internalCode = internalCode;
+    this.error = error;
+    this.internalError = internalError;
     this.extendedMessage = extendedMessage;
   }
 
-  public HancockException(String message, String extendedMessage, String internalCode, ErrorCode code) {
+  public HancockException(String message, String extendedMessage, String internalError, ErrorCode error) {
     super(message);
-    this.code = code;
-    this.internalCode = internalCode;
+    this.error = error;
+    this.internalError = internalError;
     this.extendedMessage = extendedMessage;
   }
 
-  public HancockException(Throwable cause, String extendedMessage, String internalCode, ErrorCode code) {
+  public HancockException(Throwable cause, String extendedMessage, String internalError, ErrorCode error) {
     super(cause);
-    this.code = code;
-    this.internalCode = internalCode;
+    this.error = error;
+    this.internalError = internalError;
     this.extendedMessage = extendedMessage;
   }
   
-  public ErrorCode getCode() {
-    return this.code;
+  public ErrorCode getError() {
+    return this.error;
   }
   
-  public String getInternalCode() {
-    return this.internalCode;
+  public String getInternalError() {
+    return this.internalError;
   }
   
   public String getExtendedMessage() {

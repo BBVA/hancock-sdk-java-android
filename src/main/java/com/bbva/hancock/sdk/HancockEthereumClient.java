@@ -118,18 +118,20 @@ public class HancockEthereumClient {
 
         try (ResponseBody responseBody = response.body()) {
 
-            // HTTP status code between 200 and 299
-            if (!response.isSuccessful()) 
-              throw new HancockException(response.message() , response.body().toString(), "SDKAPI_"+response.code(),ErrorCode.CONNECT_ERROR);
-
             Gson gson = new Gson();
+            // HTTP status code between 200 and 299
+            if (!response.isSuccessful()){
+              HancockException resultAux = gson.fromJson(responseBody.string(), HancockException.class);      
+              System.out.println("Api error: " + resultAux.getInternalError());
+              throw new HancockException(resultAux.getMessage() , resultAux.getExtendedMessage(), "SDKAPI_"+resultAux.getInternalError(),resultAux.getError());
+            }              
             return gson.fromJson(responseBody.string(), tClass);
 
         }
         catch (IOException error) {
 
           System.out.println("Gson error: " + error.toString());
-          throw new HancockException(error.getMessage() , error.getLocalizedMessage(), "SDKINT_002", error, ErrorCode.CONNECT_ERROR);
+          throw new HancockException(HancockErrorEnum.ERROR_CHECK.getSystem() , HancockErrorEnum.ERROR_CHECK.getSystem(), "SDKINT_002", error, ErrorCode.CONNECT_ERROR);
 
         }
 
@@ -340,8 +342,8 @@ public class HancockEthereumClient {
         return response;
       } catch (Exception error) {
 
-        System.out.println("Hancock error: " + error.toString() +" /// "+ error.getMessage()+" /// "+error.getLocalizedMessage());
-        throw new HancockException(error.getMessage() , error.getLocalizedMessage(), "SDKINT_003", error, ErrorCode.CONNECT_ERROR);
+        System.out.println("Hancock error: " + error.toString());
+        throw new HancockException(HancockErrorEnum.ERROR_HTTP.getSystem() , HancockErrorEnum.ERROR_HTTP.getSystem(), "SDKINT_003", error, ErrorCode.CONNECT_ERROR);
 
       }
     }

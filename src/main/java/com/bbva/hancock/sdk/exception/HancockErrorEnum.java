@@ -3,8 +3,8 @@ package com.bbva.hancock.sdk.exception;
 public enum HancockErrorEnum {
 
     ERROR_WALLET("Error generating wallet"),
-    ERROR_CHECK("Error check call"),
-    ERROR_HTTP("Error response");
+    ERROR_CHECK("Error check Json"),
+    ERROR_HTTP("Error response make call");
     
     private HancockErrorEnum(String system) {
         this.system = system;

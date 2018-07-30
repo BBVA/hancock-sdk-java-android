@@ -663,9 +663,9 @@ public class HancockEthereumClientIntegrationTest {
         requestBuilder.url("http://localhost");
 
         Response.Builder responseBuilder = new Response.Builder();
-        responseBuilder.code(400);
+        responseBuilder.code(500);
         responseBuilder.protocol(Protocol.HTTP_1_1);
-        responseBuilder.body(ResponseBody.create(MediaType.parse("application/json"), "{\"balance\": \"10000\"}"));
+        responseBuilder.body(ResponseBody.create(MediaType.parse("application/json"), "{\"error\": \"500\",\"internalError\": \"HKWH50002\",\"message\": \"Can not fetch SignProvider\",\"extendedMessage\": \"MongoError: there are no users authenticated\"}"));
         responseBuilder.request(requestBuilder.build());
         responseBuilder.message("Smart Contract - Fail");
 
@@ -702,7 +702,7 @@ public class HancockEthereumClientIntegrationTest {
 //        assertTrue("transaction signed successfully", response.getTo().equals("0x1234"));
         assertTrue("transaction decode successfully", response instanceof HancockProtocolDecodeResponse);
 
-        System.out.println("Action Decode=>" + response.toString());
+        System.out.println("Action Decode");
 
     }
 
@@ -733,7 +733,7 @@ public class HancockEthereumClientIntegrationTest {
         //assertTrue("transaction signed successfully", response.getCode().equals("hancock://qr?code=%7B%22action%22%3A%22transfer%22%2C%22body%22%3A%7B%22value%22%3A%2210%22%2C%22data%22%3A%22dafsda%22%2C%22to%22%3A%220x1234%22%7D%2C%22dlt%22%3A%22ethereum%22%7D"));
         assertTrue("transaction encode successfully", response instanceof HancockProtocolEncodeResponse);
 
-        System.out.println("Action Encode=>" + response.toString());
+        System.out.println("Action Encode");
 
     }
 
