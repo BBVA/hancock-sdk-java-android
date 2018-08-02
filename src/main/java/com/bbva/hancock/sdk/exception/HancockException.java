@@ -17,21 +17,21 @@ public class HancockException extends Exception {
     this.extendedMessage = "";
   }
 
-  public HancockException(String message, String extendedMessage, String internalError, Throwable cause, ErrorCode error) {
+  public HancockException(ErrorCode error ,String internalError, String message, String extendedMessage, Throwable cause) {
     super(message, cause);
     this.error = error;
     this.internalError = internalError;
     this.extendedMessage = extendedMessage;
   }
 
-  public HancockException(String message, String extendedMessage, String internalError, ErrorCode error) {
+  public HancockException(ErrorCode error ,String internalError, String message, String extendedMessage) {
     super(message);
     this.error = error;
     this.internalError = internalError;
     this.extendedMessage = extendedMessage;
   }
 
-  public HancockException(Throwable cause, String extendedMessage, String internalError, ErrorCode error) {
+  public HancockException(ErrorCode error ,String internalError, String extendedMessage, Throwable cause) {
     super(cause);
     this.error = error;
     this.internalError = internalError;
