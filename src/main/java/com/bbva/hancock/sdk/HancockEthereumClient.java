@@ -1,6 +1,8 @@
 package com.bbva.hancock.sdk;
 
 import com.bbva.hancock.sdk.config.HancockConfig;
+import com.bbva.hancock.sdk.exception.HancockErrorEnum;
+import com.bbva.hancock.sdk.exception.HancockException;
 import com.bbva.hancock.sdk.models.*;
 import com.bbva.hancock.sdk.models.token.allowance.EthereumTokenAllowanceRequest;
 import com.bbva.hancock.sdk.models.token.metadata.GetTokenMetadataResponse;
@@ -8,9 +10,12 @@ import com.bbva.hancock.sdk.models.token.metadata.GetTokenMetadataResponseData;
 import com.bbva.hancock.sdk.models.token.transfer.EthereumTokenTransferRequest;
 import com.bbva.hancock.sdk.models.token.approve.EthereumTokenApproveRequest;
 import com.bbva.hancock.sdk.models.token.transferFrom.EthereumTokenTransferFromRequest;
+import com.bbva.hancock.sdk.exception.HancockTypeErrorEnum;
 
 import com.google.gson.Gson;
 import okhttp3.*;
+import okhttp3.internal.http2.ErrorCode;
+
 import org.web3j.crypto.*;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
@@ -46,7 +51,7 @@ public class HancockEthereumClient {
         this.config = config;
     }
 
-    public EthereumWallet generateWallet() throws Exception {
+    public EthereumWallet generateWallet() throws HancockException {
 
         try {
 
@@ -59,16 +64,16 @@ public class HancockEthereumClient {
 
             return new EthereumWallet(address, privateKey, publicKey);
 
-        } catch (Exception error) {
+        }catch (Exception error) {
 
-            System.out.println("error: " + error.toString());
-            throw new Exception("Error generating wallet");
+            System.out.println("Wallet error: " + error.toString());
+            throw new HancockException(HancockTypeErrorEnum.ERROR_INTERNAL, "50003", 500, HancockErrorEnum.ERROR_WALLET.getMessage() , HancockErrorEnum.ERROR_WALLET.getMessage(), error);
 
         }
 
     }
 
-    public BigInteger getBalance(String address) throws IOException {
+    public BigInteger getBalance(String address) throws HancockException {
 
         String url = this.config.getAdapter().getHost() + ':' + this.config.getAdapter().getPort() + this.config.getAdapter().getBase() + this.config.getAdapter().getResources().get("balance").replaceAll("__ADDRESS__", address);
 
@@ -82,7 +87,7 @@ public class HancockEthereumClient {
 
     }
 
-    public TokenBalanceResponse getTokenBalance(String addressOrAlias, String address) throws IOException {
+    public TokenBalanceResponse getTokenBalance(String addressOrAlias, String address) throws HancockException {
 
       String url = this.config.getAdapter().getHost() + ':' + this.config.getAdapter().getPort() + this.config.getAdapter().getBase() + this.config.getAdapter().getResources().get("tokenBalance").replaceAll("__ADDRESS__", address).replaceAll("__ADDRESS_OR_ALIAS__", addressOrAlias);
 
@@ -96,7 +101,7 @@ public class HancockEthereumClient {
 
     }
 
-    public GetTokenMetadataResponseData getTokenMetadata(String addressOrAlias) throws IOException {
+    public GetTokenMetadataResponseData getTokenMetadata(String addressOrAlias) throws HancockException {
 
         String url = this.config.getAdapter().getHost() + ':' + this.config.getAdapter().getPort() + this.config.getAdapter().getBase() + this.config.getAdapter().getResources().get("tokenMetadata").replaceAll("__ADDRESS_OR_ALIAS__", addressOrAlias);
 
@@ -110,16 +115,24 @@ public class HancockEthereumClient {
 
     }
     
-    protected <T> T checkStatus(Response response, Class<T> tClass) throws IOException {
+    protected <T> T checkStatus(Response response, Class<T> tClass) throws HancockException {
 
         try (ResponseBody responseBody = response.body()) {
 
-            // HTTP status code between 200 and 299
-            if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
-
-
             Gson gson = new Gson();
+            // HTTP status code between 200 and 299
+            if (!response.isSuccessful()){
+              HancockException resultAux = gson.fromJson(responseBody.string(), HancockException.class);      
+              System.out.println("Api error: " + resultAux.getInternalError());
+              throw new HancockException(HancockTypeErrorEnum.ERROR_API, resultAux.getInternalError(), resultAux.getError(), resultAux.getMessage() , resultAux.getExtendedMessage());
+            }              
             return gson.fromJson(responseBody.string(), tClass);
+
+        }
+        catch (IOException error) {
+
+          System.out.println("Gson error: " + error.toString());
+          throw new HancockException(HancockTypeErrorEnum.ERROR_INTERNAL, "50001", 500, HancockErrorEnum.ERROR_API.getMessage() , HancockErrorEnum.ERROR_API.getMessage(), error);
 
         }
 
@@ -259,7 +272,7 @@ public class HancockEthereumClient {
         return this.sendSignedTransaction(signedTransaction, txConfig.getSendLocally(), requestUrl);
     }
 
-    public HancockProtocolDecodeResponse decodeProtocol(String code) throws IOException {
+    public HancockProtocolDecodeResponse decodeProtocol(String code) throws HancockException {
 
         String url = getResourceUrl("decode");
 
@@ -276,7 +289,7 @@ public class HancockEthereumClient {
         return responseModel;
     }
 
-    public HancockProtocolEncodeResponse encodeProtocol(HancockProtocolAction action, BigInteger value, String to, String data, HancockProtocolDlt dlt) throws IOException {
+    public HancockProtocolEncodeResponse encodeProtocol(HancockProtocolAction action, BigInteger value, String to, String data, HancockProtocolDlt dlt) throws HancockException {
 
         String url = getResourceUrl("encode");
 
@@ -322,10 +335,18 @@ public class HancockEthereumClient {
                 .build();
     }
 
-    protected Response makeCall(Request request) throws IOException {
+    protected Response makeCall(Request request) throws HancockException {
+      
+      try{
         OkHttpClient httpClient = new OkHttpClient();
         Response response = httpClient.newCall(request).execute();
         return response;
+      } catch (Exception error) {
+
+        System.out.println("Hancock error: " + error.toString());
+        throw new HancockException(HancockTypeErrorEnum.ERROR_INTERNAL, "50001", 500, HancockErrorEnum.ERROR_API.getMessage() , HancockErrorEnum.ERROR_API.getMessage(), error);
+
+      }
     }
 
     // TODO: Support yaml load config on android

@@ -6,7 +6,7 @@ package com.bbva.hancock.sdk;
 import com.bbva.hancock.sdk.config.HancockConfig;
 import com.bbva.hancock.sdk.config.HancockConfigAdapter;
 import com.bbva.hancock.sdk.config.HancockConfigNode;
-
+import com.bbva.hancock.sdk.exception.HancockException;
 import com.bbva.hancock.sdk.models.*;
 import com.bbva.hancock.sdk.models.token.allowance.EthereumTokenAllowanceRequest;
 import com.bbva.hancock.sdk.models.token.metadata.GetTokenMetadataResponse;
@@ -27,19 +27,24 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.web3j.crypto.Credentials;
+import org.web3j.crypto.ECKeyPair;
+import org.web3j.crypto.Keys;
 import org.web3j.crypto.RawTransaction;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.security.InvalidAlgorithmParameterException;
+
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 
-@PowerMockIgnore("javax.net.ssl.*")
+@PowerMockIgnore({"javax.net.ssl.*"})
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({OkHttpClient.class,Call.class,okhttp3.Response.class,okhttp3.Request.class})
+@PrepareForTest({OkHttpClient.class,Call.class,okhttp3.Response.class,okhttp3.Request.class,org.web3j.crypto.Keys.class})
 public class HancockEthereumClientIntegrationTest {
 
 
@@ -94,6 +99,17 @@ public class HancockEthereumClientIntegrationTest {
         System.out.println("PrivateKey =>" + wallet.getPrivateKey());
 
     }
+    
+    @Test (expected = HancockException.class)
+    public void testGenerateWalletFail() throws Exception {
+      
+      PowerMockito.mockStatic(Keys.class);
+      PowerMockito.when(Keys.createEcKeyPair()).thenThrow(new InvalidAlgorithmParameterException());
+      
+      HancockEthereumClient classUnderTest = new HancockEthereumClient();
+      EthereumWallet wallet = classUnderTest.generateWallet();
+
+  }
 
     @Test public void testCreateRawTransaction() throws Exception {
 
@@ -544,13 +560,13 @@ public class HancockEthereumClientIntegrationTest {
         HancockEthereumClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
         PowerMockito.doReturn(responseBuilder.build()).when(spy_var).makeCall(any(okhttp3.Request.class));
         PowerMockito.doReturn(responseModel).when(spy_var).checkStatus(any(okhttp3.Response.class), eq(GetBalanceResponse.class));
-        PowerMockito.when(responseModel.getBalance()).thenReturn("0");
+        PowerMockito.when(responseModel.getBalance()).thenReturn("10000");
 
 
         BigInteger balance = spy_var.getBalance("0xde8e772f0350e992ddef81bf8f51d94a8ea9216d");
 
         assertTrue("transaction signed successfully", balance instanceof BigInteger);
-        assertEquals(balance, BigInteger.valueOf(0));
+        assertEquals(balance, BigInteger.valueOf(10000));
         System.out.println("Balance =>" + balance.toString());
 
     }
@@ -634,7 +650,7 @@ public class HancockEthereumClientIntegrationTest {
 
     }
 
-    @Test (expected = IOException.class)
+    @Test (expected = HancockException.class)
     public void testGetBalanceFail() throws Exception {
 
         HancockConfig config = new HancockConfig.Builder()
@@ -647,9 +663,9 @@ public class HancockEthereumClientIntegrationTest {
         requestBuilder.url("http://localhost");
 
         Response.Builder responseBuilder = new Response.Builder();
-        responseBuilder.code(400);
+        responseBuilder.code(500);
         responseBuilder.protocol(Protocol.HTTP_1_1);
-        responseBuilder.body(ResponseBody.create(MediaType.parse("application/json"), "{\"balance\": \"10000\"}"));
+        responseBuilder.body(ResponseBody.create(MediaType.parse("application/json"), "{\"error\": \"500\",\"internalError\": \"HKWH50002\",\"message\": \"Can not fetch SignProvider\",\"extendedMessage\": \"MongoError: there are no users authenticated\"}"));
         responseBuilder.request(requestBuilder.build());
         responseBuilder.message("Smart Contract - Fail");
 
@@ -686,7 +702,7 @@ public class HancockEthereumClientIntegrationTest {
 //        assertTrue("transaction signed successfully", response.getTo().equals("0x1234"));
         assertTrue("transaction decode successfully", response instanceof HancockProtocolDecodeResponse);
 
-        System.out.println("Action Decode=>" + response.toString());
+        System.out.println("Action Decode");
 
     }
 
@@ -717,7 +733,7 @@ public class HancockEthereumClientIntegrationTest {
         //assertTrue("transaction signed successfully", response.getCode().equals("hancock://qr?code=%7B%22action%22%3A%22transfer%22%2C%22body%22%3A%7B%22value%22%3A%2210%22%2C%22data%22%3A%22dafsda%22%2C%22to%22%3A%220x1234%22%7D%2C%22dlt%22%3A%22ethereum%22%7D"));
         assertTrue("transaction encode successfully", response instanceof HancockProtocolEncodeResponse);
 
-        System.out.println("Action Encode=>" + response.toString());
+        System.out.println("Action Encode");
 
     }
 
