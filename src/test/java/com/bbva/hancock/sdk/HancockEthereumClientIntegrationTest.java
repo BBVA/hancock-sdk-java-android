@@ -560,13 +560,13 @@ public class HancockEthereumClientIntegrationTest {
         HancockEthereumClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
         PowerMockito.doReturn(responseBuilder.build()).when(spy_var).makeCall(any(okhttp3.Request.class));
         PowerMockito.doReturn(responseModel).when(spy_var).checkStatus(any(okhttp3.Response.class), eq(GetBalanceResponse.class));
-        PowerMockito.when(responseModel.getBalance()).thenReturn("0");
+        PowerMockito.when(responseModel.getBalance()).thenReturn("10000");
 
 
         BigInteger balance = spy_var.getBalance("0xde8e772f0350e992ddef81bf8f51d94a8ea9216d");
 
         assertTrue("transaction signed successfully", balance instanceof BigInteger);
-        assertEquals(balance, BigInteger.valueOf(0));
+        assertEquals(balance, BigInteger.valueOf(10000));
         System.out.println("Balance =>" + balance.toString());
 
     }

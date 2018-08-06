@@ -10,6 +10,7 @@ import com.bbva.hancock.sdk.models.token.metadata.GetTokenMetadataResponseData;
 import com.bbva.hancock.sdk.models.token.transfer.EthereumTokenTransferRequest;
 import com.bbva.hancock.sdk.models.token.approve.EthereumTokenApproveRequest;
 import com.bbva.hancock.sdk.models.token.transferFrom.EthereumTokenTransferFromRequest;
+import com.bbva.hancock.sdk.exception.HancockTypeErrorEnum;
 
 import com.google.gson.Gson;
 import okhttp3.*;
@@ -34,9 +35,6 @@ import java.util.concurrent.ExecutionException;
 public class HancockEthereumClient {
 
     private static final MediaType CONTENT_TYPE_JSON = MediaType.parse("application/json; charset=utf-8");
-    
-    private static final String ERROR_KIND_INT = "SDKINT_";
-    private static final String ERROR_KIND_API = "SDKAPI_";
 
     private HancockConfig config;
 
@@ -69,7 +67,7 @@ public class HancockEthereumClient {
         }catch (Exception error) {
 
             System.out.println("Wallet error: " + error.toString());
-            throw new HancockException(ErrorCode.INTERNAL_ERROR, ERROR_KIND_INT+"001", HancockErrorEnum.ERROR_WALLET.getMessage() , HancockErrorEnum.ERROR_WALLET.getMessage(), error);
+            throw new HancockException(HancockTypeErrorEnum.ERROR_INTERNAL, "00001", 500, HancockErrorEnum.ERROR_WALLET.getMessage() , HancockErrorEnum.ERROR_WALLET.getMessage(), error);
 
         }
 
@@ -126,7 +124,7 @@ public class HancockEthereumClient {
             if (!response.isSuccessful()){
               HancockException resultAux = gson.fromJson(responseBody.string(), HancockException.class);      
               System.out.println("Api error: " + resultAux.getInternalError());
-              throw new HancockException(resultAux.getError(), ERROR_KIND_API+resultAux.getInternalError(), resultAux.getMessage() , resultAux.getExtendedMessage());
+              throw new HancockException(HancockTypeErrorEnum.ERROR_API, resultAux.getInternalError(), resultAux.getError(), resultAux.getMessage() , resultAux.getExtendedMessage());
             }              
             return gson.fromJson(responseBody.string(), tClass);
 
@@ -134,7 +132,7 @@ public class HancockEthereumClient {
         catch (IOException error) {
 
           System.out.println("Gson error: " + error.toString());
-          throw new HancockException(ErrorCode.CONNECT_ERROR , ERROR_KIND_INT+"002", HancockErrorEnum.ERROR_CHECK.getMessage() , HancockErrorEnum.ERROR_CHECK.getMessage(), error);
+          throw new HancockException(HancockTypeErrorEnum.ERROR_INTERNAL, "00002", 500, HancockErrorEnum.ERROR_CHECK.getMessage() , HancockErrorEnum.ERROR_CHECK.getMessage(), error);
 
         }
 
@@ -346,7 +344,7 @@ public class HancockEthereumClient {
       } catch (Exception error) {
 
         System.out.println("Hancock error: " + error.toString());
-        throw new HancockException(ErrorCode.CONNECT_ERROR, ERROR_KIND_INT+"003", HancockErrorEnum.ERROR_HTTP.getMessage() , HancockErrorEnum.ERROR_HTTP.getMessage(), error);
+        throw new HancockException(HancockTypeErrorEnum.ERROR_INTERNAL, "00003", 500, HancockErrorEnum.ERROR_HTTP.getMessage() , HancockErrorEnum.ERROR_HTTP.getMessage(), error);
 
       }
     }

@@ -1,44 +1,39 @@
 package com.bbva.hancock.sdk.exception;
 
-import okhttp3.internal.http2.ErrorCode;
+import com.bbva.hancock.sdk.exception.HancockTypeErrorEnum;
 
 public class HancockException extends Exception {
 
   private static final long serialVersionUID = 1L;
   
-  private final ErrorCode error;
+  private final Integer error;
   private final String internalError;
   private final String extendedMessage;
+  public HancockTypeErrorEnum typeError;
 
-  public HancockException(ErrorCode error) {
-    super();
-    this.error = error;
-    this.internalError = "";
-    this.extendedMessage = "";
-  }
-
-  public HancockException(ErrorCode error ,String internalError, String message, String extendedMessage, Throwable cause) {
+  public HancockException(HancockTypeErrorEnum typeError ,String internalError, Integer error, String message, String extendedMessage, Throwable cause) {
     super(message, cause);
     this.error = error;
-    this.internalError = internalError;
+    if(typeError.equals(HancockTypeErrorEnum.ERROR_API)){
+      this.internalError = typeError.getType()+internalError;
+    }else{
+      this.internalError = typeError.getType()+internalError;
+    }
     this.extendedMessage = extendedMessage;
   }
 
-  public HancockException(ErrorCode error ,String internalError, String message, String extendedMessage) {
+  public HancockException(HancockTypeErrorEnum typeError ,String internalError, Integer error, String message, String extendedMessage) {
     super(message);
     this.error = error;
-    this.internalError = internalError;
-    this.extendedMessage = extendedMessage;
-  }
-
-  public HancockException(ErrorCode error ,String internalError, String extendedMessage, Throwable cause) {
-    super(cause);
-    this.error = error;
-    this.internalError = internalError;
+    if(typeError.equals(HancockTypeErrorEnum.ERROR_API)){
+      this.internalError = typeError.getType()+internalError;
+    }else{
+      this.internalError = typeError.getType()+internalError;
+    }
     this.extendedMessage = extendedMessage;
   }
   
-  public ErrorCode getError() {
+  public Integer getError() {
     return this.error;
   }
   
