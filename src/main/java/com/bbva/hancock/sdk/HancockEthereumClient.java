@@ -132,7 +132,7 @@ public class HancockEthereumClient {
         catch (IOException error) {
 
           System.out.println("Gson error: " + error.toString());
-          throw new HancockException(HancockTypeErrorEnum.ERROR_INTERNAL, "50001", 500, HancockErrorEnum.ERROR_CHECK.getMessage() , HancockErrorEnum.ERROR_CHECK.getMessage(), error);
+          throw new HancockException(HancockTypeErrorEnum.ERROR_INTERNAL, "50001", 500, HancockErrorEnum.ERROR_API.getMessage() , HancockErrorEnum.ERROR_API.getMessage(), error);
 
         }
 
@@ -344,7 +344,7 @@ public class HancockEthereumClient {
       } catch (Exception error) {
 
         System.out.println("Hancock error: " + error.toString());
-        throw new HancockException(HancockTypeErrorEnum.ERROR_INTERNAL, "50002", 500, HancockErrorEnum.ERROR_HTTP.getMessage() , HancockErrorEnum.ERROR_HTTP.getMessage(), error);
+        throw new HancockException(HancockTypeErrorEnum.ERROR_INTERNAL, "50001", 500, HancockErrorEnum.ERROR_API.getMessage() , HancockErrorEnum.ERROR_API.getMessage(), error);
 
       }
     }

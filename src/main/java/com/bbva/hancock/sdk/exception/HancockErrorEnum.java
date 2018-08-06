@@ -3,8 +3,7 @@ package com.bbva.hancock.sdk.exception;
 public enum HancockErrorEnum {
 
     ERROR_WALLET("Error generating wallet"),
-    ERROR_CHECK("Error check Json"),
-    ERROR_HTTP("Error calling Api");
+    ERROR_API("Error calling Api");
     
     private String message;
     
