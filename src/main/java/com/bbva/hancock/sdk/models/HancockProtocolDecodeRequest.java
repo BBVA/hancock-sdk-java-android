@@ -1,9 +1,13 @@
 package com.bbva.hancock.sdk.models;
 
+import com.bbva.hancock.sdk.exception.HancockException;
+import com.bbva.hancock.sdk.models.util.ValidateParameters;
+
 public class HancockProtocolDecodeRequest {
     private String code;
 
-    public HancockProtocolDecodeRequest(String code){
+    public HancockProtocolDecodeRequest(String code) throws HancockException{
+        ValidateParameters.checkForContent(code);
         this.code = code;
     }
     

@@ -1,32 +1,54 @@
 package com.bbva.hancock.sdk;
 
-import com.bbva.hancock.sdk.config.HancockConfig;
-import com.bbva.hancock.sdk.exception.HancockErrorEnum;
-import com.bbva.hancock.sdk.exception.HancockException;
-import com.bbva.hancock.sdk.models.*;
-import com.bbva.hancock.sdk.models.token.allowance.EthereumTokenAllowanceRequest;
-import com.bbva.hancock.sdk.models.token.metadata.GetTokenMetadataResponse;
-import com.bbva.hancock.sdk.models.token.metadata.GetTokenMetadataResponseData;
-import com.bbva.hancock.sdk.models.token.transfer.EthereumTokenTransferRequest;
-import com.bbva.hancock.sdk.models.token.approve.EthereumTokenApproveRequest;
-import com.bbva.hancock.sdk.models.token.transferFrom.EthereumTokenTransferFromRequest;
-import com.bbva.hancock.sdk.exception.HancockTypeErrorEnum;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.util.concurrent.ExecutionException;
 
-import com.google.gson.Gson;
-import okhttp3.*;
-import okhttp3.internal.http2.ErrorCode;
+import javax.annotation.Nonnull;
 
-import org.web3j.crypto.*;
 import org.web3j.crypto.Credentials;
+import org.web3j.crypto.ECKeyPair;
+import org.web3j.crypto.Keys;
+import org.web3j.crypto.TransactionEncoder;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.Web3jFactory;
 import org.web3j.protocol.core.methods.response.EthSendTransaction;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.utils.Numeric;
 
-import java.io.IOException;
-import java.math.BigInteger;
-import java.util.concurrent.ExecutionException;
+import com.bbva.hancock.sdk.config.HancockConfig;
+import com.bbva.hancock.sdk.exception.HancockErrorEnum;
+import com.bbva.hancock.sdk.exception.HancockException;
+import com.bbva.hancock.sdk.exception.HancockTypeErrorEnum;
+import com.bbva.hancock.sdk.models.EthereumTransactionResponse;
+import com.bbva.hancock.sdk.models.EthereumTransferRequest;
+import com.bbva.hancock.sdk.models.GetBalanceResponse;
+import com.bbva.hancock.sdk.models.GetTokenBalanceResponse;
+import com.bbva.hancock.sdk.models.HancockProtocolAction;
+import com.bbva.hancock.sdk.models.HancockProtocolDecodeRequest;
+import com.bbva.hancock.sdk.models.HancockProtocolDecodeResponse;
+import com.bbva.hancock.sdk.models.HancockProtocolDlt;
+import com.bbva.hancock.sdk.models.HancockProtocolEncodeRequest;
+import com.bbva.hancock.sdk.models.HancockProtocolEncodeResponse;
+import com.bbva.hancock.sdk.models.HancockTokenRegisterRequest;
+import com.bbva.hancock.sdk.models.HancockTokenRegisterResponse;
+import com.bbva.hancock.sdk.models.TokenBalanceResponse;
+import com.bbva.hancock.sdk.models.TransactionConfig;
+import com.bbva.hancock.sdk.models.token.allowance.EthereumTokenAllowanceRequest;
+import com.bbva.hancock.sdk.models.token.approve.EthereumTokenApproveRequest;
+import com.bbva.hancock.sdk.models.token.metadata.GetTokenMetadataResponse;
+import com.bbva.hancock.sdk.models.token.metadata.GetTokenMetadataResponseData;
+import com.bbva.hancock.sdk.models.token.transfer.EthereumTokenTransferRequest;
+import com.bbva.hancock.sdk.models.token.transferFrom.EthereumTokenTransferFromRequest;
+import com.bbva.hancock.sdk.models.util.ValidateParameters;
+import com.google.gson.Gson;
+
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 
 /*
@@ -37,7 +59,7 @@ public class HancockEthereumClient {
     private static final MediaType CONTENT_TYPE_JSON = MediaType.parse("application/json; charset=utf-8");
 
     private HancockConfig config;
-
+    
     public HancockEthereumClient() {
 
         this.config = new HancockConfig
@@ -75,6 +97,7 @@ public class HancockEthereumClient {
 
     public BigInteger getBalance(String address) throws HancockException {
 
+        ValidateParameters.checkForContent(address);
         String url = this.config.getAdapter().getHost() + ':' + this.config.getAdapter().getPort() + this.config.getAdapter().getBase() + this.config.getAdapter().getResources().get("balance").replaceAll("__ADDRESS__", address);
 
         Request request = new Request.Builder()
@@ -89,20 +112,23 @@ public class HancockEthereumClient {
 
     public TokenBalanceResponse getTokenBalance(String addressOrAlias, String address) throws HancockException {
 
-      String url = this.config.getAdapter().getHost() + ':' + this.config.getAdapter().getPort() + this.config.getAdapter().getBase() + this.config.getAdapter().getResources().get("tokenBalance").replaceAll("__ADDRESS__", address).replaceAll("__ADDRESS_OR_ALIAS__", addressOrAlias);
-
-      Request request = new Request.Builder()
-              .url(url)
-              .build();
-
-      Response response = makeCall(request);
-      GetTokenBalanceResponse responseModel = checkStatus(response, GetTokenBalanceResponse.class);
-      return responseModel.getTokenBalance();
+        ValidateParameters.checkForContent(address);
+        ValidateParameters.checkForContent(addressOrAlias);
+        String url = this.config.getAdapter().getHost() + ':' + this.config.getAdapter().getPort() + this.config.getAdapter().getBase() + this.config.getAdapter().getResources().get("tokenBalance").replaceAll("__ADDRESS__", address).replaceAll("__ADDRESS_OR_ALIAS__", addressOrAlias);
+  
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+  
+        Response response = makeCall(request);
+        GetTokenBalanceResponse responseModel = checkStatus(response, GetTokenBalanceResponse.class);
+        return responseModel.getTokenBalance();
 
     }
 
     public GetTokenMetadataResponseData getTokenMetadata(String addressOrAlias) throws HancockException {
 
+        ValidateParameters.checkForContent(addressOrAlias);
         String url = this.config.getAdapter().getHost() + ':' + this.config.getAdapter().getPort() + this.config.getAdapter().getBase() + this.config.getAdapter().getResources().get("tokenMetadata").replaceAll("__ADDRESS_OR_ALIAS__", addressOrAlias);
 
         Request request = new Request.Builder()
@@ -149,6 +175,7 @@ public class HancockEthereumClient {
 
     public String sendSignedTransaction(String signedTransaction, boolean locally) throws Exception {
 
+        ValidateParameters.checkForContent(signedTransaction);
         String url = locally
                 ? (this.config.getNode().getHost() + ':' + this.config.getNode().getPort())
                 : ("");
