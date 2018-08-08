@@ -4,7 +4,8 @@ public enum HancockErrorEnum {
 
     ERROR_WALLET("Error generating wallet"),
     ERROR_API("Error calling Api"),
-    ERROR_PARAMETER("Empty parameters");
+    ERROR_PARAMETER("Empty parameters"),
+    ERROR_FORMAT("Addres or alias invalid format");
     
     private String message;
     
