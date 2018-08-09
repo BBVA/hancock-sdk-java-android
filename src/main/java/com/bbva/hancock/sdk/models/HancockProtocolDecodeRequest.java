@@ -7,7 +7,7 @@ public class HancockProtocolDecodeRequest {
     private String code;
 
     public HancockProtocolDecodeRequest(String code) throws HancockException{
-        ValidateParameters.checkForContent(code);
+        ValidateParameters.checkForContent(code, "code");
         this.code = code;
     }
     

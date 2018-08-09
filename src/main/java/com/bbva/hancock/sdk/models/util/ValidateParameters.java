@@ -5,10 +5,11 @@ import com.bbva.hancock.sdk.exception.*;
 public final class ValidateParameters{
   
   private static String addressPattern = "^(0x)?([a-fA-F0-9]{40})";
+  private static String message = " is empty";
   
-  public static void checkForContent(String param) throws HancockException{
+  public static void checkForContent(String param, String var) throws HancockException{
     if( param.isEmpty() || param == null ){
-      throw new HancockException(HancockTypeErrorEnum.ERROR_INTERNAL, "50005", 500, HancockErrorEnum.ERROR_PARAMETER.getMessage() , HancockErrorEnum.ERROR_PARAMETER.getMessage());
+      throw new HancockException(HancockTypeErrorEnum.ERROR_INTERNAL, "50005", 500, HancockErrorEnum.ERROR_PARAMETER.getMessage() , var + message);
     }
   } 
 

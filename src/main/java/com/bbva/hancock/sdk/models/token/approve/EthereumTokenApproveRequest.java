@@ -11,9 +11,9 @@ public class EthereumTokenApproveRequest extends EthereumTransferRequest{
 
     public EthereumTokenApproveRequest(String from, String spender, String value, String addressOrAlias) throws HancockException {
         super(from,value);
-        ValidateParameters.checkForContent(spender);
+        ValidateParameters.checkForContent(spender, "spender");
         this.spender = spender;
-        ValidateParameters.checkForContent(addressOrAlias);
+        ValidateParameters.checkForContent(addressOrAlias, "address or alias");
         this.addressOrAlias = addressOrAlias;
     }
 

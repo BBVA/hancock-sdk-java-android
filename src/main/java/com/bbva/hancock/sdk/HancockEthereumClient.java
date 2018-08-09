@@ -99,7 +99,8 @@ public class HancockEthereumClient {
     
     public BigInteger getBalance( String address) throws HancockException {
 
-        ValidateParameters.checkForContent(address);
+        ValidateParameters.checkForContent(address, "address");
+        ValidateParameters.checkAddress(address);
         String url = this.config.getAdapter().getHost() + ':' + this.config.getAdapter().getPort() + this.config.getAdapter().getBase() + this.config.getAdapter().getResources().get("balance").replaceAll("__ADDRESS__", address);
 
         Request request = new Request.Builder()
@@ -114,8 +115,9 @@ public class HancockEthereumClient {
 
     public TokenBalanceResponse getTokenBalance( String addressOrAlias, String address) throws HancockException {
 
-        ValidateParameters.checkForContent(address);
-        ValidateParameters.checkForContent(addressOrAlias);
+        ValidateParameters.checkForContent(address, "address");
+        ValidateParameters.checkAddress(address);
+        ValidateParameters.checkForContent(addressOrAlias, "address or alias");
         String url = this.config.getAdapter().getHost() + ':' + this.config.getAdapter().getPort() + this.config.getAdapter().getBase() + this.config.getAdapter().getResources().get("tokenBalance").replaceAll("__ADDRESS__", address).replaceAll("__ADDRESS_OR_ALIAS__", addressOrAlias);
   
         Request request = new Request.Builder()
@@ -130,7 +132,7 @@ public class HancockEthereumClient {
 
     public GetTokenMetadataResponseData getTokenMetadata( String addressOrAlias) throws HancockException {
 
-        ValidateParameters.checkForContent(addressOrAlias);
+        ValidateParameters.checkForContent(addressOrAlias, "address or alias");
         String url = this.config.getAdapter().getHost() + ':' + this.config.getAdapter().getPort() + this.config.getAdapter().getBase() + this.config.getAdapter().getResources().get("tokenMetadata").replaceAll("__ADDRESS_OR_ALIAS__", addressOrAlias);
 
         Request request = new Request.Builder()
@@ -177,7 +179,7 @@ public class HancockEthereumClient {
 
     public String sendSignedTransaction( String signedTransaction, boolean locally) throws Exception {
 
-        ValidateParameters.checkForContent(signedTransaction);
+        ValidateParameters.checkForContent(signedTransaction, "tx");
         String url = locally
                 ? (this.config.getNode().getHost() + ':' + this.config.getNode().getPort())
                 : ("");

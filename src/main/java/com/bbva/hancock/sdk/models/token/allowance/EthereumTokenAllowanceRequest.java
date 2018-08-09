@@ -12,11 +12,11 @@ public class EthereumTokenAllowanceRequest extends EthereumTransferRequest{
 
     public EthereumTokenAllowanceRequest(String from, String tokenOwner, String spender, String addressOrAlias) throws HancockException {
         super(from);
-        ValidateParameters.checkForContent(tokenOwner);
+        ValidateParameters.checkForContent(tokenOwner, "tokenOwner");
         this.tokenOwner = tokenOwner;
-        ValidateParameters.checkForContent(spender);
+        ValidateParameters.checkForContent(spender, "spender");
         this.spender = spender;
-        ValidateParameters.checkForContent(addressOrAlias);
+        ValidateParameters.checkForContent(addressOrAlias, "address or alias");
         this.addressOrAlias = addressOrAlias;
     }
 

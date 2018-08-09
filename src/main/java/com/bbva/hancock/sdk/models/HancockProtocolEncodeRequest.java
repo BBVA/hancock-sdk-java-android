@@ -11,9 +11,9 @@ class HancockProtocolEncodeBody{
     public String to;
 
     public HancockProtocolEncodeBody(BigInteger value, String to, String data) throws HancockException {
-        ValidateParameters.checkForContent(value.toString());
+        ValidateParameters.checkForContent(value.toString(), "value");
         this.value = value.toString();
-        ValidateParameters.checkForContent(to);
+        ValidateParameters.checkForContent(to, "to");
         this.to = to;
         this.data = data;
     }

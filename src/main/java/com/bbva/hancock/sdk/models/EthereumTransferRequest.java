@@ -11,34 +11,34 @@ public class EthereumTransferRequest {
     private String data;
 
     public EthereumTransferRequest(String from, String to, String value, String data) throws HancockException {
-        ValidateParameters.checkForContent(from);
+        ValidateParameters.checkForContent(from, "from");
         this.from = from;
-        ValidateParameters.checkForContent(to);
+        ValidateParameters.checkForContent(to, "to");
         this.to = to;
-        ValidateParameters.checkForContent(value);
+        ValidateParameters.checkForContent(value, "value");
         this.value = value;
         this.data = data;
         
     }
 
     public EthereumTransferRequest(String from, String to, String value) throws HancockException {
-        ValidateParameters.checkForContent(from);
+        ValidateParameters.checkForContent(from, "from");
         this.from = from;
-        ValidateParameters.checkForContent(to);
+        ValidateParameters.checkForContent(to, "to");
         this.to = to;
-        ValidateParameters.checkForContent(value);
+        ValidateParameters.checkForContent(value, "value");
         this.value = value;
     }
 
     public EthereumTransferRequest(String from, String value) throws HancockException {
-        ValidateParameters.checkForContent(from);
+        ValidateParameters.checkForContent(from, "from");
         this.from = from;
-        ValidateParameters.checkForContent(value);
+        ValidateParameters.checkForContent(value, "value");
         this.value = value;
     }
     
     public EthereumTransferRequest(String from) throws HancockException {
-        ValidateParameters.checkForContent(from);
+        ValidateParameters.checkForContent(from, "from");
         this.from = from;
     }
     

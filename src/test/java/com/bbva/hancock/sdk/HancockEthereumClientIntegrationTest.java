@@ -788,7 +788,7 @@ public class HancockEthereumClientIntegrationTest {
 
         PowerMockito.doReturn(response).when(spyHancockClient).makeCall(any(okhttp3.Request.class));
 
-        HancockTokenRegisterResponse result = spyHancockClient.tokenRegister("mocked-alias", "0x1234");
+        HancockTokenRegisterResponse result = spyHancockClient.tokenRegister("mocked-alias", "0xde8e772f0350e992ddef81bf8f51d94a8ea9216d");
 
         assertTrue("token registered successfully", result instanceof HancockTokenRegisterResponse);
 

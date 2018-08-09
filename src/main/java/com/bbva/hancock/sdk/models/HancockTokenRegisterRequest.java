@@ -8,9 +8,10 @@ public class HancockTokenRegisterRequest {
     public String address;
 
     public HancockTokenRegisterRequest(String alias, String address) throws HancockException {
-        ValidateParameters.checkForContent(alias);
+        ValidateParameters.checkForContent(alias, "allias");
         this.alias = alias;
-        ValidateParameters.checkForContent(address);
+        ValidateParameters.checkForContent(address, "address");
+        ValidateParameters.checkAddress(address);
         this.address = address;
     }
 }

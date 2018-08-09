@@ -10,7 +10,7 @@ public class EthereumTokenTransferFromRequest extends EthereumTokenTransferReque
 
     public EthereumTokenTransferFromRequest(String from, String sender, String to, String value, String addressOrAlias) throws HancockException {
         super(from, to, value, addressOrAlias);
-        ValidateParameters.checkForContent(sender);
+        ValidateParameters.checkForContent(sender, "sender");
         this.sender = sender;
     }
 
