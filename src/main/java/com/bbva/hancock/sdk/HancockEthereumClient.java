@@ -40,6 +40,8 @@ import com.bbva.hancock.sdk.models.token.metadata.GetTokenMetadataResponse;
 import com.bbva.hancock.sdk.models.token.metadata.GetTokenMetadataResponseData;
 import com.bbva.hancock.sdk.models.token.transfer.EthereumTokenTransferRequest;
 import com.bbva.hancock.sdk.models.token.transferFrom.EthereumTokenTransferFromRequest;
+import com.bbva.hancock.sdk.models.util.CheckAddress;
+import com.bbva.hancock.sdk.models.util.CheckEmpty;
 import com.bbva.hancock.sdk.models.util.ValidateParameters;
 import com.google.gson.Gson;
 
@@ -94,8 +96,8 @@ public class HancockEthereumClient {
         }
 
     }
-
-    public BigInteger getBalance(String address) throws HancockException {
+    
+    public BigInteger getBalance( String address) throws HancockException {
 
         ValidateParameters.checkForContent(address);
         String url = this.config.getAdapter().getHost() + ':' + this.config.getAdapter().getPort() + this.config.getAdapter().getBase() + this.config.getAdapter().getResources().get("balance").replaceAll("__ADDRESS__", address);
@@ -110,7 +112,7 @@ public class HancockEthereumClient {
 
     }
 
-    public TokenBalanceResponse getTokenBalance(String addressOrAlias, String address) throws HancockException {
+    public TokenBalanceResponse getTokenBalance( String addressOrAlias, String address) throws HancockException {
 
         ValidateParameters.checkForContent(address);
         ValidateParameters.checkForContent(addressOrAlias);
@@ -126,7 +128,7 @@ public class HancockEthereumClient {
 
     }
 
-    public GetTokenMetadataResponseData getTokenMetadata(String addressOrAlias) throws HancockException {
+    public GetTokenMetadataResponseData getTokenMetadata( String addressOrAlias) throws HancockException {
 
         ValidateParameters.checkForContent(addressOrAlias);
         String url = this.config.getAdapter().getHost() + ':' + this.config.getAdapter().getPort() + this.config.getAdapter().getBase() + this.config.getAdapter().getResources().get("tokenMetadata").replaceAll("__ADDRESS_OR_ALIAS__", addressOrAlias);
@@ -173,7 +175,7 @@ public class HancockEthereumClient {
         return hexValue;
     }
 
-    public String sendSignedTransaction(String signedTransaction, boolean locally) throws Exception {
+    public String sendSignedTransaction( String signedTransaction, boolean locally) throws Exception {
 
         ValidateParameters.checkForContent(signedTransaction);
         String url = locally
