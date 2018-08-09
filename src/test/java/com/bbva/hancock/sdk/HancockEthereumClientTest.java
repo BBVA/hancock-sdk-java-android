@@ -146,7 +146,7 @@ public class HancockEthereumClientTest {
         PowerMockito.doReturn(responseModel).when(spy_var).checkStatus(any(okhttp3.Response.class), eq(GetBalanceResponse.class));
         when(responseModel.getBalance()).thenReturn("0");
 
-        BigInteger balance = spy_var.getBalance("0xmockAddress");
+        BigInteger balance = spy_var.getBalance("0xde8e772f0350e992ddef81bf8f51d94a8ea9216d");
         System.out.println("balance  "+balance);
         assertTrue("Wallet should have a Balance", balance instanceof BigInteger);
         assertEquals(balance, BigInteger.valueOf(0));
@@ -165,7 +165,7 @@ public class HancockEthereumClientTest {
         when(responseModel.getTokenBalance()).thenReturn(aux);
         when(aux.getBalance()).thenReturn(BigInteger.valueOf(0));
 
-        TokenBalanceResponse balance = spy_var.getTokenBalance("0xmockQuery","0xmockAddress");
+        TokenBalanceResponse balance = spy_var.getTokenBalance("0xmockQuery","0xde8e772f0350e992ddef81bf8f51d94a8ea9216d");
         System.out.println("token balance  "+balance.getBalance().toString());
         assertTrue("Wallet should have a Balance", balance instanceof TokenBalanceResponse);
         assertEquals(balance.getBalance(), BigInteger.valueOf(0));
@@ -593,7 +593,7 @@ public class HancockEthereumClientTest {
                 .when(spyHancockClient)
                 .checkStatus(any(okhttp3.Response.class), eq(HancockTokenRegisterResponse.class));
 
-        HancockTokenRegisterResponse result = spyHancockClient.tokenRegister("alias", "0x1234");
+        HancockTokenRegisterResponse result = spyHancockClient.tokenRegister("alias", "0xde8e772f0350e992ddef81bf8f51d94a8ea9216d");
 
         assertTrue("tokenRegister called successfully", result instanceof HancockTokenRegisterResponse);
 

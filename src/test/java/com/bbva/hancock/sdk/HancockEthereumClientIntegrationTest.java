@@ -690,22 +690,6 @@ public class HancockEthereumClientIntegrationTest {
         //System.out.println(balance);
 
     }
-    
-//    @Test 
-//    public void testGetBalanceParameterFail() throws Exception {
-//
-//        HancockEthereumClient auxHancockEthereumClient = new HancockEthereumClient();
-//        HancockEthereumClient client = PowerMockito.spy(auxHancockEthereumClient);
-//       
-//        client.getBalance("");
-//        
-//        HancockProtocolDecodeRequest request = new HancockProtocolDecodeRequest("");
-//        
-//        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-//        Validator validator = factory.getValidator();
-//        Set<ConstraintViolation<HancockProtocolDecodeRequest>> constraintViolations = validator.validate(request);
-//        
-//    }
 
     @Test public void testDecodeProtocol() throws Exception {
 

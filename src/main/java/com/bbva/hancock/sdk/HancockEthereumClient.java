@@ -40,8 +40,6 @@ import com.bbva.hancock.sdk.models.token.metadata.GetTokenMetadataResponse;
 import com.bbva.hancock.sdk.models.token.metadata.GetTokenMetadataResponseData;
 import com.bbva.hancock.sdk.models.token.transfer.EthereumTokenTransferRequest;
 import com.bbva.hancock.sdk.models.token.transferFrom.EthereumTokenTransferFromRequest;
-import com.bbva.hancock.sdk.models.util.CheckAddress;
-import com.bbva.hancock.sdk.models.util.CheckEmpty;
 import com.bbva.hancock.sdk.models.util.ValidateParameters;
 import com.google.gson.Gson;
 
