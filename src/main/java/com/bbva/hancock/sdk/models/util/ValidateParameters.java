@@ -19,6 +19,25 @@ public final class ValidateParameters{
     }
   } 
   
+  public static String normalizeAlias (String alias) {
+    return alias.replaceAll("([a-z])([A-Z])", "$1-$2").toLowerCase();
+  };
+  
+  public static String normalizeAddress (String address) {
+    address = address.toLowerCase();
+    if( address.indexOf("0x") != 0){
+      return "0x" + address;
+    }
+    return address;
+  };
+  
+  public static String normalizeAdressOrAlias (String addressOrAlias) {
+    if(addressOrAlias.matches(addressPattern) ){
+      return normalizeAddress(addressOrAlias);
+    }
+    return normalizeAlias(addressOrAlias);
+  };
+  
   // PRIVATE 
   private ValidateParameters(){
     //empty - prevent construction

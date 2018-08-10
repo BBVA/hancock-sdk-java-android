@@ -116,6 +116,7 @@ public class HancockEthereumClient {
         ValidateParameters.checkForContent(address, "address");
         ValidateParameters.checkAddress(address);
         ValidateParameters.checkForContent(addressOrAlias, "address or alias");
+        addressOrAlias = ValidateParameters.normalizeAdressOrAlias(addressOrAlias);
         String url = this.config.getAdapter().getHost() + ':' + this.config.getAdapter().getPort() + this.config.getAdapter().getBase() + this.config.getAdapter().getResources().get("tokenBalance").replaceAll("__ADDRESS__", address).replaceAll("__ADDRESS_OR_ALIAS__", addressOrAlias);
   
         Request request = new Request.Builder()
@@ -131,6 +132,7 @@ public class HancockEthereumClient {
     public GetTokenMetadataResponseData getTokenMetadata( String addressOrAlias) throws HancockException {
 
         ValidateParameters.checkForContent(addressOrAlias, "address or alias");
+        addressOrAlias = ValidateParameters.normalizeAdressOrAlias(addressOrAlias);
         String url = this.config.getAdapter().getHost() + ':' + this.config.getAdapter().getPort() + this.config.getAdapter().getBase() + this.config.getAdapter().getResources().get("tokenMetadata").replaceAll("__ADDRESS_OR_ALIAS__", addressOrAlias);
 
         Request request = new Request.Builder()
@@ -337,6 +339,10 @@ public class HancockEthereumClient {
 
     public HancockTokenRegisterResponse tokenRegister(String alias, String address) throws Exception {
 
+        ValidateParameters.checkForContent(address, "address");
+        ValidateParameters.checkAddress(address);
+        ValidateParameters.checkForContent(alias, "alias");
+        alias = ValidateParameters.normalizeAlias(alias);
         String url = getResourceUrl("tokenRegister");
 
         Gson gson = new Gson();
