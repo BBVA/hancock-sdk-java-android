@@ -15,7 +15,7 @@ public final class ValidateParameters{
 
   public static void checkAddress(String address) throws HancockException{
     if( !address.matches(addressPattern) ){
-      throw new HancockException(HancockTypeErrorEnum.ERROR_INTERNAL, "50005", 500, HancockErrorEnum.ERROR_FORMAT.getMessage() , HancockErrorEnum.ERROR_FORMAT.getMessage());
+      throw new HancockException(HancockTypeErrorEnum.ERROR_INTERNAL, "50006", 500, HancockErrorEnum.ERROR_FORMAT.getMessage() , HancockErrorEnum.ERROR_FORMAT.getMessage());
     }
   } 
   
