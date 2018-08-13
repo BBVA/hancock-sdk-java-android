@@ -6,7 +6,7 @@ package com.bbva.hancock.sdk;
 import com.bbva.hancock.sdk.config.HancockConfig;
 import com.bbva.hancock.sdk.config.HancockConfigAdapter;
 import com.bbva.hancock.sdk.config.HancockConfigNode;
-
+import com.bbva.hancock.sdk.exception.HancockException;
 import com.bbva.hancock.sdk.models.*;
 import com.bbva.hancock.sdk.models.token.allowance.EthereumTokenAllowanceRequest;
 import com.bbva.hancock.sdk.models.token.metadata.GetTokenMetadataResponse;
@@ -15,6 +15,8 @@ import com.bbva.hancock.sdk.models.token.transfer.EthereumTokenTransferRequest;
 import com.bbva.hancock.sdk.models.token.approve.EthereumTokenApproveRequest;
 
 import com.bbva.hancock.sdk.models.token.transferFrom.EthereumTokenTransferFromRequest;
+import com.bbva.hancock.sdk.models.util.ValidateParameters;
+
 import okhttp3.Call;
 import okhttp3.OkHttpClient;
 
@@ -45,7 +47,7 @@ import static org.mockito.Mockito.*;
 //@RunWith(MockitoJUnitRunner.class)
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({TransactionEncoder.class,Credentials.class,EthereumRawTransaction.class,RawTransaction.class,Web3jFactory.class,
-        OkHttpClient.class,Call.class,okhttp3.Response.class,okhttp3.Request.class,GetBalanceResponse.class,HancockConfig.class})
+        OkHttpClient.class,Call.class,okhttp3.Response.class,okhttp3.Request.class,GetBalanceResponse.class,HancockConfig.class, ValidateParameters.class})
 public class HancockEthereumClientTest {
 
     public static HancockConfig mockedConfig;
@@ -136,8 +138,12 @@ public class HancockEthereumClientTest {
 
     }
 
-    @Test public void testGetBalance() throws Exception {
-
+    @Test public void testGetBalance() throws Exception {      
+          
+        PowerMockito.mockStatic(ValidateParameters.class);
+        PowerMockito.doNothing().when(ValidateParameters.class, "checkAddress", any(String.class));
+        PowerMockito.doNothing().when(ValidateParameters.class, "checkForContent", any(String.class) , any(String.class));
+        
         GetBalanceResponse responseModel = mock(GetBalanceResponse.class);
         okhttp3.Response responseMock = mock(okhttp3.Response.class);
         HancockEthereumClient auxHancockEthereumClient = new HancockEthereumClient();
@@ -146,7 +152,7 @@ public class HancockEthereumClientTest {
         PowerMockito.doReturn(responseModel).when(spy_var).checkStatus(any(okhttp3.Response.class), eq(GetBalanceResponse.class));
         when(responseModel.getBalance()).thenReturn("0");
 
-        BigInteger balance = spy_var.getBalance("0xde8e772f0350e992ddef81bf8f51d94a8ea9216d");
+        BigInteger balance = spy_var.getBalance("mockAddress");
         System.out.println("balance  "+balance);
         assertTrue("Wallet should have a Balance", balance instanceof BigInteger);
         assertEquals(balance, BigInteger.valueOf(0));
@@ -154,6 +160,11 @@ public class HancockEthereumClientTest {
     }
 
     @Test public void testGetTokenBalance() throws Exception {
+
+        PowerMockito.mockStatic(ValidateParameters.class);
+        PowerMockito.doNothing().when(ValidateParameters.class, "checkAddress", any(String.class));
+        PowerMockito.doNothing().when(ValidateParameters.class, "checkForContent", any(String.class) , any(String.class));
+        PowerMockito.doReturn("mockAlias").when(ValidateParameters.class, "normalizeAdressOrAlias", any(String.class));
 
         TokenBalanceResponse aux = mock(TokenBalanceResponse.class);
         GetTokenBalanceResponse responseModel = mock(GetTokenBalanceResponse.class);
@@ -165,7 +176,7 @@ public class HancockEthereumClientTest {
         when(responseModel.getTokenBalance()).thenReturn(aux);
         when(aux.getBalance()).thenReturn(BigInteger.valueOf(0));
 
-        TokenBalanceResponse balance = spy_var.getTokenBalance("0xmockQuery","0xde8e772f0350e992ddef81bf8f51d94a8ea9216d");
+        TokenBalanceResponse balance = spy_var.getTokenBalance("mockAlias","mockAddress");
         System.out.println("token balance  "+balance.getBalance().toString());
         assertTrue("Wallet should have a Balance", balance instanceof TokenBalanceResponse);
         assertEquals(balance.getBalance(), BigInteger.valueOf(0));
@@ -173,6 +184,10 @@ public class HancockEthereumClientTest {
     }
 
     @Test public void testGetTokenMetadata() throws Exception {
+
+        PowerMockito.mockStatic(ValidateParameters.class);
+        PowerMockito.doNothing().when(ValidateParameters.class, "checkForContent", any(String.class) , any(String.class));
+        PowerMockito.doReturn("mockAlias").when(ValidateParameters.class, "normalizeAdressOrAlias", any(String.class));
 
         GetTokenMetadataResponseData aux = mock(GetTokenMetadataResponseData.class);
         GetTokenMetadataResponse responseModel = mock(GetTokenMetadataResponse.class);
@@ -196,7 +211,7 @@ public class HancockEthereumClientTest {
         when(aux.getDecimals()).thenReturn(10);
         when(aux.getTotalSupply()).thenReturn(10000);
 
-        GetTokenMetadataResponseData metadata = spy_var.getTokenMetadata("0xmockQuery");
+        GetTokenMetadataResponseData metadata = spy_var.getTokenMetadata("mockAlias");
 
         assertTrue("Wallet should have a Balance", metadata instanceof GetTokenMetadataResponseData);
         assertEquals(metadata.getName(), "mockedName");
@@ -299,6 +314,9 @@ public class HancockEthereumClientTest {
 
      @Test public void testsendSignedTransaction() throws Exception {
 
+       PowerMockito.mockStatic(ValidateParameters.class);
+       PowerMockito.doNothing().when(ValidateParameters.class, "checkForContent", any(String.class) , any(String.class));
+       
        HancockEthereumClient auxHancockEthereumClient = new HancockEthereumClient();
        HancockEthereumClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
        PowerMockito.doReturn("mockSignedTransaction").when(spy_var).sendSignedTransaction(any(String.class), any(boolean.class), any(String.class)); 
@@ -560,6 +578,11 @@ public class HancockEthereumClientTest {
 
     @Test public void testTokenRegister() throws Exception {
 
+        PowerMockito.mockStatic(ValidateParameters.class);
+        PowerMockito.doNothing().when(ValidateParameters.class, "checkAddress", any(String.class));
+        PowerMockito.doNothing().when(ValidateParameters.class, "checkForContent", any(String.class) , any(String.class));
+        PowerMockito.doReturn("mockAlias").when(ValidateParameters.class, "normalizeAdressOrAlias", any(String.class));
+        
         okhttp3.Request requestMock = mock(okhttp3.Request.class);
         okhttp3.Response responseMock = mock(okhttp3.Response.class);
         HancockTokenRegisterResponse responseModelMock = mock(HancockTokenRegisterResponse.class);
@@ -593,7 +616,7 @@ public class HancockEthereumClientTest {
                 .when(spyHancockClient)
                 .checkStatus(any(okhttp3.Response.class), eq(HancockTokenRegisterResponse.class));
 
-        HancockTokenRegisterResponse result = spyHancockClient.tokenRegister("alias", "0xde8e772f0350e992ddef81bf8f51d94a8ea9216d");
+        HancockTokenRegisterResponse result = spyHancockClient.tokenRegister("mockAlias", "mockaddress");
 
         assertTrue("tokenRegister called successfully", result instanceof HancockTokenRegisterResponse);
 
