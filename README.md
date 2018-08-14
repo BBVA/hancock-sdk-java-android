@@ -10,8 +10,8 @@ repositories {
     maven {
         url "s3://microservices-java-repository/maven/release"
         credentials(AwsCredentials) {
-            accessKey "AKIAJFKJEBF2EHAIW5OQ"
-            secretKey "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"
+            accessKey "AKIAIM5BHCDAPR2HJ6GQ"
+            secretKey "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"
         }
     }
 }
