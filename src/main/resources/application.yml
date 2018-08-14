@@ -8,7 +8,7 @@ adapter:
     transfer: '/ethereum/transfers'
     tokenTransfer: '/ethereum/token/__ADDRESS_OR_ALIAS__/transfer'
     tokenTransferFrom: '/ethereum/token/__ADDRESS_OR_ALIAS__/transferFrom'
-    tokenBalance: '/ethereum/token/__ADDRESS_OR_ALIAS__/balance/__ADDRESS__'
+    tokenBalance: '/ethereum/token/__ADDRESS_OR_ALIAS__/balanceOf/__ADDRESS__'
     tokenMetadata: '/ethereum/token/__ADDRESS_OR_ALIAS__/metadata'
     tokenAllowance: '/ethereum/token/__ADDRESS_OR_ALIAS__/allowance'
     tokenApprove: '/ethereum/token/__ADDRESS_OR_ALIAS__/approve'
