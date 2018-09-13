@@ -10,7 +10,9 @@ public class HancockConfig implements Serializable {
 
     private String env;
     public HancockConfigNode node;
-    public HancockConfigAdapter adapter;
+    public HancockConfigService adapter;
+    public HancockConfigService wallet;
+    public HancockConfigService broker;
 
     public HancockConfig() { }
 
@@ -30,19 +32,37 @@ public class HancockConfig implements Serializable {
         this.node = node;
     }
 
-    public HancockConfigAdapter getAdapter() {
+    public HancockConfigService getAdapter() {
         return adapter;
     }
 
-    public void setAdapter(HancockConfigAdapter adapter) {
+    public void setAdapter(HancockConfigService adapter) {
         this.adapter = adapter;
+    }
+
+    public HancockConfigService getWallet() {
+        return wallet;
+    }
+
+    public void setWallet(HancockConfigService wallet) {
+        this.wallet = wallet;
+    }
+
+    public HancockConfigService getBroker() {
+        return broker;
+    }
+
+    public void setBroker(HancockConfigService broker) {
+        this.broker = broker;
     }
 
     public static class Builder {
 
         private String env;
         private HancockConfigNode node;
-        private HancockConfigAdapter adapter;
+        private HancockConfigService adapter;
+        private HancockConfigService wallet;
+        private HancockConfigService broker;
 
         public Builder() {
             this.fromConfigFile();
@@ -68,12 +88,38 @@ public class HancockConfig implements Serializable {
         public Builder withAdapter(String host, String base, int port) {
 
             if (this.adapter == null) {
-                this.adapter = new HancockConfigAdapter();
+                this.adapter = new HancockConfigService();
             }
 
             this.adapter.setHost(host);
             this.adapter.setBase(base);
             this.adapter.setPort(port);
+
+            return this;
+        }
+
+        public Builder withWallet(String host, String base, int port) {
+
+            if (this.wallet == null) {
+                this.wallet = new HancockConfigService();
+            }
+
+            this.wallet.setHost(host);
+            this.wallet.setBase(base);
+            this.wallet.setPort(port);
+
+            return this;
+        }
+
+        public Builder withBroker(String host, String base, int port) {
+
+            if (this.broker == null) {
+                this.broker = new HancockConfigService();
+            }
+
+            this.broker.setHost(host);
+            this.broker.setBase(base);
+            this.broker.setPort(port);
 
             return this;
         }
@@ -92,12 +138,30 @@ public class HancockConfig implements Serializable {
                 config.setAdapter(this.adapter);
             }
 
+            if (this.wallet != null) {
+                config.setWallet(this.wallet);
+            }
+
+            if (this.broker != null) {
+                config.setBroker(this.broker);
+            }
+
             return config;
         }
 
 
         protected Builder withAdapter(String host, String base, int port, Map<String, String> resources) {
-            this.adapter = new HancockConfigAdapter(host, base, port, resources);
+            this.adapter = new HancockConfigService(host, base, port, resources);
+            return this;
+        }
+
+        protected Builder withWallet(String host, String base, int port, Map<String, String> resources) {
+            this.wallet = new HancockConfigService(host, base, port, resources);
+            return this;
+        }
+
+        protected Builder withBroker(String host, String base, int port, Map<String, String> resources) {
+            this.broker = new HancockConfigService(host, base, port, resources);
             return this;
         }
 
@@ -115,6 +179,8 @@ public class HancockConfig implements Serializable {
 
             this.withEnv(env);
             this.withAdapter((String) adapter.get("host"), (String) adapter.get("base"), (int) adapter.get("port"), (Map<String, String>) adapter.get("resources"));
+            this.withWallet((String) adapter.get("host"), (String) adapter.get("base"), (int) adapter.get("port"), (Map<String, String>) adapter.get("resources"));
+            this.withBroker((String) adapter.get("host"), (String) adapter.get("base"), (int) adapter.get("port"), (Map<String, String>) adapter.get("resources"));
             this.withNode((String) node.get("host"), (int) node.get("port"));
             return this;
 
