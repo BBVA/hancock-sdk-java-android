@@ -83,6 +83,8 @@ public class HancockEthereumSmartContractClient extends HancockClient {
         return responseModel;
     }
 
+    //TODO register: how to pass the abi??
+
     protected EthereumAdaptInvokeResponse adaptInvoke(String contractAddressOrAlias, String method, ArrayList<String> params, String from) throws HancockException {
 
         String url = getConfig().getAdapter().getHost() + ':'
