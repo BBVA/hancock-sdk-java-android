@@ -31,6 +31,10 @@ import static com.bbva.hancock.sdk.Common.makeCall;
 
 public class HancockEthereumTransactionClient extends HancockClient {
 
+    public HancockEthereumTransactionClient() {
+        super();
+    }
+
     public HancockEthereumTransactionClient(HancockConfig config) throws Exception {
         super(config);
     }

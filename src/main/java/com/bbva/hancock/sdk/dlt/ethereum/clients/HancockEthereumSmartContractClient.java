@@ -31,6 +31,10 @@ public class HancockEthereumSmartContractClient extends HancockClient {
 
     private HancockEthereumTransactionClient transactionClient;
 
+    public HancockEthereumSmartContractClient(){
+        super();
+    }
+
     public HancockEthereumSmartContractClient(HancockConfig config, HancockEthereumTransactionClient transactionClient) throws Exception {
         super(config);
         this.transactionClient = transactionClient;

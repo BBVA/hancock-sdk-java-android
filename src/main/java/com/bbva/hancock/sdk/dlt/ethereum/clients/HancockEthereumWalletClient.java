@@ -24,6 +24,7 @@ import static com.bbva.hancock.sdk.Common.*;
 public class HancockEthereumWalletClient extends HancockClient {
 
     public HancockEthereumWalletClient() {
+        super();
     }
 
     public HancockEthereumWalletClient(HancockConfig config) throws Exception {

@@ -94,7 +94,7 @@ public class TransactionConfig {
             if (this.privateKey != null) {
                 config.setPrivateKey(this.privateKey);
             } else if (this.provider != null) {
-                config.setPrivateKey(this.provider);
+                config.setProvider(this.provider);
             }
 
             if (this.callbackOptions != null) {

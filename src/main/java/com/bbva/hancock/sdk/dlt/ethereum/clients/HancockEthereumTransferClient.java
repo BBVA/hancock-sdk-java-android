@@ -24,6 +24,11 @@ public class HancockEthereumTransferClient extends HancockClient {
 
     private HancockEthereumTransactionClient transactionClient;
 
+    public HancockEthereumTransferClient(HancockEthereumTransactionClient transactionClient) {
+        super();
+        this.transactionClient = transactionClient;
+    }
+
     public HancockEthereumTransferClient(HancockConfig config, HancockEthereumTransactionClient transactionClient) throws Exception {
         super(config);
         this.transactionClient = transactionClient;

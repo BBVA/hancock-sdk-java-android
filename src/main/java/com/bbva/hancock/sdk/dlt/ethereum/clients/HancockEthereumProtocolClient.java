@@ -25,6 +25,7 @@ import static com.bbva.hancock.sdk.Common.makeCall;
 public class HancockEthereumProtocolClient extends HancockClient {
 
     public HancockEthereumProtocolClient() {
+        super();
     }
 
     public HancockEthereumProtocolClient(HancockConfig config) throws Exception {

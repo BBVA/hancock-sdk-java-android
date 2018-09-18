@@ -176,11 +176,13 @@ public class HancockConfig implements Serializable {
             String env = (String) object.get("env");
             Map<String, Object> node = (Map<String, Object>) object.get("node");
             Map<String, Object> adapter = (Map<String, Object>) object.get("adapter");
+            Map<String, Object> wallet = (Map<String, Object>) object.get("wallet");
+            Map<String, Object> broker = (Map<String, Object>) object.get("broker");
 
             this.withEnv(env);
             this.withAdapter((String) adapter.get("host"), (String) adapter.get("base"), (int) adapter.get("port"), (Map<String, String>) adapter.get("resources"));
-            this.withWallet((String) adapter.get("host"), (String) adapter.get("base"), (int) adapter.get("port"), (Map<String, String>) adapter.get("resources"));
-            this.withBroker((String) adapter.get("host"), (String) adapter.get("base"), (int) adapter.get("port"), (Map<String, String>) adapter.get("resources"));
+            this.withWallet((String) wallet.get("host"), (String) wallet.get("base"), (int) wallet.get("port"), (Map<String, String>) wallet.get("resources"));
+            this.withBroker((String) broker.get("host"), (String) broker.get("base"), (int) broker.get("port"), (Map<String, String>) broker.get("resources"));
             this.withNode((String) node.get("host"), (int) node.get("port"));
             return this;
 

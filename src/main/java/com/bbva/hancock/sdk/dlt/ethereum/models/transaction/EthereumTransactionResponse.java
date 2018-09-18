@@ -8,4 +8,7 @@ public class EthereumTransactionResponse {
         this.success = success;
     }
 
+    public Boolean getSuccess() {
+        return success;
+    }
 }
