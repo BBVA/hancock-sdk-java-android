@@ -89,10 +89,13 @@ public class HancockEthereumTransactionClient extends HancockClient {
         Gson gson = new Gson();
         String json = gson.toJson(signedTxBody);
         RequestBody body = RequestBody.create(getContentType(), json);
+        String requestId = "";
+        if (txConfig.getCallbackOptions() != null)
+            requestId = txConfig.getCallbackOptions().getRequestId();
         Request request = new Request.Builder()
                 .url(url)
                 .post(body)
-                .addHeader("vnd-hancock-request-id", txConfig.getCallbackOptions().getRequestId())
+                .addHeader("vnd-hancock-request-id", requestId)
                 .build();
 
         Response response = makeCall(request);

@@ -71,6 +71,7 @@ public final class Common {
             throw new HancockException(HancockTypeErrorEnum.ERROR_INTERNAL, "50001", 500, HancockErrorEnum.ERROR_API.getMessage() , HancockErrorEnum.ERROR_API.getMessage(), error);
 
         }
+
     }
 
 }

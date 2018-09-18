@@ -52,10 +52,10 @@ public class TransactionConfig {
         return sendLocally;
     }
 
-    private TransactionConfig() {
+    public TransactionConfig() {
     }
 
-    static public class Builder {
+    public static class Builder {
 
         private String privateKey;
         private String provider;

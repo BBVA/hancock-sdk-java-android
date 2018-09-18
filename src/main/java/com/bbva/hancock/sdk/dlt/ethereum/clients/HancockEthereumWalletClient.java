@@ -1,5 +1,6 @@
 package com.bbva.hancock.sdk.dlt.ethereum.clients;
 
+import com.bbva.hancock.sdk.Common;
 import com.bbva.hancock.sdk.HancockClient;
 import com.bbva.hancock.sdk.config.HancockConfig;
 import com.bbva.hancock.sdk.dlt.ethereum.EthereumWallet;
@@ -57,11 +58,9 @@ public class HancockEthereumWalletClient extends HancockClient {
         ValidateParameters.checkAddress(address);
         String url = getConfig().getAdapter().getHost() + ':' + getConfig().getAdapter().getPort() + getConfig().getAdapter().getBase() + getConfig().getAdapter().getResources().get("balance").replaceAll("__ADDRESS__", address);
 
-        Request request = new Request.Builder()
-                .url(url)
-                .build();
+        Request request = Common.getRequest(url);
 
-        Response response = makeCall(request);
+        Response response = Common.makeCall(request);
         GetBalanceResponse responseModel = checkStatus(response, GetBalanceResponse.class);
         return new BigInteger(responseModel.getBalance());
 
