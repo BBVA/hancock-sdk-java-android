@@ -61,7 +61,7 @@ public class HancockEthereumProtocolClientTest {
         mockedHancockEthereumClient = new HancockEthereumProtocolClient();
 
     }
-  
+
     @Test public void testDecodeProtocol() throws Exception {
 
         okhttp3.Request requestMock = mock(okhttp3.Request.class);

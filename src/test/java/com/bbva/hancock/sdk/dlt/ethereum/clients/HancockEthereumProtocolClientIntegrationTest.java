@@ -1,4 +1,4 @@
-package com.bbva.hancock.sdk.dlt.ethereum.clients.integration;
+package com.bbva.hancock.sdk.dlt.ethereum.clients;
 
 import com.bbva.hancock.sdk.Common;
 import com.bbva.hancock.sdk.config.HancockConfig;

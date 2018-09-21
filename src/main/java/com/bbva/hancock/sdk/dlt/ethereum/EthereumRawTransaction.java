@@ -5,48 +5,78 @@ import java.math.BigInteger;
 
 public final class EthereumRawTransaction {
 
-    private final RawTransaction rawTx;
+    private String from;
+    private String to;
+    private BigInteger nonce;
+    private BigInteger value;
+    private String data;
+    private BigInteger gasPrice;
+    private BigInteger gasLimit;
 
-    public EthereumRawTransaction(BigInteger nonce, BigInteger gasPrice, BigInteger gasLimit, String to, BigInteger value) {
-        this(nonce, gasPrice, gasLimit, to, value, "");
+    public EthereumRawTransaction(String from, String to, BigInteger nonce, BigInteger value, String data, BigInteger gasPrice, BigInteger gas) {
+        this.from = from;
+        this.to = to;
+        this.nonce = nonce;
+        this.value = value;
+        this.data = data;
+        this.gasPrice = gasPrice;
+        this.gasLimit = gas;
     }
 
-    public EthereumRawTransaction(BigInteger nonce, BigInteger gasPrice, BigInteger gasLimit, String to, String data) {
-        this(nonce, gasPrice, gasLimit, to, BigInteger.ZERO, data);
+    public EthereumRawTransaction(String to, BigInteger nonce, BigInteger value, String data, BigInteger gasPrice, BigInteger gasLimit) {
+        this.to = to;
+        this.nonce = nonce;
+        this.value = value;
+        this.data = data;
+        this.gasPrice = gasPrice;
+        this.gasLimit = gasLimit;
     }
 
-    public EthereumRawTransaction(BigInteger nonce, BigInteger gasPrice, BigInteger gasLimit, String to,
-                          BigInteger value, String data) {
-
-        data = data != null ? data : "";
-        this.rawTx = RawTransaction.createTransaction(nonce, gasPrice, gasLimit, to, value, data);
-
+    public EthereumRawTransaction(String to, BigInteger nonce, BigInteger value, BigInteger gasPrice, BigInteger gas) {
+        this.to = to;
+        this.nonce = nonce;
+        this.value = value;
+        this.gasPrice = gasPrice;
+        this.gasLimit = gas;
     }
 
-    public BigInteger getNonce() {
-        return this.rawTx.getNonce();
-    }
-
-    public BigInteger getGasPrice() {
-        return this.rawTx.getGasPrice();
-    }
-
-    public BigInteger getGasLimit() {
-        return this.rawTx.getGasLimit();
+    public String getFrom() {
+        return from;
     }
 
     public String getTo() {
-        return this.rawTx.getTo();
+        return to;
+    }
+
+    public BigInteger getNonce() {
+        return nonce;
     }
 
     public BigInteger getValue() {
-        return this.rawTx.getValue();
+        return value;
     }
 
     public String getData() {
-        return this.rawTx.getData();
+        return data;
     }
 
-    public RawTransaction getWeb3Instance() { return this.rawTx; }
+    public BigInteger getGasPrice() {
+        return gasPrice;
+    }
+
+    public BigInteger getGasLimit() {
+        return gasLimit;
+    }
+
+    public RawTransaction getWeb3Instance() {
+        return RawTransaction.createTransaction(
+                this.getNonce(),
+                this.getGasPrice(),
+                this.getGasLimit(),
+                this.getTo(),
+                this.getValue(),
+                this.getData()
+        );
+    }
 
 }

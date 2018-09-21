@@ -9,4 +9,12 @@ public class HancockGenericResponse {
         this.code = code;
         this.description = description;
     }
+
+    public Integer getCode() {
+        return code;
+    }
+
+    public String getDescription() {
+        return description;
+    }
 }

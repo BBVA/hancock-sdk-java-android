@@ -91,7 +91,7 @@ public class HancockEthereumTransactionClientTest {
         String spender = "0xmockedSpender";
 
         mockedEthereumTransferRequest = new EthereumTransferRequest(from, to, value.toString(), data);
-        mockedEthereumRawTransaction = new EthereumRawTransaction(nonce, gasPrice, gasLimit, to, value);
+        mockedEthereumRawTransaction = new EthereumRawTransaction(to, nonce, value, gasPrice, gasLimit);
         commonAux = new Common();
 
     }
@@ -117,34 +117,34 @@ public class HancockEthereumTransactionClientTest {
 
     }
 
-     @Test public void testSendSignedTransaction() throws Exception {
+    @Test public void testSendSignedTransaction() throws Exception {
 
-       EthereumTransactionResponse responseModel = mock(EthereumTransactionResponse.class);
-       okhttp3.Request requestMock= mock(okhttp3.Request.class);
-       okhttp3.Response responseMock= mock(okhttp3.Response.class);
+        EthereumTransactionResponse responseModel = mock(EthereumTransactionResponse.class);
+        okhttp3.Request requestMock= mock(okhttp3.Request.class);
+        okhttp3.Response responseMock= mock(okhttp3.Response.class);
 
-       mockStatic(Common.class);
-       PowerMockito.when(Common.class, "getRequest", any(String.class), any(okhttp3.RequestBody.class))
-             .thenReturn(requestMock);
+        mockStatic(Common.class);
+        PowerMockito.when(Common.class, "getRequest", any(String.class), any(okhttp3.RequestBody.class))
+                .thenReturn(requestMock);
 
-       PowerMockito.when(Common.class, "makeCall", any(okhttp3.Request.class))
-             .thenReturn(responseMock);
+        PowerMockito.when(Common.class, "makeCall", any(okhttp3.Request.class))
+                .thenReturn(responseMock);
 
-       PowerMockito.when(Common.class, "checkStatus", any(okhttp3.Response.class), eq(EthereumTransactionResponse.class))
-             .thenReturn(mockedEthereumTransactionResponse);
+        PowerMockito.when(Common.class, "checkStatus", any(okhttp3.Response.class), eq(EthereumTransactionResponse.class))
+                .thenReturn(mockedEthereumTransactionResponse);
 
-       TransactionConfig txConfig = new TransactionConfig.Builder()
-             .withPrivateKey("0x6c47653f66ac9b733f3b8bf09ed3d300520b4d9c78711ba90162744f5906b1f8")
-             .build();
+        TransactionConfig txConfig = new TransactionConfig.Builder()
+                .withPrivateKey("0x6c47653f66ac9b733f3b8bf09ed3d300520b4d9c78711ba90162744f5906b1f8")
+                .build();
 
-       HancockEthereumTransactionClient spy_var = PowerMockito.spy(mockedHancockEthereumClient);
+        HancockEthereumTransactionClient spy_var = PowerMockito.spy(mockedHancockEthereumClient);
 
-       EthereumTransactionResponse mockResult = spy_var.sendSignedTransaction("mockSignedTransaction", txConfig);
+        EthereumTransactionResponse mockResult = spy_var.sendSignedTransaction("mockSignedTransaction", txConfig);
 
-       assertEquals(mockResult, mockedEthereumTransactionResponse);
-       assertTrue("transaction send and signed successfully", mockResult instanceof EthereumTransactionResponse);
+        assertEquals(mockResult, mockedEthereumTransactionResponse);
+        assertTrue("transaction send and signed successfully", mockResult instanceof EthereumTransactionResponse);
 
-     }
+    }
 
     @Test public void testSendToSignProvider() throws Exception {
 

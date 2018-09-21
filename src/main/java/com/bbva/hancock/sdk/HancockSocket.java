@@ -66,21 +66,18 @@ public class HancockSocket {
 
     public void addTransfer(ArrayList<String> addresses){
         if (!addresses.isEmpty()) {
-            ArrayList<String> normalizedAddresses = (ArrayList<String>) addresses.stream().map(address -> ValidateParameters.normalizeAddress(address)).collect(Collectors.toList());
-            this.sendMessage("watch-transfers", normalizedAddresses);
+            this.sendMessage("watch-transfers", addresses);
         }
     }
 
     public void addTransaction(ArrayList<String> addresses){
         if (!addresses.isEmpty()) {
-            ArrayList<String> normalizedAddresses = (ArrayList<String>) addresses.stream().map(address -> ValidateParameters.normalizeAddress(address)).collect(Collectors.toList());
-            this.sendMessage("watch-transactions", normalizedAddresses);
+            this.sendMessage("watch-transactions", addresses);
         }
     }
 
     public void addContract(ArrayList<String> contracts){
         if (!contracts.isEmpty()) {
-            //ArrayList<String> normalizedAddresses = (ArrayList<String>) addresses.stream().map(address -> ValidateParameters.normalizeAddress(address)).collect(Collectors.toList());
             this.sendMessage("watch-transactions", contracts);
         }
     }

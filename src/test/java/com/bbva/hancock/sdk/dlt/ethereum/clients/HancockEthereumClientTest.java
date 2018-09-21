@@ -30,12 +30,6 @@ import okhttp3.OkHttpClient;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-//import org.mockito.InjectMocks;
-//import org.mockito.Mock;
-//import org.mockito.invocation.InvocationOnMock;
-//import org.mockito.junit.MockitoJUnitRunner;
-//import org.mockito.stubbing.Answer;
-
 @PowerMockIgnore("javax.net.ssl.*")
 //@RunWith(MockitoJUnitRunner.class)
 @RunWith(PowerMockRunner.class)

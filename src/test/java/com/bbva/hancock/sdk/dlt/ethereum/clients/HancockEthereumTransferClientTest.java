@@ -89,7 +89,7 @@ public class HancockEthereumTransferClientTest {
         String spender = "0xmockedSpender";
 
         mockedEthereumTransferRequest = new EthereumTransferRequest(from, to, value.toString(), data);
-        mockedEthereumRawTransaction = new EthereumRawTransaction(nonce, gasPrice, gasLimit, to, value);
+        mockedEthereumRawTransaction = new EthereumRawTransaction(to, nonce, value, gasPrice, gasLimit);
 
     }
 
@@ -102,7 +102,6 @@ public class HancockEthereumTransferClientTest {
         assertTrue("RawTransaction has gasLimit ", mockedEthereumRawTransaction.getGasPrice() instanceof BigInteger);
         assertTrue("RawTransaction has to ", mockedEthereumRawTransaction.getTo() instanceof String);
         assertTrue("RawTransaction has value ", mockedEthereumRawTransaction.getValue() instanceof BigInteger);
-        assertTrue("RawTransaction has value ", mockedEthereumRawTransaction.getData() instanceof String);
 
     }
 

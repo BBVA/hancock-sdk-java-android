@@ -95,11 +95,11 @@ public class HancockEthereumWalletClientTest {
     }
 
     @Test public void testGetBalance() throws Exception {
-          
+
         mockStatic(ValidateParameters.class);
         PowerMockito.doNothing().when(ValidateParameters.class, "checkAddress", any(String.class));
         PowerMockito.doNothing().when(ValidateParameters.class, "checkForContent", any(String.class) , any(String.class));
-        
+
         GetBalanceResponse responseModel = mock(GetBalanceResponse.class);
         when(responseModel.getBalance()).thenReturn("0");
         okhttp3.Response responseMock = mock(okhttp3.Response.class);

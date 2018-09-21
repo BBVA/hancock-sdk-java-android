@@ -49,12 +49,13 @@ public class HancockEthereumTransferClient extends HancockClient {
         Response response = makeCall(request);
         EthereumTransaction rawTx = checkStatus(response, EthereumTransaction.class);
         return new EthereumRawTransaction(
-                new BigInteger(rawTx.getNonce()),
-                new BigInteger(rawTx.getGasPrice()),
-                new BigInteger(rawTx.getGas()),
+                rawTx.getFrom(),
                 rawTx.getTo(),
+                new BigInteger(rawTx.getNonce()),
                 new BigInteger(rawTx.getValue()),
-                rawTx.getData()
+                rawTx.getData(),
+                new BigInteger(rawTx.getGasPrice()),
+                new BigInteger(rawTx.getGas())
             );
     }
 }

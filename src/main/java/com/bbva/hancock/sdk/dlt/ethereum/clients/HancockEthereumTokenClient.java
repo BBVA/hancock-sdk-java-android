@@ -51,7 +51,6 @@ public class HancockEthereumTokenClient extends HancockClient {
         ValidateParameters.checkForContent(address, "address");
         ValidateParameters.checkAddress(address);
         ValidateParameters.checkForContent(addressOrAlias, "address or alias");
-        addressOrAlias = ValidateParameters.normalizeAdressOrAlias(addressOrAlias);
         String url = getConfig().getAdapter().getHost() + ':' + getConfig().getAdapter().getPort() + getConfig().getAdapter().getBase() + getConfig().getAdapter().getResources().get("tokenBalance").replaceAll("__ADDRESS__", address).replaceAll("__ADDRESS_OR_ALIAS__", addressOrAlias);
 
         Request request = getRequest(url);
@@ -65,7 +64,6 @@ public class HancockEthereumTokenClient extends HancockClient {
     public GetEthereumTokenMetadataResponseData getMetadata(String addressOrAlias) throws HancockException {
 
         ValidateParameters.checkForContent(addressOrAlias, "address or alias");
-        addressOrAlias = ValidateParameters.normalizeAdressOrAlias(addressOrAlias);
         String url = getConfig().getAdapter().getHost() + ':' + getConfig().getAdapter().getPort() + getConfig().getAdapter().getBase() + getConfig().getAdapter().getResources().get("tokenMetadata").replaceAll("__ADDRESS_OR_ALIAS__", addressOrAlias);
 
         Request request = getRequest(url);
@@ -81,7 +79,6 @@ public class HancockEthereumTokenClient extends HancockClient {
         ValidateParameters.checkForContent(address, "address");
         ValidateParameters.checkAddress(address);
         ValidateParameters.checkForContent(alias, "alias");
-        alias = ValidateParameters.normalizeAlias(alias);
         String url = getResourceUrl(getConfig(),"tokenRegister");
 
         Gson gson = new Gson();
@@ -125,12 +122,14 @@ public class HancockEthereumTokenClient extends HancockClient {
         Response response = makeCall(request);
         EthereumTransaction rawTx = checkStatus(response, EthereumTransaction.class);
         return new EthereumRawTransaction(
-                new BigInteger(rawTx.getNonce()),
-                new BigInteger(rawTx.getGasPrice()),
-                new BigInteger(rawTx.getGas()),
+                rawTx.getFrom(),
                 rawTx.getTo(),
+                new BigInteger(rawTx.getNonce()),
                 new BigInteger(rawTx.getValue()),
-                rawTx.getData());
+                rawTx.getData(),
+                new BigInteger(rawTx.getGasPrice()),
+                new BigInteger(rawTx.getGas())
+                );
     }
 
     protected String getTransferUrl(EthereumTokenRequest txRequest){

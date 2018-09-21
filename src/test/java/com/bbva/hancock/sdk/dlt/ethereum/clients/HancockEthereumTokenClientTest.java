@@ -104,12 +104,12 @@ public class HancockEthereumTokenClientTest {
         String tokenOwner = "0xmockedtokenOwner";
         String spender = "0xmockedSpender";
         String mockedEncodeUrl = "tokenTransfer";
-      
+
         mockedEthereumTokenTransferRequest = new EthereumTokenTransferRequest(from, to, value.toString(), addressOrAlias);
         mockedEthereumTokenTransferFromRequest = new EthereumTokenTransferFromRequest(from, sender, to, value.toString(), addressOrAlias);
         mockedEthereumTransferRequest = new EthereumTransferRequest(from, to, value.toString(), data);
         mockedEthereumTokenRequest = new EthereumTokenRequest(addressOrAlias, mockedEncodeUrl);
-        mockedEthereumRawTransaction = new EthereumRawTransaction(nonce, gasPrice, gasLimit, to, value);
+        mockedEthereumRawTransaction = new EthereumRawTransaction(to, nonce, value, gasPrice, gasLimit);
         mockedEthereumTokenAllowanceRequest = new EthereumTokenAllowanceRequest(from, tokenOwner, spender, addressOrAlias);
         mockedEthereumTokenApproveRequest = new EthereumTokenApproveRequest(from, spender, data, addressOrAlias);
         mockedEthereumTransactionResponse = new EthereumTransactionResponse(true);
@@ -121,7 +121,6 @@ public class HancockEthereumTokenClientTest {
         PowerMockito.mockStatic(ValidateParameters.class);
         PowerMockito.doNothing().when(ValidateParameters.class, "checkAddress", any(String.class));
         PowerMockito.doNothing().when(ValidateParameters.class, "checkForContent", any(String.class) , any(String.class));
-        PowerMockito.doReturn("mockAlias").when(ValidateParameters.class, "normalizeAdressOrAlias", any(String.class));
 
         EthereumTokenBalanceResponse aux = mock(EthereumTokenBalanceResponse.class);
         GetEthereumTokenBalanceResponse responseModel = mock(GetEthereumTokenBalanceResponse.class);
@@ -152,7 +151,6 @@ public class HancockEthereumTokenClientTest {
 
         PowerMockito.mockStatic(ValidateParameters.class);
         PowerMockito.doNothing().when(ValidateParameters.class, "checkForContent", any(String.class) , any(String.class));
-        PowerMockito.doReturn("mockAlias").when(ValidateParameters.class, "normalizeAdressOrAlias", any(String.class));
 
         GetEthereumTokenMetadataResponseData aux = mock(GetEthereumTokenMetadataResponseData.class);
         GetEthereumTokenMetadataResponse responseModel = mock(GetEthereumTokenMetadataResponse.class);
@@ -259,27 +257,27 @@ public class HancockEthereumTokenClientTest {
         assertTrue("transaction send and signed successfully", mockResult instanceof EthereumTransactionResponse);
 
     }
-    
+
     @Test public void testTokenApprove() throws Exception {
 
-      TransactionConfig txConfig = new TransactionConfig.Builder()
-              .withPrivateKey("0x6c47653f66ac9b733f3b8bf09ed3d300520b4d9c78711ba90162744f5906b1f8")
-              .build();
+        TransactionConfig txConfig = new TransactionConfig.Builder()
+                .withPrivateKey("0x6c47653f66ac9b733f3b8bf09ed3d300520b4d9c78711ba90162744f5906b1f8")
+                .build();
 
-      HancockEthereumTokenClient spy_var = PowerMockito.spy(mockedHancockEthereumClient);
+        HancockEthereumTokenClient spy_var = PowerMockito.spy(mockedHancockEthereumClient);
 
-      PowerMockito.doReturn(mock(EthereumRawTransaction.class))
-              .when(spy_var)
-              .adaptTransfer(any(EthereumTokenApproveRequest.class));
+        PowerMockito.doReturn(mock(EthereumRawTransaction.class))
+                .when(spy_var)
+                .adaptTransfer(any(EthereumTokenApproveRequest.class));
 
-      PowerMockito.doReturn(mockedEthereumTransactionResponse)
-              .when(spy_transaction_client)
-              .send(any(EthereumRawTransaction.class), any(TransactionConfig.class));
+        PowerMockito.doReturn(mockedEthereumTransactionResponse)
+                .when(spy_transaction_client)
+                .send(any(EthereumRawTransaction.class), any(TransactionConfig.class));
 
-      EthereumTransactionResponse mockResult = spy_var.approve(mockedEthereumTokenApproveRequest, txConfig);
+        EthereumTransactionResponse mockResult = spy_var.approve(mockedEthereumTokenApproveRequest, txConfig);
 
-      assertEquals(mockResult, mockedEthereumTransactionResponse);
-      assertTrue("transaction send and signed successfully", mockResult instanceof EthereumTransactionResponse);
+        assertEquals(mockResult, mockedEthereumTransactionResponse);
+        assertTrue("transaction send and signed successfully", mockResult instanceof EthereumTransactionResponse);
 
     }
 
@@ -288,8 +286,7 @@ public class HancockEthereumTokenClientTest {
         PowerMockito.mockStatic(ValidateParameters.class);
         PowerMockito.doNothing().when(ValidateParameters.class, "checkAddress", any(String.class));
         PowerMockito.doNothing().when(ValidateParameters.class, "checkForContent", any(String.class) , any(String.class));
-        PowerMockito.doReturn("mockAlias").when(ValidateParameters.class, "normalizeAdressOrAlias", any(String.class));
-        
+
         okhttp3.Request requestMock = mock(okhttp3.Request.class);
         okhttp3.Response responseMock = mock(okhttp3.Response.class);
         EthereumTokenRegisterResponse responseModelMock = mock(EthereumTokenRegisterResponse.class);
