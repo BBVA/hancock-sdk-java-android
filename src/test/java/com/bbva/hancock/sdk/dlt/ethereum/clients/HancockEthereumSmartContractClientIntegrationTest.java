@@ -14,28 +14,21 @@ import com.bbva.hancock.sdk.dlt.ethereum.models.smartContracts.EthereumAdaptInvo
 import com.bbva.hancock.sdk.dlt.ethereum.models.smartContracts.EthereumCallResponse;
 import com.bbva.hancock.sdk.dlt.ethereum.models.transaction.EthereumTransactionResponse;
 import com.bbva.hancock.sdk.dlt.ethereum.models.transaction.TransactionConfig;
-import com.bbva.hancock.sdk.dlt.ethereum.models.util.ValidateParameters;
-import com.bbva.hancock.sdk.dlt.ethereum.models.wallet.GetBalanceResponse;
 import okhttp3.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.powermock.api.easymock.PowerMock;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.web3j.crypto.Credentials;
-import org.web3j.crypto.RawTransaction;
-import org.web3j.crypto.TransactionEncoder;
-import org.web3j.protocol.Web3jFactory;
 
 import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.eq;
-import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 
@@ -43,9 +36,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @PowerMockIgnore("javax.net.ssl.*")
 //@RunWith(MockitoJUnitRunner.class)
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({TransactionEncoder.class,Credentials.class,EthereumRawTransaction.class,RawTransaction.class,Web3jFactory.class,
-        OkHttpClient.class,Call.class,okhttp3.Response.class,okhttp3.Request.class,GetBalanceResponse.class,HancockConfig.class, ValidateParameters.class, Common.class})
-public class HancockEthereumSmartContractIntegrationTest {
+public class HancockEthereumSmartContractClientIntegrationTest {
 
     public static HancockConfig mockedConfig;
     public static TransactionConfig mockedTransactionConfig;
@@ -103,6 +94,8 @@ public class HancockEthereumSmartContractIntegrationTest {
 
     }
 
+
+    @PrepareForTest({ Common.class})
     @Test public void testInvoke() throws Exception {
 
         Request.Builder requestBuilder = new Request.Builder();
@@ -112,7 +105,7 @@ public class HancockEthereumSmartContractIntegrationTest {
         Response.Builder responseBuilder = new Response.Builder();
         responseBuilder.code(200);
         responseBuilder.protocol(Protocol.HTTP_1_1);
-        responseBuilder.body(ResponseBody.create(MediaType.parse("application/json"), "{\"data\":{\"from\": \"0xde8e772f0350e992ddef81bf8f51d94a8ea9216d\",\"data\": \"0xa9059cbb0000000000000000000000006c0a14f7561898b9ddc0c57652a53b2c6665443e0000000000000000000000000000000000000000000000000000000000000001\",\"gasPrice\": \"4\",\"gas\": \"3\",\"value\": \"2\",\"to\": \"0xde8e772f0350e992ddef81bf8f51d94a8ea9216d\",\"nonce\": \"1\"}}"));
+        responseBuilder.body(ResponseBody.create(MediaType.parse("application/json"), "{\"data\":{\"from\": \"0x6c0a14f7561898b9ddc0c57652a53b2c6665443e\",\"data\": \"0xa9059cbb0000000000000000000000006c0a14f7561898b9ddc0c57652a53b2c6665443e0000000000000000000000000000000000000000000000000000000000000001\",\"gasPrice\": \"4\",\"gas\": \"3\",\"value\": \"2\",\"to\": \"0xde8e772f0350e992ddef81bf8f51d94a8ea9216d\",\"nonce\": \"1\"}}"));
         responseBuilder.request(requestBuilder.build());
         responseBuilder.message("Smart Contract - Success");
         Response mockedResponse = responseBuilder.build();
@@ -142,6 +135,7 @@ public class HancockEthereumSmartContractIntegrationTest {
 
     }
 
+    @PrepareForTest({ Common.class})
     @Test public void testCall() throws Exception {
 
         Request.Builder requestBuilder = new Request.Builder();
@@ -171,6 +165,7 @@ public class HancockEthereumSmartContractIntegrationTest {
         assertEquals(response.getResult().getDescription(), "mockedDescription");
     }
 
+    @PrepareForTest({ Common.class})
     @Test public void testRegister() throws Exception {
 
         Request.Builder requestBuilder = new Request.Builder();
@@ -201,6 +196,7 @@ public class HancockEthereumSmartContractIntegrationTest {
 
     }
 
+    @PrepareForTest({ Common.class})
     @Test public void testAdaptInvoke() throws Exception {
 
         Request.Builder requestBuilder = new Request.Builder();

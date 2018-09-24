@@ -2,42 +2,31 @@ package com.bbva.hancock.sdk.dlt.ethereum.clients;
 
 import com.bbva.hancock.sdk.Common;
 import com.bbva.hancock.sdk.config.HancockConfig;
-import com.bbva.hancock.sdk.dlt.ethereum.clients.HancockEthereumProtocolClient;
 import com.bbva.hancock.sdk.dlt.ethereum.models.protocol.HancockProtocolAction;
 import com.bbva.hancock.sdk.dlt.ethereum.models.protocol.HancockProtocolDecodeResponse;
 import com.bbva.hancock.sdk.dlt.ethereum.models.protocol.HancockProtocolDlt;
 import com.bbva.hancock.sdk.dlt.ethereum.models.protocol.HancockProtocolEncodeResponse;
-
+import okhttp3.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.web3j.crypto.Keys;
 
 import java.math.BigInteger;
 
-import okhttp3.Call;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Protocol;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
-
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 
 @PowerMockIgnore({"javax.net.ssl.*"})
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({OkHttpClient.class,Call.class,Response.class,Request.class,Keys.class, Common.class})
 public class HancockEthereumProtocolClientIntegrationTest {
 
+    @PrepareForTest({Common.class})
     @Test public void testDecodeProtocol() throws Exception {
 
         Request.Builder requestBuilder = new Request.Builder();
@@ -72,12 +61,8 @@ public class HancockEthereumProtocolClientIntegrationTest {
 
     }
 
+    @PrepareForTest({Common.class})
     @Test public void testEncodeProtocol() throws Exception {
-
-        HancockConfig config = new HancockConfig.Builder()
-                .withAdapter("http://localhost","", 3004)
-                .build();
-        //HancockEthereumClient classUnderTest = new HancockEthereumClient(config);
 
         Request.Builder requestBuilder = new Request.Builder();
         requestBuilder.get();

@@ -9,26 +9,12 @@ import com.bbva.hancock.sdk.config.HancockConfig;
 import com.bbva.hancock.sdk.dlt.ethereum.EthereumRawTransaction;
 import com.bbva.hancock.sdk.dlt.ethereum.EthereumWallet;
 import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransaction;
-import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransferRequest;
 import com.bbva.hancock.sdk.dlt.ethereum.models.HancockGenericResponse;
 import com.bbva.hancock.sdk.dlt.ethereum.models.smartContracts.EthereumAdaptInvokeResponse;
 import com.bbva.hancock.sdk.dlt.ethereum.models.smartContracts.EthereumCallResponse;
-import com.bbva.hancock.sdk.dlt.ethereum.models.token.allowance.EthereumTokenAllowanceRequest;
-import com.bbva.hancock.sdk.dlt.ethereum.models.token.approve.EthereumTokenApproveRequest;
-import com.bbva.hancock.sdk.dlt.ethereum.models.token.balance.EthereumTokenBalanceResponse;
-import com.bbva.hancock.sdk.dlt.ethereum.models.token.balance.GetEthereumTokenBalanceResponse;
-import com.bbva.hancock.sdk.dlt.ethereum.models.token.metadata.GetEthereumTokenMetadataResponse;
-import com.bbva.hancock.sdk.dlt.ethereum.models.token.metadata.GetEthereumTokenMetadataResponseData;
-import com.bbva.hancock.sdk.dlt.ethereum.models.token.register.EthereumTokenRegisterRequest;
-import com.bbva.hancock.sdk.dlt.ethereum.models.token.register.EthereumTokenRegisterResponse;
-import com.bbva.hancock.sdk.dlt.ethereum.models.token.transfer.EthereumTokenTransferRequest;
-import com.bbva.hancock.sdk.dlt.ethereum.models.token.transferFrom.EthereumTokenTransferFromRequest;
 import com.bbva.hancock.sdk.dlt.ethereum.models.transaction.EthereumTransactionResponse;
 import com.bbva.hancock.sdk.dlt.ethereum.models.transaction.TransactionConfig;
 import com.bbva.hancock.sdk.dlt.ethereum.models.util.ValidateParameters;
-import com.bbva.hancock.sdk.dlt.ethereum.models.wallet.GetBalanceResponse;
-import okhttp3.Call;
-import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -37,27 +23,21 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.web3j.crypto.Credentials;
-import org.web3j.crypto.RawTransaction;
-import org.web3j.crypto.TransactionEncoder;
-import org.web3j.protocol.Web3jFactory;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.eq;
-import static org.powermock.api.mockito.PowerMockito.*;
+import static org.powermock.api.mockito.PowerMockito.mock;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 
 @PowerMockIgnore("javax.net.ssl.*")
 //@RunWith(MockitoJUnitRunner.class)
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({TransactionEncoder.class,Credentials.class,EthereumRawTransaction.class,RawTransaction.class,Web3jFactory.class,
-        OkHttpClient.class,Call.class,okhttp3.Response.class,okhttp3.Request.class,GetBalanceResponse.class,HancockConfig.class, ValidateParameters.class, Common.class})
-public class HancockEthereumSmartContractTest {
+public class HancockEthereumSmartContractClientTest {
 
     public static HancockConfig mockedConfig;
     public static TransactionConfig mockedTransactionConfig;
@@ -115,6 +95,7 @@ public class HancockEthereumSmartContractTest {
 
     }
 
+    @PrepareForTest({ValidateParameters.class, Common.class})
     @Test public void testInvoke() throws Exception {
 
         PowerMockito.mockStatic(ValidateParameters.class);
@@ -135,6 +116,7 @@ public class HancockEthereumSmartContractTest {
 
     }
 
+    @PrepareForTest({ValidateParameters.class, Common.class})
     @Test public void testCall() throws Exception {
 
         PowerMockito.mockStatic(ValidateParameters.class);
@@ -161,6 +143,7 @@ public class HancockEthereumSmartContractTest {
         assertEquals(response.getResult().getDescription(), "mockedOk");
     }
 
+    @PrepareForTest({ValidateParameters.class, Common.class})
     @Test public void testRegister() throws Exception {
 
         PowerMockito.mockStatic(ValidateParameters.class);
@@ -187,6 +170,7 @@ public class HancockEthereumSmartContractTest {
 
     }
 
+    @PrepareForTest({ValidateParameters.class, Common.class})
     @Test public void testAdaptInvoke() throws Exception {
 
         okhttp3.Request requestMock = mock(okhttp3.Request.class);

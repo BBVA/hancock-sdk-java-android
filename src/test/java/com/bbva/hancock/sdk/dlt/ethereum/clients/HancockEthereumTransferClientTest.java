@@ -50,8 +50,6 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @PowerMockIgnore("javax.net.ssl.*")
 //@RunWith(MockitoJUnitRunner.class)
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({TransactionEncoder.class,Credentials.class,EthereumRawTransaction.class,RawTransaction.class,Web3jFactory.class,
-        OkHttpClient.class,Call.class,okhttp3.Response.class,okhttp3.Request.class,GetBalanceResponse.class,HancockConfig.class, ValidateParameters.class, Common.class})
 public class HancockEthereumTransferClientTest {
 
     public static HancockConfig mockedConfig;
@@ -81,18 +79,15 @@ public class HancockEthereumTransferClientTest {
         BigInteger gasLimit = BigInteger.valueOf(222);
         BigInteger value = BigInteger.valueOf(333);
         String from = mockedWallet.getAddress();
-        String sender = mockedWallet.getAddress();
         String to = mockedWallet.getAddress();
         String data = "0xwhatever";
-        String addressOrAlias = "mockedAlias";
-        String tokenOwner = "0xmockedtokenOwner";
-        String spender = "0xmockedSpender";
 
         mockedEthereumTransferRequest = new EthereumTransferRequest(from, to, value.toString(), data);
         mockedEthereumRawTransaction = new EthereumRawTransaction(to, nonce, value, gasPrice, gasLimit);
 
     }
 
+    @PrepareForTest({ Common.class})
     @Test public void testCreateRawTransaction() throws Exception {
 
         assertTrue("RawTransaction is well constructed ", mockedEthereumRawTransaction instanceof EthereumRawTransaction);
@@ -105,6 +100,7 @@ public class HancockEthereumTransferClientTest {
 
     }
 
+    @PrepareForTest({ Common.class})
     @Test public void testSend() throws Exception {
         TransactionConfig txConfig = new TransactionConfig.Builder()
                 .withPrivateKey("0x6c47653f66ac9b733f3b8bf09ed3d300520b4d9c78711ba90162744f5906b1f8")
@@ -126,6 +122,7 @@ public class HancockEthereumTransferClientTest {
         assertTrue("transaction send and signed successfully", mockResult instanceof EthereumTransactionResponse);
     }
 
+    @PrepareForTest({ Common.class})
     @Test public void testAdaptTransfer() throws Exception {
 
         String nonce = "1";

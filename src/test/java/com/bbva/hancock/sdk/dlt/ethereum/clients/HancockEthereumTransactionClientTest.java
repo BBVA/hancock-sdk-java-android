@@ -52,8 +52,6 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @PowerMockIgnore("javax.net.ssl.*")
 //@RunWith(MockitoJUnitRunner.class)
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({TransactionEncoder.class,Credentials.class,EthereumRawTransaction.class,RawTransaction.class,Web3jFactory.class,
-        OkHttpClient.class,Call.class,okhttp3.Response.class,okhttp3.Request.class,GetBalanceResponse.class,HancockConfig.class, ValidateParameters.class, Common.class})
 public class HancockEthereumTransactionClientTest {
 
     public static HancockConfig mockedConfig;
@@ -83,12 +81,8 @@ public class HancockEthereumTransactionClientTest {
         BigInteger gasLimit = BigInteger.valueOf(222);
         BigInteger value = BigInteger.valueOf(333);
         String from = mockedWallet.getAddress();
-        String sender = mockedWallet.getAddress();
         String to = mockedWallet.getAddress();
         String data = "0xwhatever";
-        String addressOrAlias = "mockedAlias";
-        String tokenOwner = "0xmockedtokenOwner";
-        String spender = "0xmockedSpender";
 
         mockedEthereumTransferRequest = new EthereumTransferRequest(from, to, value.toString(), data);
         mockedEthereumRawTransaction = new EthereumRawTransaction(to, nonce, value, gasPrice, gasLimit);
@@ -96,7 +90,8 @@ public class HancockEthereumTransactionClientTest {
 
     }
 
-    @Test public void testSignTransaction() throws Exception {
+    @PrepareForTest({Common.class, Credentials.class, TransactionEncoder.class,RawTransaction.class})
+    @Test public void testSignTransaction() {
 
         PowerMockito.mockStatic(Credentials.class);
         when(Credentials.create("mockPrivateKey")).thenReturn(mock(Credentials.class));
@@ -111,15 +106,14 @@ public class HancockEthereumTransactionClientTest {
         when(TransactionEncoder.signMessage(any(RawTransaction.class), any(Credentials.class))).thenReturn(aux);
 
         String signedTransaction = mockedHancockEthereumClient.signTransaction(mockEthereumRawTransaction,"mockPrivateKey");
-        System.out.println("sign  "+signedTransaction);
         assertTrue("transaction signed successfully", signedTransaction instanceof String);
         assertEquals(signedTransaction,  Numeric.toHexString(aux));
 
     }
 
+    @PrepareForTest({Common.class})
     @Test public void testSendSignedTransaction() throws Exception {
 
-        EthereumTransactionResponse responseModel = mock(EthereumTransactionResponse.class);
         okhttp3.Request requestMock= mock(okhttp3.Request.class);
         okhttp3.Response responseMock= mock(okhttp3.Response.class);
 
@@ -146,9 +140,9 @@ public class HancockEthereumTransactionClientTest {
 
     }
 
+    @PrepareForTest({Common.class})
     @Test public void testSendToSignProvider() throws Exception {
 
-        EthereumTransactionResponse responseModel = mock(EthereumTransactionResponse.class);
         okhttp3.Request requestMock= mock(okhttp3.Request.class);
         okhttp3.Response responseMock= mock(okhttp3.Response.class);
 
@@ -175,9 +169,9 @@ public class HancockEthereumTransactionClientTest {
 
     }
 
+    @PrepareForTest({Common.class})
     @Test public void testSendRawTransaction() throws Exception {
 
-        EthereumTransactionResponse responseModel = mock(EthereumTransactionResponse.class);
         okhttp3.Request requestMock= mock(okhttp3.Request.class);
         okhttp3.Response responseMock= mock(okhttp3.Response.class);
 
@@ -202,6 +196,7 @@ public class HancockEthereumTransactionClientTest {
 
 
 
+    @PrepareForTest({Common.class})
     @Test public void testSendWithoutTxConfig() throws Exception {
 
         TransactionConfig txConfig = new TransactionConfig.Builder()

@@ -13,7 +13,7 @@ import com.bbva.hancock.sdk.dlt.ethereum.models.token.transfer.EthereumTokenTran
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.transferFrom.EthereumTokenTransferFromRequest;
 import com.bbva.hancock.sdk.dlt.ethereum.models.transaction.EthereumTransactionResponse;
 import com.bbva.hancock.sdk.dlt.ethereum.models.transaction.TransactionConfig;
-
+import okhttp3.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
@@ -22,26 +22,16 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.math.BigInteger;
 
-import okhttp3.Call;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Protocol;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.spy;
-import static org.powermock.api.mockito.PowerMockito.when;
+import static org.powermock.api.mockito.PowerMockito.*;
 
 @PowerMockIgnore({"javax.net.ssl.*"})
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({OkHttpClient.class,Call.class,okhttp3.Response.class,okhttp3.Request.class,org.web3j.crypto.Keys.class, Common.class})
 public class HancockEthereumTokenClientIntegrationTest {
 
+    @PrepareForTest({ Common.class})
     @Test public void testAdaptTransfer() throws Exception {
 
         BigInteger nonce = BigInteger.valueOf(1);
@@ -96,6 +86,7 @@ public class HancockEthereumTokenClientIntegrationTest {
 
     }
 
+    @PrepareForTest({ Common.class})
     @Test public void testTransfer() throws Exception {
 
         TransactionConfig txConfig = new TransactionConfig.Builder()
@@ -152,6 +143,7 @@ public class HancockEthereumTokenClientIntegrationTest {
 
     }
 
+    @PrepareForTest({ Common.class})
     @Test public void testTransferFrom() throws Exception {
 
         TransactionConfig txConfig = new TransactionConfig.Builder()
@@ -210,6 +202,7 @@ public class HancockEthereumTokenClientIntegrationTest {
 
     }
 
+    @PrepareForTest({ Common.class})
     @Test public void testTokenAllowance() throws Exception {
 
         TransactionConfig txConfig = new TransactionConfig.Builder()
@@ -267,6 +260,7 @@ public class HancockEthereumTokenClientIntegrationTest {
 
     }
 
+    @PrepareForTest({ Common.class})
     @Test public void testTokenApprove() throws Exception {
 
         TransactionConfig txConfig = new TransactionConfig.Builder()
@@ -324,12 +318,8 @@ public class HancockEthereumTokenClientIntegrationTest {
 
     }
 
+    @PrepareForTest({ Common.class})
     @Test public void testGetTokenBalance() throws Exception {
-
-        HancockConfig config = new HancockConfig.Builder()
-                .withAdapter("http://localhost","", 3004)
-                .build();
-        //HancockEthereumTokenClient classUnderTest = new HancockEthereumTokenClient(config);
 
         Request.Builder requestBuilder = new Request.Builder();
         requestBuilder.get();
@@ -365,11 +355,8 @@ public class HancockEthereumTokenClientIntegrationTest {
 
     }
 
+    @PrepareForTest({ Common.class})
     @Test public void testGetTokenMetadata() throws Exception {
-
-        HancockConfig config = new HancockConfig.Builder()
-                .withAdapter("http://localhost","", 3004)
-                .build();
 
         Request.Builder requestBuilder = new Request.Builder();
         requestBuilder.get();
@@ -409,11 +396,8 @@ public class HancockEthereumTokenClientIntegrationTest {
 
     }
 
+    @PrepareForTest({ Common.class})
     @Test public void testTokenRegister() throws Exception {
-
-        HancockConfig config = new HancockConfig.Builder()
-                .withAdapter("http://localhost","", 3004)
-                .build();
 
         Request request = new Request.Builder()
                 .get()

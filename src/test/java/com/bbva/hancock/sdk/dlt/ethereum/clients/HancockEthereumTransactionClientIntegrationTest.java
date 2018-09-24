@@ -34,9 +34,9 @@ import static org.powermock.api.mockito.PowerMockito.when;
 
 @PowerMockIgnore({"javax.net.ssl.*"})
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({OkHttpClient.class,Call.class,Response.class,Request.class,Keys.class, Common.class})
 public class HancockEthereumTransactionClientIntegrationTest {
 
+    @PrepareForTest({ Common.class})
     @Test public void testSendWithSendRawTx() throws Exception {
 
         TransactionConfig txConfig = new TransactionConfig.Builder()
@@ -85,6 +85,7 @@ public class HancockEthereumTransactionClientIntegrationTest {
 
     }
 
+    @PrepareForTest({ Common.class})
     @Test public void testSendWithSendSigned() throws Exception {
 
         TransactionConfig txConfig = new TransactionConfig.Builder()
@@ -134,6 +135,7 @@ public class HancockEthereumTransactionClientIntegrationTest {
 
     }
 
+    @PrepareForTest({ Common.class})
     @Test public void testSendWithSendToSign() throws Exception {
 
         TransactionConfig txConfig = new TransactionConfig.Builder()

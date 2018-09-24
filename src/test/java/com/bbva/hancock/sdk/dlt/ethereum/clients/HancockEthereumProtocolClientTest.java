@@ -43,15 +43,13 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 @PowerMockIgnore("javax.net.ssl.*")
 //@RunWith(MockitoJUnitRunner.class)
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({TransactionEncoder.class,Credentials.class,EthereumRawTransaction.class,RawTransaction.class,Web3jFactory.class,
-        OkHttpClient.class,Call.class,okhttp3.Response.class,okhttp3.Request.class,GetBalanceResponse.class,HancockConfig.class, ValidateParameters.class, Common.class})
 public class HancockEthereumProtocolClientTest {
 
     public static HancockConfig mockedConfig;
     public static HancockEthereumProtocolClient mockedHancockEthereumClient;
 
     @BeforeClass
-    public static void setUp() throws Exception{
+    public static void setUp(){
 
         mockedConfig = new HancockConfig.Builder()
                 .withEnv("custom")
@@ -62,6 +60,7 @@ public class HancockEthereumProtocolClientTest {
 
     }
 
+    @PrepareForTest({ Common.class})
     @Test public void testDecodeProtocol() throws Exception {
 
         okhttp3.Request requestMock = mock(okhttp3.Request.class);
@@ -77,12 +76,12 @@ public class HancockEthereumProtocolClientTest {
         PowerMockito.when(Common.class, "getResourceUrl", any(HancockConfig.class), any(String.class)).thenReturn("mockUrl");
 
         HancockProtocolDecodeResponse mockResult = spy_var.decodeProtocol("mockedCode");
-        System.out.println("transaction decode: ");
         assertTrue("transaction decode successfully", mockResult instanceof HancockProtocolDecodeResponse);
 
 
     }
 
+    @PrepareForTest({ Common.class})
     @Test public void testEncodeProtocol() throws Exception {
 
         okhttp3.Request requestMock = mock(okhttp3.Request.class);
@@ -102,7 +101,6 @@ public class HancockEthereumProtocolClientTest {
         HancockProtocolEncodeResponse mockResult = spy_var.encodeProtocol(HancockProtocolAction.transfer, new BigInteger("10"), "0x1234", "dafsda", HancockProtocolDlt.ethereum);
 
         assertTrue("transaction encode successfully", mockResult instanceof HancockProtocolEncodeResponse);
-        System.out.println("transaction encode: ");
 
     }
 

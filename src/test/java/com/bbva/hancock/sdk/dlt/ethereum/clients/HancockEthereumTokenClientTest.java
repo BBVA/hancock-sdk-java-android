@@ -61,8 +61,6 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @PowerMockIgnore("javax.net.ssl.*")
 //@RunWith(MockitoJUnitRunner.class)
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({TransactionEncoder.class,Credentials.class,EthereumRawTransaction.class,RawTransaction.class,Web3jFactory.class,
-        OkHttpClient.class,Call.class,okhttp3.Response.class,okhttp3.Request.class,GetBalanceResponse.class,HancockConfig.class, ValidateParameters.class, Common.class})
 public class HancockEthereumTokenClientTest {
 
     public static HancockConfig mockedConfig;
@@ -116,6 +114,7 @@ public class HancockEthereumTokenClientTest {
 
     }
 
+    @PrepareForTest({ ValidateParameters.class, Common.class})
     @Test public void testGetTokenBalance() throws Exception {
 
         PowerMockito.mockStatic(ValidateParameters.class);
@@ -147,6 +146,7 @@ public class HancockEthereumTokenClientTest {
 
     }
 
+    @PrepareForTest({ ValidateParameters.class, Common.class})
     @Test public void testGetTokenMetadata() throws Exception {
 
         PowerMockito.mockStatic(ValidateParameters.class);
@@ -185,6 +185,7 @@ public class HancockEthereumTokenClientTest {
         assertEquals(metadata.getTotalSupply(), Integer.valueOf(10000));
     }
 
+    @PrepareForTest({ ValidateParameters.class, Common.class})
     @Test public void testTokenTransfer() throws Exception {
 
         TransactionConfig txConfig = new TransactionConfig.Builder()
@@ -210,6 +211,7 @@ public class HancockEthereumTokenClientTest {
 
     }
 
+    @PrepareForTest({ ValidateParameters.class, Common.class})
     @Test public void testTokenTransferFrom() throws Exception {
 
         TransactionConfig txConfig = new TransactionConfig.Builder()
@@ -234,6 +236,7 @@ public class HancockEthereumTokenClientTest {
 
     }
 
+    @PrepareForTest({ ValidateParameters.class, Common.class})
     @Test public void testTokenAllowance() throws Exception {
 
         TransactionConfig txConfig = new TransactionConfig.Builder()
@@ -258,6 +261,7 @@ public class HancockEthereumTokenClientTest {
 
     }
 
+    @PrepareForTest({ ValidateParameters.class, Common.class})
     @Test public void testTokenApprove() throws Exception {
 
         TransactionConfig txConfig = new TransactionConfig.Builder()
@@ -281,6 +285,7 @@ public class HancockEthereumTokenClientTest {
 
     }
 
+    @PrepareForTest({ ValidateParameters.class, Common.class})
     @Test public void testTokenRegister() throws Exception {
 
         PowerMockito.mockStatic(ValidateParameters.class);
@@ -313,6 +318,7 @@ public class HancockEthereumTokenClientTest {
 
     }
 
+    @PrepareForTest({ ValidateParameters.class, Common.class})
     @Test public void testGetTransferUrl() throws Exception {
 
         HancockEthereumTokenClient spy_var = PowerMockito.spy(mockedHancockEthereumClient);
@@ -339,6 +345,7 @@ public class HancockEthereumTokenClientTest {
 
     }
 
+    @PrepareForTest({ ValidateParameters.class, Common.class})
     @Test public void testAdaptTransfer() throws Exception {
 
         String nonce = "1";

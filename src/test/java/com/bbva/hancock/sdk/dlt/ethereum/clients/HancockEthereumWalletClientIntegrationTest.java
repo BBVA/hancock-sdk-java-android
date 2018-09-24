@@ -2,6 +2,7 @@ package com.bbva.hancock.sdk.dlt.ethereum.clients;
 
 import com.bbva.hancock.sdk.Common;
 import com.bbva.hancock.sdk.config.HancockConfig;
+import com.bbva.hancock.sdk.dlt.ethereum.EthereumRawTransaction;
 import com.bbva.hancock.sdk.dlt.ethereum.EthereumWallet;
 import com.bbva.hancock.sdk.dlt.ethereum.models.wallet.GetBalanceResponse;
 import com.bbva.hancock.sdk.exception.HancockException;
@@ -24,19 +25,61 @@ import okhttp3.Protocol;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import org.web3j.crypto.RawTransaction;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 
 @PowerMockIgnore({"javax.net.ssl.*"})
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({OkHttpClient.class,Call.class,Response.class,Request.class,Keys.class, Common.class})
 public class HancockEthereumWalletClientIntegrationTest {
+
+    @PrepareForTest({Common.class})
+    @Test public void testCreateRawTransaction() throws Exception {
+
+        HancockEthereumWalletClient classUnderTest = new HancockEthereumWalletClient();
+        EthereumWallet wallet = classUnderTest.generateWallet();
+
+        BigInteger nonce = BigInteger.valueOf(1);
+        BigInteger gasPrice = BigInteger.valueOf(111);
+        BigInteger gasLimit = BigInteger.valueOf(222);
+        BigInteger value = BigInteger.valueOf(333);
+        String to = wallet.getAddress();
+        String data = "whatever";
+
+        EthereumRawTransaction rawTransaction = new EthereumRawTransaction(to, nonce, value, data, gasPrice, gasLimit);
+
+        assertTrue("RawTransaction is well constructed ", rawTransaction instanceof EthereumRawTransaction);
+        assertTrue("RawTransaction web3 instance is well constructed ", rawTransaction.getWeb3Instance() instanceof RawTransaction);
+        assertTrue("RawTransaction has nonce ", rawTransaction.getNonce() instanceof BigInteger);
+        assertEquals(rawTransaction.getNonce(), nonce);
+        assertTrue("RawTransaction has gasPrice ", rawTransaction.getGasPrice() instanceof BigInteger);
+        assertTrue("RawTransaction has gasLimit ", rawTransaction.getGasPrice() instanceof BigInteger);
+        assertTrue("RawTransaction has to ", rawTransaction.getTo() instanceof String);
+        assertEquals(rawTransaction.getTo(), to);
+        assertTrue("RawTransaction has value ", rawTransaction.getValue() instanceof BigInteger);
+        assertEquals(rawTransaction.getValue(), value);
+        assertTrue("RawTransaction has value ", rawTransaction.getData() instanceof String);
+        assertEquals(rawTransaction.getData(), data);
+
+
+        rawTransaction = new EthereumRawTransaction(to, nonce, value, gasPrice, gasLimit);
+
+        assertTrue("RawTransaction has value ", rawTransaction.getValue() instanceof BigInteger);
+        assertEquals(rawTransaction.getNonce(), nonce);
+
+
+        rawTransaction = new EthereumRawTransaction(to, nonce, new BigInteger("0"), data, gasPrice, gasLimit);
+
+        assertTrue("RawTransaction has value ", rawTransaction.getValue().equals(BigInteger.ZERO));
+        assertTrue("RawTransaction has value ", rawTransaction.getData() instanceof String);
+        assertEquals(rawTransaction.getNonce(), nonce);
+
+    }
 
     @Test public void testGenerateWallet() throws Exception {
 
@@ -48,6 +91,7 @@ public class HancockEthereumWalletClientIntegrationTest {
 
     }
 
+    @PrepareForTest({Keys.class})
     @Test (expected = HancockException.class)
     public void testGenerateWalletFail() throws Exception {
 
@@ -59,11 +103,8 @@ public class HancockEthereumWalletClientIntegrationTest {
 
     }
 
+    @PrepareForTest({Common.class})
     @Test public void testGetBalance() throws Exception {
-
-        HancockConfig config = new HancockConfig.Builder()
-                .withAdapter("http://localhost","", 3004)
-                .build();
 
         Request.Builder requestBuilder = new Request.Builder();
         requestBuilder.get();
@@ -102,12 +143,9 @@ public class HancockEthereumWalletClientIntegrationTest {
 
     }
 
+    @PrepareForTest({Common.class})
     @Test (expected = HancockException.class)
     public void testGetBalanceFail() throws Exception {
-
-        HancockConfig config = new HancockConfig.Builder()
-                .withAdapter("http://localhost","", 3004)
-                .build();
 
         Request.Builder requestBuilder = new Request.Builder();
         requestBuilder.get();

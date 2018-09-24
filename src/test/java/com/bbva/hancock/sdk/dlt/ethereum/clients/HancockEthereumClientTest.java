@@ -33,8 +33,7 @@ import static org.junit.Assert.assertTrue;
 @PowerMockIgnore("javax.net.ssl.*")
 //@RunWith(MockitoJUnitRunner.class)
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({TransactionEncoder.class,Credentials.class,EthereumRawTransaction.class,RawTransaction.class,Web3jFactory.class,
-        OkHttpClient.class,Call.class,okhttp3.Response.class,okhttp3.Request.class,GetBalanceResponse.class,HancockConfig.class, ValidateParameters.class})
+@PrepareForTest({HancockConfig.class})
 public class HancockEthereumClientTest {
 
     public static HancockConfig mockedConfig;

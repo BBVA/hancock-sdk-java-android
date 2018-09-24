@@ -6,11 +6,9 @@ package com.bbva.hancock.sdk.dlt.ethereum.clients;
 
 import com.bbva.hancock.sdk.Common;
 import com.bbva.hancock.sdk.config.HancockConfig;
-import com.bbva.hancock.sdk.dlt.ethereum.EthereumRawTransaction;
 import com.bbva.hancock.sdk.dlt.ethereum.EthereumWallet;
 import com.bbva.hancock.sdk.dlt.ethereum.models.util.ValidateParameters;
 import com.bbva.hancock.sdk.dlt.ethereum.models.wallet.GetBalanceResponse;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,22 +19,14 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.Keys;
-import org.web3j.crypto.RawTransaction;
-import org.web3j.crypto.TransactionEncoder;
-import org.web3j.protocol.Web3jFactory;
 
 import java.math.BigInteger;
-
-import okhttp3.Call;
-import okhttp3.OkHttpClient;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.eq;
-import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.when;
+import static org.powermock.api.mockito.PowerMockito.*;
 
 //import org.mockito.InjectMocks;
 //import org.mockito.Mock;
@@ -47,8 +37,6 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @PowerMockIgnore("javax.net.ssl.*")
 //@RunWith(MockitoJUnitRunner.class)
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({TransactionEncoder.class,Keys.class,Credentials.class,EthereumRawTransaction.class,RawTransaction.class,Web3jFactory.class,
-        OkHttpClient.class,Call.class,okhttp3.Response.class,okhttp3.Request.class,GetBalanceResponse.class,HancockConfig.class, ValidateParameters.class, Common.class})
 public class HancockEthereumWalletClientTest {
 
     public static HancockConfig mockedConfig;
@@ -72,6 +60,7 @@ public class HancockEthereumWalletClientTest {
 
     }
 
+    @PrepareForTest({Credentials.class,org.web3j.crypto.Keys.class})
     @Test public void testGenerateWallet() throws Exception {
 
         HancockEthereumWalletClient spy_wallet_var = PowerMockito.spy(mockedHancockEthereumClient);
@@ -94,6 +83,7 @@ public class HancockEthereumWalletClientTest {
 
     }
 
+    @PrepareForTest({ValidateParameters.class, Common.class})
     @Test public void testGetBalance() throws Exception {
 
         mockStatic(ValidateParameters.class);
