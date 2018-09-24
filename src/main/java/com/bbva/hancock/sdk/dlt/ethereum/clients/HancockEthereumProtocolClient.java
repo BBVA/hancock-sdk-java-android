@@ -32,6 +32,12 @@ public class HancockEthereumProtocolClient extends HancockClient {
         super(config);
     }
 
+    /**
+     * Decode content (a static predefined transaction for example) encoded Hancock's protocol
+     * @param code The encoded content
+     * @return The encoded content successfully decoded
+     * @throws HancockException
+     */
     public HancockProtocolDecodeResponse decodeProtocol(String code) throws HancockException {
 
         String url = getResourceUrl(getConfig(),"decode");
@@ -49,6 +55,16 @@ public class HancockEthereumProtocolClient extends HancockClient {
         return responseModel;
     }
 
+    /**
+     *
+     * @param action The operation to perform
+     * @param value The amount of coins to use
+     * @param to The destination address of the operation
+     * @param data Data which will also encoded
+     * @param dlt The DLT where the tx will be sent
+     * @return The operation to do successfully encoded
+     * @throws HancockException
+     */
     public HancockProtocolEncodeResponse encodeProtocol(HancockProtocolAction action, BigInteger value, String to, String data, HancockProtocolDlt dlt) throws HancockException {
 
         String url = getResourceUrl(getConfig(),"encode");

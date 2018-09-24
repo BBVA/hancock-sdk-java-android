@@ -1,10 +1,8 @@
 package com.bbva.hancock.sdk;
 
-import com.bbva.hancock.sdk.dlt.ethereum.models.util.ValidateParameters;
 import com.bbva.hancock.sdk.models.HancockSocketMessage;
 import com.bbva.hancock.sdk.models.HancockSocketRequest;
 import com.google.gson.Gson;
-
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
@@ -14,7 +12,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 
 public class HancockSocket {
@@ -78,11 +75,19 @@ public class HancockSocket {
 
     public void addContract(ArrayList<String> contracts){
         if (!contracts.isEmpty()) {
-            this.sendMessage("watch-transactions", contracts);
+            this.sendMessage("watch-contracts", contracts);
         }
     }
 
-    private void sendMessage(String kind, ArrayList<String> body) {
+    public WebSocketClient getWs() {
+        return ws;
+    }
+
+    public Map<String, Function> getCallbackFunctions() {
+        return callbackFunctions;
+    }
+
+    protected void sendMessage(String kind, ArrayList<String> body) {
 //        HancockSocketMessage message = this.getMessageFormat(kind, body);
         HancockSocketRequest message = new HancockSocketRequest(kind, body);
         if (this.ws.isOpen()) {

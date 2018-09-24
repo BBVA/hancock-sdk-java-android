@@ -40,6 +40,17 @@ public class HancockEthereumSmartContractClient extends HancockClient {
         this.transactionClient = transactionClient;
     }
 
+    /**
+     * Makes an invocation to an smart contract method.
+     * Invocations are used to call smart contract methods that writes information in the blockchain consuming gas
+     * @param contractAddressOrAlias Address or alias of the smart contract registered in Hancock
+     * @param method The name of the method to call
+     * @param params An array of arguments passed to the method
+     * @param from The address of the account doing the call
+     * @param options Configuration of how the transaction will be send to the network
+     * @return The returned value from the smart contract method
+     * @throws Exception
+     */
     public EthereumTransactionResponse invoke(String contractAddressOrAlias, String method, ArrayList<String> params, String from, TransactionConfig options) throws Exception {
 
         if (options.getPrivateKey() == null && options.getProvider() == null) {
@@ -63,6 +74,15 @@ public class HancockEthereumSmartContractClient extends HancockClient {
         return this.transactionClient.send(rawTx, options);
     }
 
+    /**
+     * Makes a call to an smart contract method. Calls only fetch information from blockchain so it doesn't consume gas
+     * @param contractAddressOrAlias Address or alias of the smart contract registered in Hancock
+     * @param method The name of the method to call
+     * @param params An array of arguments passed to the method
+     * @param from The address of the account doing the call
+     * @return The returned value from the smart contract method
+     * @throws HancockException
+     */
     public EthereumCallResponse call(String contractAddressOrAlias, String method, ArrayList<String> params, String from) throws HancockException {
 
         ValidateParameters.checkForContent(contractAddressOrAlias, "Address or Alias");
@@ -89,6 +109,14 @@ public class HancockEthereumSmartContractClient extends HancockClient {
 
     //TODO register: how to pass the abi??
 
+    /**
+     * Register a new smart contract instance in Hancock
+     * @param alias An alias for the smart contract
+     * @param address The address of the deployed smart contract instance
+     * @param abi The application binary interface (abi) of the deployed smart contract
+     * @return The result of the request
+     * @throws HancockException
+     */
     public HancockGenericResponse register(String alias, String address, ArrayList<Object> abi) throws HancockException {
 
         ValidateParameters.checkForContent(alias, "Alias");

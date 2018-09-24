@@ -39,7 +39,14 @@ public class HancockEthereumTransactionClient extends HancockClient {
         super(config);
     }
 
-    protected EthereumTransactionResponse send(EthereumRawTransaction rawtx, TransactionConfig txConfig) throws Exception {
+    /**
+     * Send a transaction to Ethereum using the configuration pass as parameter
+     * @param rawtx A raw transaction which will be sent to Ethereum
+     * @param txConfig Options which will be used to config the transaction
+     * @return The result of the request
+     * @throws Exception
+     */
+    public EthereumTransactionResponse send(EthereumRawTransaction rawtx, TransactionConfig txConfig) throws Exception {
 
         if (txConfig.getPrivateKey() != null) {
             String signedTransaction = this.signTransaction(rawtx, txConfig.getPrivateKey());
@@ -51,6 +58,12 @@ public class HancockEthereumTransactionClient extends HancockClient {
         return this.sendRawTransaction(rawtx);
     }
 
+    /**
+     * Sign a raw transaction with a given private key
+     * @param rawTransaction A raw transaction which will be signed with the privatekey
+     * @param privateKey The private key with which the raw transaction will be signed
+     * @return The signed transaction
+     */
     public String signTransaction(EthereumRawTransaction rawTransaction, String privateKey) {
 
         Credentials credentials = Credentials.create(privateKey);
@@ -60,6 +73,12 @@ public class HancockEthereumTransactionClient extends HancockClient {
         return hexValue;
     }
 
+    /**
+     * Send a raw transaction to the ethereum network (It is assumed that the "from" address which will sign the transaction is stored in the node)
+     * @param rawTx A raw transaction which will be sent to the network
+     * @return The result of the transaction
+     * @throws HancockException
+     */
     public EthereumTransactionResponse sendRawTransaction(EthereumRawTransaction rawTx) throws HancockException{
         String url = getConfig().getWallet().getHost() + ':' + getConfig().getWallet().getPort() +  getConfig().getWallet().getBase() +  getConfig().getWallet().getResources().get("sendTx");
         EthereumSendTransactionRequest sendBody = new EthereumSendTransactionRequest(rawTx);
@@ -73,19 +92,42 @@ public class HancockEthereumTransactionClient extends HancockClient {
         return txResponse;
     }
 
+    /**
+     * Send a raw transaction to one of the sign providers registered in hancock
+     * @param rawTx A raw transaction which will be signed by the sign provider
+     * @param txConfig Options which will be used to config the transaction (provider and callBack Options(optional))
+     * @return The result of the request
+     * @throws HancockException
+     */
     public EthereumTransactionResponse sendToSignProvider(EthereumRawTransaction rawTx, TransactionConfig txConfig) throws HancockException{
         String url = getConfig().getWallet().getHost() + ':' + getConfig().getWallet().getPort() +  getConfig().getWallet().getBase() +  getConfig().getWallet().getResources().get("signTx");
         EthereumSendToProviderRequest sendBody = new EthereumSendToProviderRequest(rawTx, txConfig.getProvider());
+        String requestId = "";
+        if (txConfig.getCallbackOptions() != null){
+            requestId = txConfig.getCallbackOptions().getRequestId();
+            sendBody.setBackUrl(txConfig.getCallbackOptions().getBackUrl());
+        }
         Gson gson = new Gson();
         String json = gson.toJson(sendBody);
         RequestBody body = RequestBody.create(getContentType(), json);
-        Request request = getRequest(url, body);
+        Request request = new Request.Builder()
+                .url(url)
+                .post(body)
+                .addHeader("vnd-hancock-request-id", requestId)
+                .build();
 
         Response response = makeCall(request);
         EthereumTransactionResponse txResponse = checkStatus(response, EthereumTransactionResponse.class);
         return txResponse;
     }
 
+    /**
+     * Send a signed transaction to the ethereum network
+     * @param signedTransaction A signed transaction which will be send to the network
+     * @param txConfig Options which will be used to config the transaction
+     * @return The result of the transaction
+     * @throws Exception
+     */
     public EthereumTransactionResponse sendSignedTransaction(String signedTransaction, TransactionConfig txConfig) throws Exception {
 
         String url = getConfig().getWallet().getHost() + ':' + getConfig().getWallet().getPort() +  getConfig().getWallet().getBase() +  getConfig().getWallet().getResources().get("sendSignedTx");
@@ -108,6 +150,13 @@ public class HancockEthereumTransactionClient extends HancockClient {
 
     }
 
+    /**
+     * Send a signed transaction directly to a node of Ethereum
+     * @param signedTransaction A signed transaction which will be send to the network
+     * @return The transaction hash
+     * @throws InterruptedException
+     * @throws ExecutionException
+     */
     public String sendSignedTransactionLocally(String signedTransaction) throws InterruptedException, ExecutionException {
 
         Web3j web3j = Web3jFactory.build(new HttpService(getConfig().getNode().getHost() + ":" + getConfig().getNode().getPort()));

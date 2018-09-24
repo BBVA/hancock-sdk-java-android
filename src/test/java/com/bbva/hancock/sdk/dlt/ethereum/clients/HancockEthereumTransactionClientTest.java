@@ -39,9 +39,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.eq;
-import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.when;
+import static org.powermock.api.mockito.PowerMockito.*;
 
 //import org.mockito.InjectMocks;
 //import org.mockito.Mock;
@@ -91,10 +89,11 @@ public class HancockEthereumTransactionClientTest {
     }
 
     @PrepareForTest({Common.class, Credentials.class, TransactionEncoder.class,RawTransaction.class})
-    @Test public void testSignTransaction() {
+    @Test public void testSignTransaction() throws Exception {
 
         PowerMockito.mockStatic(Credentials.class);
-        when(Credentials.create("mockPrivateKey")).thenReturn(mock(Credentials.class));
+        //when(Credentials.create("mockPrivateKey")).thenReturn(mock(Credentials.class));
+        when(Credentials.class, "create", "mockPrivateKey").thenReturn(mock(Credentials.class));
 
         PowerMockito.mockStatic(RawTransaction.class);
         EthereumRawTransaction mockEthereumRawTransaction = mock(EthereumRawTransaction.class);
