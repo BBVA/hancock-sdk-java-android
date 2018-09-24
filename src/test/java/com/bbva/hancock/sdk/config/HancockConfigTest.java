@@ -2,10 +2,14 @@ package com.bbva.hancock.sdk.config;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.powermock.api.mockito.PowerMockito.*;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 @PowerMockIgnore("javax.net.ssl.*")
@@ -34,9 +38,12 @@ public class HancockConfigTest {
         assertEquals(config.getNode().getPort(), 3003);
     }
 
-    @Test public void testConfigWithoutParams() {
+    @PrepareForTest({HancockConfig.Builder.class})
+    @Test public void testConfigWithoutParams() throws Exception {
 
         HancockConfig.Builder builder = new HancockConfig.Builder();
+        mockStatic(HancockConfig.Builder.class);
+        PowerMockito.doReturn(mock(HancockConfig.Builder.class)).when(mock(HancockConfig.Builder.class)).fromConfigFile();
         HancockConfig config = builder.build();
 
         assertTrue("Config OK", config instanceof HancockConfig);

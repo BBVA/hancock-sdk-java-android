@@ -15,6 +15,7 @@ import com.bbva.hancock.sdk.dlt.ethereum.models.smartContracts.EthereumCallRespo
 import com.bbva.hancock.sdk.dlt.ethereum.models.transaction.EthereumTransactionResponse;
 import com.bbva.hancock.sdk.dlt.ethereum.models.transaction.TransactionConfig;
 import com.bbva.hancock.sdk.dlt.ethereum.models.util.ValidateParameters;
+import com.bbva.hancock.sdk.exception.HancockException;
 import okhttp3.RequestBody;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -113,6 +114,66 @@ public class HancockEthereumSmartContractClientTest {
         EthereumTransactionResponse response = spy_var.invoke(addressOrAlias, method, params, from, mockedTransactionConfig);
         assertTrue("Response is of type TransactionResponse", response instanceof EthereumTransactionResponse);
         assertEquals(response.getSuccess(), true);
+
+    }
+
+    @PrepareForTest({ValidateParameters.class, Common.class})
+    @Test public void testInvoke2() throws Exception {
+
+        TransactionConfig mockedConfig = new TransactionConfig.Builder()
+                .withProvider("mockProvider")
+                .build();
+
+        PowerMockito.mockStatic(ValidateParameters.class);
+        PowerMockito.doNothing().when(ValidateParameters.class, "checkAddress", any(String.class));
+        PowerMockito.doNothing().when(ValidateParameters.class, "checkForContent", any(String.class) , any(String.class));
+
+        PowerMockito.doReturn(mockedEthereumAdaptInvoke)
+                .when(spy_var)
+                .adaptInvoke(any(String.class), any(String.class), any(ArrayList.class), any(String.class));
+
+        PowerMockito.doReturn(mockedEthereumTransactionResponse)
+                .when(spy_transaction_client)
+                .send(any(EthereumRawTransaction.class), any(TransactionConfig.class));
+
+        EthereumTransactionResponse response = spy_var.invoke(addressOrAlias, method, params, from, mockedConfig);
+        assertTrue("Response is of type TransactionResponse", response instanceof EthereumTransactionResponse);
+        assertEquals(response.getSuccess(), true);
+
+    }
+
+    @PrepareForTest({ValidateParameters.class, Common.class})
+    @Test public void testInvoke3() throws Exception {
+
+        TransactionConfig mockedConfig = new TransactionConfig.Builder()
+                .withPrivateKey("0x6c47653f66ac9b733f3b8bf09ed3d300520b4d9c78711ba90162744f5906b1f8")
+                .withProvider("mockProvider")
+                .build();
+
+        PowerMockito.mockStatic(ValidateParameters.class);
+        PowerMockito.doNothing().when(ValidateParameters.class, "checkAddress", any(String.class));
+        PowerMockito.doNothing().when(ValidateParameters.class, "checkForContent", any(String.class) , any(String.class));
+
+        PowerMockito.doReturn(mockedEthereumAdaptInvoke)
+                .when(spy_var)
+                .adaptInvoke(any(String.class), any(String.class), any(ArrayList.class), any(String.class));
+
+        PowerMockito.doReturn(mockedEthereumTransactionResponse)
+                .when(spy_transaction_client)
+                .send(any(EthereumRawTransaction.class), any(TransactionConfig.class));
+
+        EthereumTransactionResponse response = spy_var.invoke(addressOrAlias, method, params, from, mockedConfig);
+        assertTrue("Response is of type TransactionResponse", response instanceof EthereumTransactionResponse);
+        assertEquals(response.getSuccess(), true);
+
+    }
+
+    @PrepareForTest({ValidateParameters.class, Common.class})
+    @Test(expected = HancockException.class)
+    public void testInvokeException() throws Exception {
+
+        TransactionConfig mockedConfig = new TransactionConfig();
+        EthereumTransactionResponse response = spy_var.invoke(addressOrAlias, method, params, from, mockedConfig);
 
     }
 

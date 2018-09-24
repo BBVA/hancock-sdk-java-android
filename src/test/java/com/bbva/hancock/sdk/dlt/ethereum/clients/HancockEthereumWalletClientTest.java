@@ -23,90 +23,90 @@ import org.web3j.crypto.Keys;
 import java.math.BigInteger;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.eq;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.*;
+import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.*;
-
-//import org.mockito.InjectMocks;
-//import org.mockito.Mock;
-//import org.mockito.invocation.InvocationOnMock;
-//import org.mockito.junit.MockitoJUnitRunner;
-//import org.mockito.stubbing.Answer;
+import static org.powermock.api.mockito.PowerMockito.when;
 
 @PowerMockIgnore("javax.net.ssl.*")
-//@RunWith(MockitoJUnitRunner.class)
 @RunWith(PowerMockRunner.class)
 public class HancockEthereumWalletClientTest {
 
-    public static HancockConfig mockedConfig;
-    public static EthereumWallet mockedWallet;
-    public static ECKeyPair mockedEcKeyPair;
-    public static Credentials mockedCredentials;
-    public static HancockEthereumWalletClient mockedHancockEthereumClient;
+  public static HancockConfig mockedConfig;
+  public static EthereumWallet mockedWallet;
+  public static HancockEthereumWalletClient mockedHancockEthereumClient;
 
-    @BeforeClass
-    public static void setUp() throws Exception{
+  @BeforeClass
+  public static void setUp() throws Exception {
 
-        mockedConfig = new HancockConfig.Builder()
-                .withEnv("custom")
-                .withNode("http://mock.node.com", 9999)
-                .withAdapter("http://mock.adapter.com", "/base", 9999)
-                .build();
+    mockedConfig = new HancockConfig.Builder()
+        .withEnv("custom")
+        .withNode("http://mock.node.com", 9999)
+        .withAdapter("http://mock.adapter.com", "/base", 9999)
+        .build();
 
-        mockedEcKeyPair = new ECKeyPair(new BigInteger("0"), new BigInteger("1"));
-        mockedCredentials = Credentials.create(mockedEcKeyPair);
-        mockedHancockEthereumClient = new HancockEthereumWalletClient(mockedConfig);
+    HancockEthereumWalletClient hancockEthereumClient = new HancockEthereumWalletClient(mockedConfig);
 
-    }
+    mockedHancockEthereumClient = PowerMockito.spy(hancockEthereumClient);
+  }
 
-//    @PrepareForTest({Credentials.class,org.web3j.crypto.Keys.class})
-//    @Test public void testGenerateWallet() throws Exception {
+//  @PrepareForTest({Credentials.class, org.web3j.crypto.Keys.class})
+//  @Test
+//  public void testGenerateWallet() throws Exception {
 //
-//        HancockEthereumWalletClient spy_wallet_var = PowerMockito.spy(mockedHancockEthereumClient);
+//    ECKeyPair mockECKeyPair = mock(ECKeyPair.class);
+//    PowerMockito.when(mockECKeyPair.getPrivateKey()).thenReturn(new BigInteger("0"));
+//    PowerMockito.when(mockECKeyPair.getPublicKey()).thenReturn(new BigInteger("1"));
 //
-//        mockStatic(Keys.class);
-//        PowerMockito.when(Keys.class, "createEcKeyPair").thenReturn(mockedEcKeyPair);
+//    mockStatic(Keys.class);
+//    PowerMockito.when(Keys.class, "createEcKeyPair").thenReturn(mockECKeyPair);
 //
-//        mockStatic(Credentials.class);
-//        PowerMockito.when(Credentials.class, "create", any(ECKeyPair.class)).thenReturn(mockedCredentials);
+//    Credentials mockCredentials = mock(Credentials.class);
+//    mockStatic(Credentials.class);
+//    PowerMockito.when(Credentials.class, "create", mockECKeyPair).thenReturn(mockCredentials);
 //
-//        mockedWallet = spy_wallet_var.generateWallet();
+//    PowerMockito.when(mockCredentials.getAddress()).thenReturn("mockedAddress");
 //
-//        assertTrue("Wallet should have an address", mockedWallet.getAddress() instanceof String);
-//        assertTrue("Wallet should have a publicKey", mockedWallet.getPublicKey() instanceof String);
-//        assertTrue("Wallet should have a privateKey", mockedWallet.getPrivateKey() instanceof String);
+//    PowerMockito.when(mockCredentials.getEcKeyPair()).thenReturn(mockECKeyPair);
 //
-//        assertEquals(mockedWallet.getAddress(), "0x7f7915573c7e97b47efa546f5f6e3230263bcb49");
-//        assertEquals(mockedWallet.getPrivateKey(), "0x0");
-//        assertEquals(mockedWallet.getPublicKey(), "0x1");
+//    mockedWallet = mockedHancockEthereumClient.generateWallet();
 //
-//    }
+//    assertNotNull("Wallet should have an address", mockedWallet.getAddress());
+//    assertNotNull("Wallet should have a publicKey", mockedWallet.getPublicKey());
+//    assertNotNull("Wallet should have a privateKey", mockedWallet.getPrivateKey());
+//
+//    assertEquals(mockedWallet.getAddress(), "mockedAddress");
+//    assertEquals(mockedWallet.getPrivateKey(), "0x0");
+//    assertEquals(mockedWallet.getPublicKey(), "0x1");
+//
+//  }
 
-    @PrepareForTest({ValidateParameters.class, Common.class})
-    @Test public void testGetBalance() throws Exception {
+  @PrepareForTest({ValidateParameters.class, Common.class})
+  @Test
+  public void testGetBalance() throws Exception {
 
-        mockStatic(ValidateParameters.class);
-        PowerMockito.doNothing().when(ValidateParameters.class, "checkAddress", any(String.class));
-        PowerMockito.doNothing().when(ValidateParameters.class, "checkForContent", any(String.class) , any(String.class));
+    mockStatic(ValidateParameters.class);
+    PowerMockito.doNothing().when(ValidateParameters.class, "checkAddress", any(String.class));
+    PowerMockito.doNothing().when(ValidateParameters.class, "checkForContent", any(String.class), any(String.class));
 
-        GetBalanceResponse responseModel = mock(GetBalanceResponse.class);
-        when(responseModel.getBalance()).thenReturn("0");
-        okhttp3.Response responseMock = mock(okhttp3.Response.class);
-        okhttp3.Request requestMock = mock(okhttp3.Request.class);
+    GetBalanceResponse responseModel = mock(GetBalanceResponse.class);
+    when(responseModel.getBalance()).thenReturn("0");
+    okhttp3.Response responseMock = mock(okhttp3.Response.class);
+    okhttp3.Request requestMock = mock(okhttp3.Request.class);
 
-        HancockEthereumWalletClient spy_var = PowerMockito.spy(mockedHancockEthereumClient);
+//        HancockEthereumWalletClient spy_var = PowerMockito.spy(mockedHancockEthereumClient);
 
-        mockStatic(Common.class);
-        PowerMockito.when(Common.class, "getRequest", any(String.class)).thenReturn(requestMock);
-        PowerMockito.when(Common.class, "makeCall", any(okhttp3.Request.class)).thenReturn(responseMock);
-        PowerMockito.when(Common.class, "checkStatus", any(okhttp3.Response.class), eq(GetBalanceResponse.class)).thenReturn(responseModel);
+    mockStatic(Common.class);
+    PowerMockito.when(Common.class, "getRequest", any(String.class)).thenReturn(requestMock);
+    PowerMockito.when(Common.class, "makeCall", any(okhttp3.Request.class)).thenReturn(responseMock);
+    PowerMockito.when(Common.class, "checkStatus", any(okhttp3.Response.class), eq(GetBalanceResponse.class)).thenReturn(responseModel);
 
-        BigInteger balance = spy_var.getBalance("mockAddress");
+    BigInteger balance = mockedHancockEthereumClient.getBalance("mockAddress");
 
-        assertTrue("Wallet should have a Balance", balance instanceof BigInteger);
-        assertEquals(balance, BigInteger.valueOf(0));
+    assertNotNull("Wallet should have a Balance", balance);
+    assertEquals(balance, BigInteger.valueOf(0));
 
-    }
+  }
 
 }

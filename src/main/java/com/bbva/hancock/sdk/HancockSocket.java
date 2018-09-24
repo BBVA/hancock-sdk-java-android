@@ -57,22 +57,39 @@ public class HancockSocket {
         this.ws.connect();
     }
 
+    /**
+     * Add a new function to be called when a message is received from the socket fot a specific event
+     * @param event The event which is listened
+     * @param function The function to be called
+     */
     public void on(String event, Function function){
         this.callbackFunctions.put(event, function);
     }
 
+    /**
+     * Add new addresses to be listened for event of type "transfers".
+     * @param addresses New Addresses to be listened
+     */
     public void addTransfer(ArrayList<String> addresses){
         if (!addresses.isEmpty()) {
             this.sendMessage("watch-transfers", addresses);
         }
     }
 
+    /**
+     * Add new addresses to be listened for event of type "transactions".
+     * @param addresses New Addresses to be listened
+     */
     public void addTransaction(ArrayList<String> addresses){
         if (!addresses.isEmpty()) {
             this.sendMessage("watch-transactions", addresses);
         }
     }
 
+    /**
+     * Add new addresses or alias to be listened for event of type "contracts".
+     * @param contracts New address or alias to be listened
+     */
     public void addContract(ArrayList<String> contracts){
         if (!contracts.isEmpty()) {
             this.sendMessage("watch-contracts", contracts);

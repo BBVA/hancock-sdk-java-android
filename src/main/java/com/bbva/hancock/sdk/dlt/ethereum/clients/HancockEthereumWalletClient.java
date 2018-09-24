@@ -31,6 +31,11 @@ public class HancockEthereumWalletClient extends HancockClient {
         super(config);
     }
 
+    /**
+     * Generates a new wallet
+     * @return address, publicKey, and privateKey of the new wallet
+     * @throws HancockException
+     */
     public EthereumWallet generateWallet() throws HancockException {
 
         try {
@@ -53,6 +58,12 @@ public class HancockEthereumWalletClient extends HancockClient {
 
     }
 
+    /**
+     * Retrieves the ethers balance of an account
+     * @param address The token owner's address
+     * @return The account balance (in weis)
+     * @throws HancockException
+     */
     public BigInteger getBalance(String address) throws HancockException {
 
         ValidateParameters.checkForContent(address, "address");

@@ -6,7 +6,8 @@ public enum HancockErrorEnum {
     ERROR_API("Error calling Api"),
     ERROR_PARAMETER("Empty parameters"),
     ERROR_FORMAT("Addres invalid format"),
-    ERROR_NOKEY_NOPROVIDER("No key nor provider");
+    ERROR_NOKEY_NOPROVIDER("No key nor provider"),
+    ERROR_SOCKET("Error with the Socket");
     
     private String message;
     

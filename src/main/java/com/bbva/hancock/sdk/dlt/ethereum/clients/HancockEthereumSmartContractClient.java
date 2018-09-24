@@ -1,6 +1,7 @@
 package com.bbva.hancock.sdk.dlt.ethereum.clients;
 
 import com.bbva.hancock.sdk.HancockClient;
+import com.bbva.hancock.sdk.HancockSocket;
 import com.bbva.hancock.sdk.config.HancockConfig;
 import com.bbva.hancock.sdk.dlt.ethereum.EthereumRawTransaction;
 import com.bbva.hancock.sdk.dlt.ethereum.models.HancockGenericResponse;
@@ -16,7 +17,9 @@ import com.bbva.hancock.sdk.exception.HancockException;
 import com.bbva.hancock.sdk.exception.HancockTypeErrorEnum;
 import com.google.gson.Gson;
 
+import java.lang.reflect.Array;
 import java.math.BigInteger;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 import okhttp3.Request;
@@ -139,6 +142,28 @@ public class HancockEthereumSmartContractClient extends HancockClient {
         Response response = makeCall(request);
         HancockGenericResponse responseModel = checkStatus(response, HancockGenericResponse.class);
         return responseModel;
+    }
+
+    /**
+     * Create a websocket subscription to watch transactions of type "contracts" in the network
+     * @param contracts An array of address or alias that will be added to the watch list
+     * @param consumer A consumer plugin previously configured in hancock that will handle each received event
+     * @return A HancockSocket object which can add new subscriptions and listen incoming message
+     * @throws HancockException
+     */
+    public HancockSocket subscribe(ArrayList<String> contracts, String consumer) throws HancockException{
+        String url = getConfig().getBroker().getResources().get("events")
+                .replaceAll("__ADDRESS__", "")
+                .replaceAll("__SENDER__", "")
+                .replaceAll("__CONSUMER__", consumer);
+        try {
+            HancockSocket socket = new HancockSocket(url);
+            socket.addContract(contracts);
+            return socket;
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            throw new HancockException(HancockTypeErrorEnum.ERROR_INTERNAL, "50003", 500, HancockErrorEnum.ERROR_SOCKET.getMessage() , HancockErrorEnum.ERROR_SOCKET.getMessage(), e);
+        }
     }
 
     protected EthereumAdaptInvokeResponse adaptInvoke(String contractAddressOrAlias, String method, ArrayList<String> params, String from) throws HancockException {

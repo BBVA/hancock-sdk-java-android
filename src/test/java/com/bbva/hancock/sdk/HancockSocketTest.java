@@ -96,16 +96,45 @@ public class HancockSocketTest {
         verify(socket_spy, times(1)).sendMessage(any(String.class), any(ArrayList.class));
     }
 
-    /*@Test
-    public void testHancockSocketSendMessage()throws Exception {
+    @Test
+    public void testHancockSocketAddContractsWithNoParams()throws Exception {
 
-        ArrayList<String> address = new ArrayList<String>();
-        address.add("0xde8e772f0350e992ddef81bf8f51d94a8ea9216d");
+        ArrayList<String> contracts = new ArrayList<String>();
 
         HancockSocket socketTest = new HancockSocket("http://localhost:3000");
         HancockSocket socket_spy = spy(socketTest);
 
-        PowerMockito.doReturn(true).when(socket_spy).sendMessage(any(String.class), any(ArrayList.class));
-        socket_spy.sendMessage("watch-addresses", address);
-    }*/
+        PowerMockito.doNothing().when(socket_spy).sendMessage(any(String.class), any(ArrayList.class));
+        socket_spy.addContract(contracts);
+
+        verify(socket_spy, times(0)).sendMessage(any(String.class), any(ArrayList.class));
+    }
+
+    @Test
+    public void testHancockSocketAddTransferWithNoParams()throws Exception {
+
+        ArrayList<String> address = new ArrayList<String>();
+
+        HancockSocket socketTest = new HancockSocket("http://localhost:3000");
+        HancockSocket socket_spy = spy(socketTest);
+
+        PowerMockito.doNothing().when(socket_spy).sendMessage(any(String.class), any(ArrayList.class));
+        socket_spy.addTransfer(address);
+
+        verify(socket_spy, times(0)).sendMessage(any(String.class), any(ArrayList.class));
+    }
+
+    @Test
+    public void testHancockSocketAddTransactionWithNoParams()throws Exception {
+
+        ArrayList<String> address = new ArrayList<String>();
+
+        HancockSocket socketTest = new HancockSocket("http://localhost:3000");
+        HancockSocket socket_spy = spy(socketTest);
+
+        PowerMockito.doNothing().when(socket_spy).sendMessage(any(String.class), any(ArrayList.class));
+        socket_spy.addTransaction(address);
+
+        verify(socket_spy, times(0)).sendMessage(any(String.class), any(ArrayList.class));
+    }
 }
