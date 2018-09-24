@@ -1,12 +1,11 @@
 package com.bbva.hancock.sdk.dlt.ethereum.clients;
 
 import com.bbva.hancock.sdk.Common;
-import com.bbva.hancock.sdk.config.HancockConfig;
 import com.bbva.hancock.sdk.dlt.ethereum.EthereumRawTransaction;
 import com.bbva.hancock.sdk.dlt.ethereum.EthereumWallet;
 import com.bbva.hancock.sdk.dlt.ethereum.models.wallet.GetBalanceResponse;
 import com.bbva.hancock.sdk.exception.HancockException;
-
+import okhttp3.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
@@ -14,21 +13,12 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.web3j.crypto.Keys;
+import org.web3j.crypto.RawTransaction;
 
 import java.math.BigInteger;
 import java.security.InvalidAlgorithmParameterException;
 
-import okhttp3.Call;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Protocol;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
-import org.web3j.crypto.RawTransaction;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
@@ -85,9 +75,9 @@ public class HancockEthereumWalletClientIntegrationTest {
 
         HancockEthereumWalletClient classUnderTest = new HancockEthereumWalletClient();
         EthereumWallet wallet = classUnderTest.generateWallet();
-        assertTrue("Wallet should have an address", wallet.getAddress() instanceof String);
-        assertTrue("Wallet should have an address", wallet.getPublicKey() instanceof String);
-        assertTrue("Wallet should have an address", wallet.getPrivateKey() instanceof String);
+        assertNotNull("Wallet should have an address", wallet.getAddress());
+        assertNotNull("Wallet should have an address", wallet.getPublicKey());
+        assertNotNull("Wallet should have an address", wallet.getPrivateKey());
 
     }
 
