@@ -18,7 +18,7 @@ public class HancockClient {
 
     }
 
-    public HancockClient(HancockConfig config) throws Exception {
+    public HancockClient(HancockConfig config) {
 
         this.config = config;
     }

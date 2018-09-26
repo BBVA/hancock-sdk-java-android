@@ -41,7 +41,7 @@ public class EthereumTransactionClient extends HancockClient {
         super();
     }
 
-    public EthereumTransactionClient(HancockConfig config) throws Exception {
+    public EthereumTransactionClient(HancockConfig config) {
         super(config);
     }
 

@@ -17,7 +17,7 @@ public class EthereumClient extends HancockClient {
      * @param config Configuration of Hancock (Adapter, Broker, WalletHub, DLT Node)
      * @throws Exception
      */
-    public EthereumClient(HancockConfig config) throws Exception {
+    public EthereumClient(HancockConfig config) {
 
         super(config);
         this.protocolClient = new EthereumProtocolClient(config);

@@ -27,7 +27,7 @@ public class EthereumWalletClient extends HancockClient {
         super();
     }
 
-    public EthereumWalletClient(HancockConfig config) throws Exception {
+    public EthereumWalletClient(HancockConfig config) {
         super(config);
     }
 

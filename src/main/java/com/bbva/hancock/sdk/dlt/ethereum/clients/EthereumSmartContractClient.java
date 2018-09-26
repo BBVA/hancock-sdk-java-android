@@ -33,7 +33,7 @@ public class EthereumSmartContractClient extends HancockClient {
         super();
     }
 
-    public EthereumSmartContractClient(HancockConfig config, EthereumTransactionClient transactionClient) throws Exception {
+    public EthereumSmartContractClient(HancockConfig config, EthereumTransactionClient transactionClient) {
         super(config);
         this.transactionClient = transactionClient;
     }

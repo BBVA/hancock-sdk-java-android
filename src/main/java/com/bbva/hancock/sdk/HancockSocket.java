@@ -107,15 +107,10 @@ public class HancockSocket {
     }
 
     protected void sendMessage(String kind, ArrayList<String> body) {
-//        HancockSocketMessage message = this.getMessageFormat(kind, body);
         HancockSocketRequest message = new HancockSocketRequest(kind, body);
         if (this.ws.isOpen()) {
             Gson gson = new Gson();
             this.ws.send(gson.toJson(message));
         }
     }
-
-//    private HancockSocketMessage getMessageFormat(String kind, ArrayList<String> body) {
-//
-//    }
 }

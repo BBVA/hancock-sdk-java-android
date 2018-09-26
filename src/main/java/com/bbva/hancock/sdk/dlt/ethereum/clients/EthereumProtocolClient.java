@@ -28,7 +28,7 @@ public class EthereumProtocolClient extends HancockClient {
         super();
     }
 
-    public EthereumProtocolClient(HancockConfig config) throws Exception {
+    public EthereumProtocolClient(HancockConfig config) {
         super(config);
     }
 

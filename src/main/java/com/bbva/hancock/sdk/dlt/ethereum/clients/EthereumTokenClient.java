@@ -35,7 +35,7 @@ public class EthereumTokenClient extends HancockClient {
         this.transactionClient = transactionClient;
     }
 
-    public EthereumTokenClient(HancockConfig config, EthereumTransactionClient transactionClient) throws Exception {
+    public EthereumTokenClient(HancockConfig config, EthereumTransactionClient transactionClient) {
         super(config);
         this.transactionClient = transactionClient;
     }
