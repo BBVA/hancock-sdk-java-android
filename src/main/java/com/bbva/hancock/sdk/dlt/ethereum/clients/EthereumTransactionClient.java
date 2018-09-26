@@ -4,6 +4,7 @@ import com.bbva.hancock.sdk.HancockClient;
 import com.bbva.hancock.sdk.HancockSocket;
 import com.bbva.hancock.sdk.config.HancockConfig;
 import com.bbva.hancock.sdk.dlt.ethereum.EthereumRawTransaction;
+import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransaction;
 import com.bbva.hancock.sdk.dlt.ethereum.models.transaction.TransactionConfig;
 import com.bbva.hancock.sdk.dlt.ethereum.models.transaction.EthereumSendToProviderRequest;
 import com.bbva.hancock.sdk.dlt.ethereum.models.transaction.EthereumSendTransactionRequest;
@@ -34,13 +35,13 @@ import static com.bbva.hancock.sdk.Common.checkStatus;
 import static com.bbva.hancock.sdk.Common.getRequest;
 import static com.bbva.hancock.sdk.Common.makeCall;
 
-public class HancockEthereumTransactionClient extends HancockClient {
+public class EthereumTransactionClient extends HancockClient {
 
-    public HancockEthereumTransactionClient() {
+    public EthereumTransactionClient() {
         super();
     }
 
-    public HancockEthereumTransactionClient(HancockConfig config) throws Exception {
+    public EthereumTransactionClient(HancockConfig config) throws Exception {
         super(config);
     }
 
@@ -51,10 +52,10 @@ public class HancockEthereumTransactionClient extends HancockClient {
      * @return The result of the request
      * @throws Exception
      */
-    public EthereumTransactionResponse send(EthereumRawTransaction rawtx, TransactionConfig txConfig) throws Exception {
+    public EthereumTransactionResponse send(EthereumTransaction rawtx, TransactionConfig txConfig) throws Exception {
 
         if (txConfig.getPrivateKey() != null) {
-            String signedTransaction = this.signTransaction(rawtx, txConfig.getPrivateKey());
+            String signedTransaction = this.signTransaction(new EthereumRawTransaction(rawtx), txConfig.getPrivateKey());
             return this.sendSignedTransaction(signedTransaction, txConfig);
         } else if (txConfig.getProvider() != null){
             return this.sendToSignProvider(rawtx, txConfig);
@@ -84,7 +85,7 @@ public class HancockEthereumTransactionClient extends HancockClient {
      * @return The result of the transaction
      * @throws HancockException
      */
-    public EthereumTransactionResponse sendRawTransaction(EthereumRawTransaction rawTx) throws HancockException{
+    public EthereumTransactionResponse sendRawTransaction(EthereumTransaction rawTx) throws HancockException{
         String url = getConfig().getWallet().getHost() + ':' + getConfig().getWallet().getPort() +  getConfig().getWallet().getBase() +  getConfig().getWallet().getResources().get("sendTx");
         EthereumSendTransactionRequest sendBody = new EthereumSendTransactionRequest(rawTx);
         Gson gson = new Gson();
@@ -104,7 +105,7 @@ public class HancockEthereumTransactionClient extends HancockClient {
      * @return The result of the request
      * @throws HancockException
      */
-    public EthereumTransactionResponse sendToSignProvider(EthereumRawTransaction rawTx, TransactionConfig txConfig) throws HancockException{
+    public EthereumTransactionResponse sendToSignProvider(EthereumTransaction rawTx, TransactionConfig txConfig) throws HancockException{
         String url = getConfig().getWallet().getHost() + ':' + getConfig().getWallet().getPort() +  getConfig().getWallet().getBase() +  getConfig().getWallet().getResources().get("signTx");
         EthereumSendToProviderRequest sendBody = new EthereumSendToProviderRequest(rawTx, txConfig.getProvider());
         String requestId = "";
@@ -182,13 +183,19 @@ public class HancockEthereumTransactionClient extends HancockClient {
      * @throws HancockException
      */
     public HancockSocket subscribe(ArrayList<String> addresses, String consumer) throws HancockException{
-        String url = getConfig().getBroker().getResources().get("events")
+        String url = getConfig().getBroker().getHost() + ':'
+                + getConfig().getBroker().getPort()
+                + getConfig().getBroker().getBase()
+                + getConfig().getBroker().getResources().get("events")
                 .replaceAll("__ADDRESS__", "")
                 .replaceAll("__SENDER__", "")
                 .replaceAll("__CONSUMER__", consumer);
         try {
             HancockSocket socket = new HancockSocket(url);
-            socket.addTransfer(addresses);
+            socket.on("ready", o -> {
+                socket.addTransaction(addresses);
+                return null;
+            });
             return socket;
         } catch (URISyntaxException e) {
             e.printStackTrace();

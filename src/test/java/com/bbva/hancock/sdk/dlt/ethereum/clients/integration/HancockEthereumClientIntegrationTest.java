@@ -8,7 +8,7 @@
 //import com.bbva.hancock.sdk.config.HancockConfigNode;
 //import com.bbva.hancock.sdk.dlt.ethereum.EthereumRawTransaction;
 //import com.bbva.hancock.sdk.dlt.ethereum.EthereumWallet;
-//import com.bbva.hancock.sdk.dlt.ethereum.clients.HancockEthereumClient;
+//import com.bbva.hancock.sdk.dlt.ethereum.clients.EthereumClient;
 //import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransactionResponse;
 //import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransferRequest;
 //import com.bbva.hancock.sdk.dlt.ethereum.models.wallet.GetBalanceResponse;
@@ -61,7 +61,7 @@
 ////    public static void setUp() throws Exception{
 ////      HancockConfig mockConfig = mock(HancockConfig.class);
 ////
-////      mockedHancockEthereumClient = new HancockEthereumClient(mockConfig);
+////      mockedHancockEthereumClient = new EthereumClient(mockConfig);
 ////      //MockWebServer server = new MockWebServer();
 ////
 ////    }
@@ -97,7 +97,7 @@
 //
 //    @Test public void testGenerateWallet() throws Exception {
 //
-//        HancockEthereumClient classUnderTest = new HancockEthereumClient();
+//        EthereumClient classUnderTest = new EthereumClient();
 //        EthereumWallet wallet = classUnderTest.generateWallet();
 //        assertTrue("Wallet should have an address", wallet.getAddress() instanceof String);
 //        assertTrue("Wallet should have an address", wallet.getPublicKey() instanceof String);
@@ -115,14 +115,14 @@
 //        PowerMockito.mockStatic(Keys.class);
 //        PowerMockito.when(Keys.createEcKeyPair()).thenThrow(new InvalidAlgorithmParameterException());
 //
-//        HancockEthereumClient classUnderTest = new HancockEthereumClient();
+//        EthereumClient classUnderTest = new EthereumClient();
 //        EthereumWallet wallet = classUnderTest.generateWallet();
 //
 //    }
 //
 //    @Test public void testCreateRawTransaction() throws Exception {
 //
-//        HancockEthereumClient classUnderTest = new HancockEthereumClient();
+//        EthereumClient classUnderTest = new EthereumClient();
 //        EthereumWallet wallet = classUnderTest.generateWallet();
 //
 //        BigInteger nonce = BigInteger.valueOf(1);
@@ -165,7 +165,7 @@
 //
 //    @Test public void testSignTransaction() throws Exception {
 //
-//        HancockEthereumClient classUnderTest = new HancockEthereumClient();
+//        EthereumClient classUnderTest = new EthereumClient();
 //        EthereumWallet wallet = classUnderTest.generateWallet();
 //
 //        BigInteger nonce = BigInteger.valueOf(1);
@@ -197,7 +197,7 @@
 //        HancockConfig config = new HancockConfig.Builder()
 //                .withAdapter("http:localhost","", 3004)
 //                .build();
-//        //HancockEthereumClient classUnderTest = new HancockEthereumClient(config);
+//        //EthereumClient classUnderTest = new EthereumClient(config);
 //        EthereumTransferRequest transferRequest = new EthereumTransferRequest(
 //                "0x6c0a14f7561898b9ddc0c57652a53b2c6665443e",
 //                "0xde8e772f0350e992ddef81bf8f51d94a8ea9216d",
@@ -218,8 +218,8 @@
 //        responseBuilder.body(ResponseBody.create(MediaType.parse("application/json"), "{\"from\": \"0xde8e772f0350e992ddef81bf8f51d94a8ea9216d\",\"data\": \"0xa9059cbb0000000000000000000000006c0a14f7561898b9ddc0c57652a53b2c6665443e0000000000000000000000000000000000000000000000000000000000000001\",\"gasPrice\": \"0x4A817C800\",\"gas\": \"0xc7c5\",\"to\": \"0xe3aee62f5bb4abab8b614fd80f1d92dbdbfd2f9a\",\"nonce\": \"0x3a\"}"));
 //        responseBuilder.request(requestBuilder.build());
 //        responseBuilder.message("Smart Contract - Success");
-//        HancockEthereumClient auxHancockEthereumClient = new HancockEthereumClient();
-//        HancockEthereumClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
+//        EthereumClient auxHancockEthereumClient = new EthereumClient();
+//        EthereumClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
 //        PowerMockito.doReturn(responseBuilder.build()).when(spy_var).makeCall(any(okhttp3.Request.class));
 ////      Gson gson = new Gson();
 ////      EthereumTransactionResponse responseModel = gson.fromJson(responseBuilder.build().body().string(), EthereumTransactionResponse.class);
@@ -275,8 +275,8 @@
 //        EthereumRawTransaction mockedEthereumRawTransaction = new EthereumRawTransaction(nonce, gasPrice, gasLimit, to, value);
 //
 //        EthereumTransactionResponse responseTransfer= PowerMockito.mock(EthereumTransactionResponse.class);
-//        HancockEthereumClient auxHancockEthereumClient = new HancockEthereumClient();
-//        HancockEthereumClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
+//        EthereumClient auxHancockEthereumClient = new EthereumClient();
+//        EthereumClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
 //        PowerMockito.doReturn(responseBuilder.build()).when(spy_var).makeCall(any(okhttp3.Request.class));
 //        PowerMockito.doReturn(responseTransfer).when(spy_var).checkStatus(any(okhttp3.Response.class), eq(EthereumTransactionResponse.class));
 //
@@ -333,8 +333,8 @@
 //        EthereumRawTransaction mockedEthereumRawTransaction = new EthereumRawTransaction(nonce, gasPrice, gasLimit, to, value);
 //
 //        EthereumTransactionResponse responseTransfer= PowerMockito.mock(EthereumTransactionResponse.class);
-//        HancockEthereumClient auxHancockEthereumClient = new HancockEthereumClient();
-//        HancockEthereumClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
+//        EthereumClient auxHancockEthereumClient = new EthereumClient();
+//        EthereumClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
 //        PowerMockito.doReturn(responseBuilder.build()).when(spy_var).makeCall(any(okhttp3.Request.class));
 //        PowerMockito.doReturn(responseTransfer).when(spy_var).checkStatus(any(okhttp3.Response.class), eq(EthereumTransactionResponse.class));
 //
@@ -394,8 +394,8 @@
 //        EthereumRawTransaction mockedEthereumRawTransaction = new EthereumRawTransaction(nonce, gasPrice, gasLimit, to, value);
 //
 //        EthereumTransactionResponse responseTransfer = PowerMockito.mock(EthereumTransactionResponse.class);
-//        HancockEthereumClient auxHancockEthereumClient = new HancockEthereumClient();
-//        HancockEthereumClient spyHancockClient = PowerMockito.spy(auxHancockEthereumClient);
+//        EthereumClient auxHancockEthereumClient = new EthereumClient();
+//        EthereumClient spyHancockClient = PowerMockito.spy(auxHancockEthereumClient);
 //
 //        PowerMockito
 //                .doReturn(responseMock)
@@ -466,8 +466,8 @@
 //        EthereumRawTransaction mockedEthereumRawTransaction = new EthereumRawTransaction(nonce, gasPrice, gasLimit, to, value);
 //
 //        EthereumTransactionResponse responseAllowance= PowerMockito.mock(EthereumTransactionResponse.class);
-//        HancockEthereumClient auxHancockEthereumClient = new HancockEthereumClient();
-//        HancockEthereumClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
+//        EthereumClient auxHancockEthereumClient = new EthereumClient();
+//        EthereumClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
 //        PowerMockito.doReturn(responseBuilder.build()).when(spy_var).makeCall(any(okhttp3.Request.class));
 //        PowerMockito.doReturn(responseAllowance).when(spy_var).checkStatus(any(okhttp3.Response.class), eq(EthereumTransactionResponse.class));
 //
@@ -522,8 +522,8 @@
 //        EthereumRawTransaction mockedEthereumRawTransaction = new EthereumRawTransaction(nonce, gasPrice, gasLimit, to, value);
 //
 //        EthereumTransactionResponse responseApprovee= PowerMockito.mock(EthereumTransactionResponse.class);
-//        HancockEthereumClient auxHancockEthereumClient = new HancockEthereumClient();
-//        HancockEthereumClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
+//        EthereumClient auxHancockEthereumClient = new EthereumClient();
+//        EthereumClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
 //        PowerMockito.doReturn(responseBuilder.build()).when(spy_var).makeCall(any(okhttp3.Request.class));
 //        PowerMockito.doReturn(responseApprovee).when(spy_var).checkStatus(any(okhttp3.Response.class), eq(EthereumTransactionResponse.class));
 //
@@ -550,7 +550,7 @@
 //        HancockConfig config = new HancockConfig.Builder()
 //                .withAdapter("http://localhost","", 3004)
 //                .build();
-//        //HancockEthereumClient classUnderTest = new HancockEthereumClient(config);
+//        //EthereumClient classUnderTest = new EthereumClient(config);
 //
 //        Request.Builder requestBuilder = new Request.Builder();
 //        requestBuilder.get();
@@ -565,8 +565,8 @@
 //
 //
 //        GetBalanceResponse responseModel= PowerMockito.mock(GetBalanceResponse.class);
-//        HancockEthereumClient auxHancockEthereumClient = new HancockEthereumClient();
-//        HancockEthereumClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
+//        EthereumClient auxHancockEthereumClient = new EthereumClient();
+//        EthereumClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
 //        PowerMockito.doReturn(responseBuilder.build()).when(spy_var).makeCall(any(okhttp3.Request.class));
 //        PowerMockito.doReturn(responseModel).when(spy_var).checkStatus(any(okhttp3.Response.class), eq(GetBalanceResponse.class));
 //        PowerMockito.when(responseModel.getBalance()).thenReturn("10000");
@@ -585,7 +585,7 @@
 //        HancockConfig config = new HancockConfig.Builder()
 //                .withAdapter("http://localhost","", 3004)
 //                .build();
-//        //HancockEthereumClient classUnderTest = new HancockEthereumClient(config);
+//        //EthereumClient classUnderTest = new EthereumClient(config);
 //
 //        Request.Builder requestBuilder = new Request.Builder();
 //        requestBuilder.get();
@@ -601,8 +601,8 @@
 //
 //        EthereumTokenBalanceResponse aux = PowerMockito.mock(EthereumTokenBalanceResponse.class);
 //        GetEthereumTokenBalanceResponse responseModel= PowerMockito.mock(GetEthereumTokenBalanceResponse.class);
-//        HancockEthereumClient auxHancockEthereumClient = new HancockEthereumClient();
-//        HancockEthereumClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
+//        EthereumClient auxHancockEthereumClient = new EthereumClient();
+//        EthereumClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
 //        PowerMockito.doReturn(responseBuilder.build()).when(spy_var).makeCall(any(okhttp3.Request.class));
 //        PowerMockito.doReturn(responseModel).when(spy_var).checkStatus(any(okhttp3.Response.class), eq(GetEthereumTokenBalanceResponse.class));
 //        PowerMockito.when(responseModel.getTokenBalance()).thenReturn(aux);
@@ -637,8 +637,8 @@
 //
 //        GetEthereumTokenMetadataResponseData aux = PowerMockito.mock(GetEthereumTokenMetadataResponseData.class);
 //        GetEthereumTokenMetadataResponse responseModel= PowerMockito.mock(GetEthereumTokenMetadataResponse.class);
-//        HancockEthereumClient auxHancockEthereumClient = new HancockEthereumClient();
-//        HancockEthereumClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
+//        EthereumClient auxHancockEthereumClient = new EthereumClient();
+//        EthereumClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
 //        PowerMockito.doReturn(responseBuilder.build()).when(spy_var).makeCall(any(okhttp3.Request.class));
 //        PowerMockito.doReturn(responseModel).when(spy_var).checkStatus(any(okhttp3.Response.class), eq(GetEthereumTokenMetadataResponse.class));
 //        PowerMockito.when(responseModel.getTokenMetadata()).thenReturn(aux);
@@ -665,7 +665,7 @@
 //        HancockConfig config = new HancockConfig.Builder()
 //                .withAdapter("http://localhost","", 3004)
 //                .build();
-//        //HancockEthereumClient classUnderTest = new HancockEthereumClient(config);
+//        //EthereumClient classUnderTest = new EthereumClient(config);
 //
 //        Request.Builder requestBuilder = new Request.Builder();
 //        requestBuilder.get();
@@ -680,8 +680,8 @@
 //
 //
 //        GetBalanceResponse responseModel= PowerMockito.mock(GetBalanceResponse.class);
-//        HancockEthereumClient auxHancockEthereumClient = new HancockEthereumClient();
-//        HancockEthereumClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
+//        EthereumClient auxHancockEthereumClient = new EthereumClient();
+//        EthereumClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
 //        PowerMockito.doReturn(responseBuilder.build()).when(spy_var).makeCall(any(okhttp3.Request.class));
 //
 //
@@ -692,8 +692,8 @@
 //    @Test (expected = HancockException.class)
 //    public void testGetBalanceParameterFail() throws Exception {
 //
-//        HancockEthereumClient auxHancockEthereumClient = new HancockEthereumClient();
-//        HancockEthereumClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
+//        EthereumClient auxHancockEthereumClient = new EthereumClient();
+//        EthereumClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
 //
 //        BigInteger balance = spy_var.getBalance("");
 //        //System.out.println(balance);
@@ -713,8 +713,8 @@
 //        responseBuilder.request(requestBuilder.build());
 //        responseBuilder.message("Smart Contract - Success");
 //
-//        HancockEthereumClient auxHancockEthereumClient = new HancockEthereumClient();
-//        HancockEthereumClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
+//        EthereumClient auxHancockEthereumClient = new EthereumClient();
+//        EthereumClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
 //        PowerMockito.doReturn(responseBuilder.build()).when(spy_var).makeCall(any(okhttp3.Request.class));
 //
 //        HancockProtocolDecodeResponse response = spy_var.decodeProtocol("hancock://qr?code=%7B%22action%22%3A%22transfer%22%2C%22body%22%3A%7B%22value%22%3A%2210%22%2C%22data%22%3A%22dafsda%22%2C%22to%22%3A%220x1234%22%7D%2C%22dlt%22%3A%22ethereum%22%7D");
@@ -731,7 +731,7 @@
 //        HancockConfig config = new HancockConfig.Builder()
 //                .withAdapter("http://localhost","", 3004)
 //                .build();
-//        //HancockEthereumClient classUnderTest = new HancockEthereumClient(config);
+//        //EthereumClient classUnderTest = new EthereumClient(config);
 //
 //        Request.Builder requestBuilder = new Request.Builder();
 //        requestBuilder.get();
@@ -744,8 +744,8 @@
 //        responseBuilder.request(requestBuilder.build());
 //        responseBuilder.message("Smart Contract - Success");
 //
-//        HancockEthereumClient auxHancockEthereumClient = new HancockEthereumClient();
-//        HancockEthereumClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
+//        EthereumClient auxHancockEthereumClient = new EthereumClient();
+//        EthereumClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
 //        PowerMockito.doReturn(responseBuilder.build()).when(spy_var).makeCall(any(okhttp3.Request.class));
 //
 //        HancockProtocolEncodeResponse response = spy_var.encodeProtocol(HancockProtocolAction.transfer, new BigInteger("10"), "0x1234", "dafsda", HancockProtocolDlt.ethereum);
@@ -776,8 +776,8 @@
 //                .message("Token Register - Success")
 //                .build();
 //
-//        HancockEthereumClient auxHancockEthereumClient = new HancockEthereumClient();
-//        HancockEthereumClient spyHancockClient=PowerMockito.spy(auxHancockEthereumClient);
+//        EthereumClient auxHancockEthereumClient = new EthereumClient();
+//        EthereumClient spyHancockClient=PowerMockito.spy(auxHancockEthereumClient);
 //
 //        PowerMockito.doReturn(response).when(spyHancockClient).makeCall(any(okhttp3.Request.class));
 //

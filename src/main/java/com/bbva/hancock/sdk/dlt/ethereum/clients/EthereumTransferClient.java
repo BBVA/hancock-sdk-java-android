@@ -3,8 +3,8 @@ package com.bbva.hancock.sdk.dlt.ethereum.clients;
 import com.bbva.hancock.sdk.HancockClient;
 import com.bbva.hancock.sdk.HancockSocket;
 import com.bbva.hancock.sdk.config.HancockConfig;
-import com.bbva.hancock.sdk.dlt.ethereum.EthereumRawTransaction;
 import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransaction;
+import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransactionAdaptResponse;
 import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransferRequest;
 import com.bbva.hancock.sdk.dlt.ethereum.models.transaction.EthereumTransactionResponse;
 import com.bbva.hancock.sdk.dlt.ethereum.models.transaction.TransactionConfig;
@@ -13,7 +13,6 @@ import com.bbva.hancock.sdk.exception.HancockException;
 import com.bbva.hancock.sdk.exception.HancockTypeErrorEnum;
 import com.google.gson.Gson;
 
-import java.math.BigInteger;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 
@@ -26,16 +25,16 @@ import static com.bbva.hancock.sdk.Common.getRequest;
 import static com.bbva.hancock.sdk.Common.getResourceUrl;
 import static com.bbva.hancock.sdk.Common.makeCall;
 
-public class HancockEthereumTransferClient extends HancockClient {
+public class EthereumTransferClient extends HancockClient {
 
-    private HancockEthereumTransactionClient transactionClient;
+    private EthereumTransactionClient transactionClient;
 
-    public HancockEthereumTransferClient(HancockEthereumTransactionClient transactionClient) {
+    public EthereumTransferClient(EthereumTransactionClient transactionClient) {
         super();
         this.transactionClient = transactionClient;
     }
 
-    public HancockEthereumTransferClient(HancockConfig config, HancockEthereumTransactionClient transactionClient) throws Exception {
+    public EthereumTransferClient(HancockConfig config, EthereumTransactionClient transactionClient) throws Exception {
         super(config);
         this.transactionClient = transactionClient;
     }
@@ -48,7 +47,7 @@ public class HancockEthereumTransferClient extends HancockClient {
      * @throws Exception
      */
     public EthereumTransactionResponse send(EthereumTransferRequest tx, TransactionConfig txConfig) throws Exception{
-        EthereumRawTransaction rawtx = this.adaptTransfer(tx);
+        EthereumTransaction rawtx = this.adaptTransfer(tx);
         return this.transactionClient.send(rawtx, txConfig);
     }
 
@@ -60,13 +59,19 @@ public class HancockEthereumTransferClient extends HancockClient {
      * @throws HancockException
      */
     public HancockSocket subscribe(ArrayList<String> addresses, String consumer) throws HancockException {
-        String url = getConfig().getBroker().getResources().get("events")
+        String url = getConfig().getBroker().getHost() + ':'
+                + getConfig().getBroker().getPort()
+                + getConfig().getBroker().getBase()
+                + getConfig().getBroker().getResources().get("events")
                 .replaceAll("__ADDRESS__", "")
                 .replaceAll("__SENDER__", "")
                 .replaceAll("__CONSUMER__", consumer);
         try {
             HancockSocket socket = new HancockSocket(url);
-            socket.addTransfer(addresses);
+            socket.on("ready", o -> {
+                socket.addTransfer(addresses);
+                return null;
+            });
             return socket;
         } catch (URISyntaxException e) {
             e.printStackTrace();
@@ -74,7 +79,7 @@ public class HancockEthereumTransferClient extends HancockClient {
         }
     }
 
-    protected EthereumRawTransaction adaptTransfer(EthereumTransferRequest txRequest) throws Exception {
+    protected EthereumTransaction adaptTransfer(EthereumTransferRequest txRequest) throws Exception {
         String url = getResourceUrl(getConfig(),"transfer");
         Gson gson = new Gson();
         String json = gson.toJson(txRequest);
@@ -82,15 +87,9 @@ public class HancockEthereumTransferClient extends HancockClient {
         Request request = getRequest(url, body);
 
         Response response = makeCall(request);
-        EthereumTransaction rawTx = checkStatus(response, EthereumTransaction.class);
-        return new EthereumRawTransaction(
-                rawTx.getFrom(),
-                rawTx.getTo(),
-                new BigInteger(rawTx.getNonce()),
-                new BigInteger(rawTx.getValue()),
-                rawTx.getData(),
-                new BigInteger(rawTx.getGasPrice()),
-                new BigInteger(rawTx.getGas())
-            );
+        EthereumTransactionAdaptResponse rawTx = checkStatus(response, EthereumTransactionAdaptResponse.class);
+        if(rawTx.getData().getData() == null)
+            rawTx.getData().setData("");
+        return rawTx.getData();
     }
 }

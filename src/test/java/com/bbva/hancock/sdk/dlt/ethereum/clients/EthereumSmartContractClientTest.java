@@ -6,11 +6,10 @@ package com.bbva.hancock.sdk.dlt.ethereum.clients;
 
 import com.bbva.hancock.sdk.Common;
 import com.bbva.hancock.sdk.config.HancockConfig;
-import com.bbva.hancock.sdk.dlt.ethereum.EthereumRawTransaction;
 import com.bbva.hancock.sdk.dlt.ethereum.EthereumWallet;
 import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransaction;
+import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransactionAdaptResponse;
 import com.bbva.hancock.sdk.dlt.ethereum.models.HancockGenericResponse;
-import com.bbva.hancock.sdk.dlt.ethereum.models.smartContracts.EthereumAdaptInvokeResponse;
 import com.bbva.hancock.sdk.dlt.ethereum.models.smartContracts.EthereumCallResponse;
 import com.bbva.hancock.sdk.dlt.ethereum.models.transaction.EthereumTransactionResponse;
 import com.bbva.hancock.sdk.dlt.ethereum.models.transaction.TransactionConfig;
@@ -24,6 +23,7 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.web3j.protocol.core.methods.response.AbiDefinition;
 
 import java.util.ArrayList;
 
@@ -38,16 +38,15 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 @PowerMockIgnore("javax.net.ssl.*")
 //@RunWith(MockitoJUnitRunner.class)
 @RunWith(PowerMockRunner.class)
-public class HancockEthereumSmartContractClientTest {
+public class EthereumSmartContractClientTest {
 
     public static HancockConfig mockedConfig;
     public static TransactionConfig mockedTransactionConfig;
     public static EthereumWallet mockedWallet;
-    public static EthereumRawTransaction mockedEthereumRawTransaction;
-    public static HancockEthereumSmartContractClient mockedHancockEthereumClient;
-    public static HancockEthereumTransactionClient spy_transaction_client;
-    public static HancockEthereumSmartContractClient spy_var;
-    public static EthereumAdaptInvokeResponse mockedEthereumAdaptInvoke;
+    public static EthereumSmartContractClient mockedHancockEthereumClient;
+    public static EthereumTransactionClient spy_transaction_client;
+    public static EthereumSmartContractClient spy_var;
+    public static EthereumTransactionAdaptResponse mockedEthereumAdaptInvoke;
     public static EthereumTransaction mockedEthereumTransaction;
     public static EthereumTransactionResponse mockedEthereumTransactionResponse;
 
@@ -71,9 +70,9 @@ public class HancockEthereumSmartContractClientTest {
                 .withPrivateKey("0x6c47653f66ac9b733f3b8bf09ed3d300520b4d9c78711ba90162744f5906b1f8")
                 .build();
 
-        HancockEthereumTransactionClient transactionClient = new HancockEthereumTransactionClient(mockedConfig);
+        EthereumTransactionClient transactionClient = new EthereumTransactionClient(mockedConfig);
         spy_transaction_client = PowerMockito.spy(transactionClient);
-        mockedHancockEthereumClient = new HancockEthereumSmartContractClient(mockedConfig, spy_transaction_client);
+        mockedHancockEthereumClient = new EthereumSmartContractClient(mockedConfig, spy_transaction_client);
         spy_var = PowerMockito.spy(mockedHancockEthereumClient);
 
         mockedWallet = new EthereumWallet("0xmockAddress","mockPrivateKey","mockPublicKey");
@@ -91,7 +90,7 @@ public class HancockEthereumSmartContractClientTest {
         data = "mockedData";
 
         mockedEthereumTransaction = new EthereumTransaction(from, to, value, data, nonce, gasLimit, gasPrice);
-        mockedEthereumAdaptInvoke = new EthereumAdaptInvokeResponse(mockedEthereumTransaction, new HancockGenericResponse(1, "mockedOK"));
+        mockedEthereumAdaptInvoke = new EthereumTransactionAdaptResponse(mockedEthereumTransaction, new HancockGenericResponse(1, "mockedOK"));
         mockedEthereumTransactionResponse = new EthereumTransactionResponse(true);
 
     }
@@ -109,7 +108,7 @@ public class HancockEthereumSmartContractClientTest {
 
         PowerMockito.doReturn(mockedEthereumTransactionResponse)
                 .when(spy_transaction_client)
-                .send(any(EthereumRawTransaction.class), any(TransactionConfig.class));
+                .send(any(EthereumTransaction.class), any(TransactionConfig.class));
 
         EthereumTransactionResponse response = spy_var.invoke(addressOrAlias, method, params, from, mockedTransactionConfig);
         assertTrue("Response is of type TransactionResponse", response instanceof EthereumTransactionResponse);
@@ -134,7 +133,7 @@ public class HancockEthereumSmartContractClientTest {
 
         PowerMockito.doReturn(mockedEthereumTransactionResponse)
                 .when(spy_transaction_client)
-                .send(any(EthereumRawTransaction.class), any(TransactionConfig.class));
+                .send(any(EthereumTransaction.class), any(TransactionConfig.class));
 
         EthereumTransactionResponse response = spy_var.invoke(addressOrAlias, method, params, from, mockedConfig);
         assertTrue("Response is of type TransactionResponse", response instanceof EthereumTransactionResponse);
@@ -160,7 +159,7 @@ public class HancockEthereumSmartContractClientTest {
 
         PowerMockito.doReturn(mockedEthereumTransactionResponse)
                 .when(spy_transaction_client)
-                .send(any(EthereumRawTransaction.class), any(TransactionConfig.class));
+                .send(any(EthereumTransaction.class), any(TransactionConfig.class));
 
         EthereumTransactionResponse response = spy_var.invoke(addressOrAlias, method, params, from, mockedConfig);
         assertTrue("Response is of type TransactionResponse", response instanceof EthereumTransactionResponse);
@@ -225,7 +224,7 @@ public class HancockEthereumSmartContractClientTest {
         PowerMockito.when(Common.class, "checkStatus", any(okhttp3.Response.class), eq(HancockGenericResponse.class))
                 .thenReturn(responseModelMock);
 
-        HancockGenericResponse response = spy_var.register(addressOrAlias, to, new ArrayList<Object>());
+        HancockGenericResponse response = spy_var.register(addressOrAlias, to, new ArrayList<AbiDefinition>());
         assertTrue("Response is of type HancockGenericResponse", response instanceof HancockGenericResponse);
         assertEquals(response.getDescription(), "mockedOk");
 
@@ -236,7 +235,7 @@ public class HancockEthereumSmartContractClientTest {
 
         okhttp3.Request requestMock = mock(okhttp3.Request.class);
         okhttp3.Response responseMock = mock(okhttp3.Response.class);
-        EthereumAdaptInvokeResponse responseModelMock = new EthereumAdaptInvokeResponse(mockedEthereumTransaction, new HancockGenericResponse(1,"mockedOk"));
+        EthereumTransactionAdaptResponse responseModelMock = new EthereumTransactionAdaptResponse(mockedEthereumTransaction, new HancockGenericResponse(1,"mockedOk"));
 
         mockStatic(Common.class);
         PowerMockito.when(Common.class, "getRequest", any(String.class), any(RequestBody.class))
@@ -245,11 +244,11 @@ public class HancockEthereumSmartContractClientTest {
         PowerMockito.when(Common.class, "makeCall", any(okhttp3.Request.class))
                 .thenReturn(responseMock);
 
-        PowerMockito.when(Common.class, "checkStatus", any(okhttp3.Response.class), eq(EthereumAdaptInvokeResponse.class))
+        PowerMockito.when(Common.class, "checkStatus", any(okhttp3.Response.class), eq(EthereumTransactionAdaptResponse.class))
                 .thenReturn(responseModelMock);
 
-        EthereumAdaptInvokeResponse response = spy_var.adaptInvoke(addressOrAlias, method, params, from);
-        assertTrue("Response is of type EthereumAdaptInvokeResponse", response instanceof EthereumAdaptInvokeResponse);
+        EthereumTransactionAdaptResponse response = spy_var.adaptInvoke(addressOrAlias, method, params, from);
+        assertTrue("Response is of type EthereumTransactionAdaptResponse", response instanceof EthereumTransactionAdaptResponse);
         assertEquals(response.getData().getFrom(), from);
         assertEquals(response.getData().getTo(), to);
         assertEquals(response.getData().getData(), data);

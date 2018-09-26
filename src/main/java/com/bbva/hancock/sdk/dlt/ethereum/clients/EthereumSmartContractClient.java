@@ -3,10 +3,9 @@ package com.bbva.hancock.sdk.dlt.ethereum.clients;
 import com.bbva.hancock.sdk.HancockClient;
 import com.bbva.hancock.sdk.HancockSocket;
 import com.bbva.hancock.sdk.config.HancockConfig;
-import com.bbva.hancock.sdk.dlt.ethereum.EthereumRawTransaction;
+import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransactionAdaptResponse;
 import com.bbva.hancock.sdk.dlt.ethereum.models.HancockGenericResponse;
 import com.bbva.hancock.sdk.dlt.ethereum.models.smartContracts.EthereumAdaptInvokeRequest;
-import com.bbva.hancock.sdk.dlt.ethereum.models.smartContracts.EthereumAdaptInvokeResponse;
 import com.bbva.hancock.sdk.dlt.ethereum.models.smartContracts.EthereumCallResponse;
 import com.bbva.hancock.sdk.dlt.ethereum.models.smartContracts.EthereumRegisterRequest;
 import com.bbva.hancock.sdk.dlt.ethereum.models.transaction.EthereumTransactionResponse;
@@ -16,29 +15,25 @@ import com.bbva.hancock.sdk.exception.HancockErrorEnum;
 import com.bbva.hancock.sdk.exception.HancockException;
 import com.bbva.hancock.sdk.exception.HancockTypeErrorEnum;
 import com.google.gson.Gson;
-
-import java.lang.reflect.Array;
-import java.math.BigInteger;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import org.web3j.protocol.core.methods.response.AbiDefinition;
 
-import static com.bbva.hancock.sdk.Common.checkStatus;
-import static com.bbva.hancock.sdk.Common.getRequest;
-import static com.bbva.hancock.sdk.Common.makeCall;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
 
-public class HancockEthereumSmartContractClient extends HancockClient {
+import static com.bbva.hancock.sdk.Common.*;
 
-    private HancockEthereumTransactionClient transactionClient;
+public class EthereumSmartContractClient extends HancockClient {
 
-    public HancockEthereumSmartContractClient(){
+    private EthereumTransactionClient transactionClient;
+
+    public EthereumSmartContractClient(){
         super();
     }
 
-    public HancockEthereumSmartContractClient(HancockConfig config, HancockEthereumTransactionClient transactionClient) throws Exception {
+    public EthereumSmartContractClient(HancockConfig config, EthereumTransactionClient transactionClient) throws Exception {
         super(config);
         this.transactionClient = transactionClient;
     }
@@ -64,17 +59,8 @@ public class HancockEthereumSmartContractClient extends HancockClient {
         ValidateParameters.checkForContent(from, "From");
         ValidateParameters.checkAddress(from);
 
-        EthereumAdaptInvokeResponse invokeResponse = this.adaptInvoke(contractAddressOrAlias, method, params, from);
-        EthereumRawTransaction rawTx = new EthereumRawTransaction(
-                invokeResponse.getData().getFrom(),
-                invokeResponse.getData().getTo(),
-                new BigInteger(invokeResponse.getData().getNonce()),
-                new BigInteger(invokeResponse.getData().getValue()),
-                invokeResponse.getData().getData(),
-                new BigInteger(invokeResponse.getData().getGasPrice()),
-                new BigInteger(invokeResponse.getData().getGas())
-        );
-        return this.transactionClient.send(rawTx, options);
+        EthereumTransactionAdaptResponse invokeResponse = this.adaptInvoke(contractAddressOrAlias, method, params, from);
+        return this.transactionClient.send(invokeResponse.getData(), options);
     }
 
     /**
@@ -120,7 +106,7 @@ public class HancockEthereumSmartContractClient extends HancockClient {
      * @return The result of the request
      * @throws HancockException
      */
-    public HancockGenericResponse register(String alias, String address, ArrayList<Object> abi) throws HancockException {
+    public HancockGenericResponse register(String alias, String address, ArrayList<AbiDefinition> abi) throws HancockException {
 
         ValidateParameters.checkForContent(alias, "Alias");
         ValidateParameters.checkForContent(address, "Address");
@@ -152,12 +138,19 @@ public class HancockEthereumSmartContractClient extends HancockClient {
      * @throws HancockException
      */
     public HancockSocket subscribe(ArrayList<String> contracts, String consumer) throws HancockException{
-        String url = getConfig().getBroker().getResources().get("events")
+        String url = getConfig().getBroker().getHost() + ':'
+                + getConfig().getBroker().getPort()
+                + getConfig().getBroker().getBase()
+                + getConfig().getBroker().getResources().get("events")
                 .replaceAll("__ADDRESS__", "")
                 .replaceAll("__SENDER__", "")
                 .replaceAll("__CONSUMER__", consumer);
         try {
             HancockSocket socket = new HancockSocket(url);
+            socket.on("ready", o -> {
+                socket.addTransfer(contracts);
+                return null;
+            });
             socket.addContract(contracts);
             return socket;
         } catch (URISyntaxException e) {
@@ -166,7 +159,7 @@ public class HancockEthereumSmartContractClient extends HancockClient {
         }
     }
 
-    protected EthereumAdaptInvokeResponse adaptInvoke(String contractAddressOrAlias, String method, ArrayList<String> params, String from) throws HancockException {
+    protected EthereumTransactionAdaptResponse adaptInvoke(String contractAddressOrAlias, String method, ArrayList<String> params, String from) throws HancockException {
 
         String url = getConfig().getAdapter().getHost() + ':'
                 + getConfig().getAdapter().getPort()
@@ -182,7 +175,7 @@ public class HancockEthereumSmartContractClient extends HancockClient {
         Request request = getRequest(url, body);
 
         Response response = makeCall(request);
-        EthereumAdaptInvokeResponse responseModel = checkStatus(response, EthereumAdaptInvokeResponse.class);
+        EthereumTransactionAdaptResponse responseModel = checkStatus(response, EthereumTransactionAdaptResponse.class);
         return responseModel;
     }
 }

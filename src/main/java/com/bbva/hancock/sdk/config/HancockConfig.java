@@ -64,15 +64,29 @@ public class HancockConfig implements Serializable {
         private HancockConfigService wallet;
         private HancockConfigService broker;
 
+        /**
+         * Builder for HancockConfig
+         */
         public Builder() {
             this.fromConfigFile();
         }
 
+        /**
+         * Configuration of environment
+         * @param env Environment name
+         * @return Builder
+         */
         public Builder withEnv(String env) {
             this.env = env;
             return this;
         }
 
+        /**
+         * Configuration of DLT node to connect to
+         * @param host Host of the node
+         * @param port Port of the node
+         * @return Builder
+         */
         public Builder withNode(String host, int port) {
 
             if (this.node == null) {
@@ -85,6 +99,13 @@ public class HancockConfig implements Serializable {
             return this;
         }
 
+        /**
+         * Configuration of Hancock's Adapter
+         * @param host Host of Adapter
+         * @param base Base String to build url endpoints of Adapter
+         * @param port Port of Adapter
+         * @return Builder
+         */
         public Builder withAdapter(String host, String base, int port) {
 
             if (this.adapter == null) {
@@ -98,6 +119,13 @@ public class HancockConfig implements Serializable {
             return this;
         }
 
+        /**
+         * Configuration of Hancock's Wallet
+         * @param host Host of Wallet
+         * @param base Base String to build url endpoints of Wallet
+         * @param port Port of Wallet
+         * @return Builder
+         */
         public Builder withWallet(String host, String base, int port) {
 
             if (this.wallet == null) {
@@ -111,6 +139,13 @@ public class HancockConfig implements Serializable {
             return this;
         }
 
+        /**
+         * Configuration of Hancock's Broker
+         * @param host Host of Broker
+         * @param base Base String to build url endpoints of Broker
+         * @param port Port of Broker
+         * @return Builder
+         */
         public Builder withBroker(String host, String base, int port) {
 
             if (this.broker == null) {
@@ -171,7 +206,6 @@ public class HancockConfig implements Serializable {
             Yaml yaml = new Yaml();
 
             Map<String, Object> object = (Map<String, Object>) yaml.load(input);
-            System.out.println(object);
 
             String env = (String) object.get("env");
             Map<String, Object> node = (Map<String, Object>) object.get("node");

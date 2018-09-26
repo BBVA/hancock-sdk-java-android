@@ -1,7 +1,6 @@
 package com.bbva.hancock.sdk.dlt.ethereum.clients;
 
 import com.bbva.hancock.sdk.Common;
-import com.bbva.hancock.sdk.config.HancockConfig;
 import com.bbva.hancock.sdk.dlt.ethereum.models.protocol.HancockProtocolAction;
 import com.bbva.hancock.sdk.dlt.ethereum.models.protocol.HancockProtocolDecodeResponse;
 import com.bbva.hancock.sdk.dlt.ethereum.models.protocol.HancockProtocolDlt;
@@ -25,7 +24,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
 
 @PowerMockIgnore({"javax.net.ssl.*"})
 @RunWith(PowerMockRunner.class)
-public class HancockEthereumProtocolClientIntegrationTest {
+public class EthereumProtocolClientIntegrationTest {
 
     @PrepareForTest({Common.class})
     @Test public void testDecodeProtocol() throws Exception {
@@ -42,8 +41,8 @@ public class HancockEthereumProtocolClientIntegrationTest {
         responseBuilder.message("Smart Contract - Success");
         Response mockedResponse = responseBuilder.build();
 
-        HancockEthereumProtocolClient auxHancockEthereumClient = new HancockEthereumProtocolClient();
-        HancockEthereumProtocolClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
+        EthereumProtocolClient auxHancockEthereumClient = new EthereumProtocolClient();
+        EthereumProtocolClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
 
         mockStatic(Common.class);
         when(Common.class, "getResourceUrl", any(), any())
@@ -78,8 +77,8 @@ public class HancockEthereumProtocolClientIntegrationTest {
         responseBuilder.message("Smart Contract - Success");
         Response mockedResponse = responseBuilder.build();
 
-        HancockEthereumProtocolClient auxHancockEthereumClient = new HancockEthereumProtocolClient();
-        HancockEthereumProtocolClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
+        EthereumProtocolClient auxHancockEthereumClient = new EthereumProtocolClient();
+        EthereumProtocolClient spy_var=PowerMockito.spy(auxHancockEthereumClient);
 
         mockStatic(Common.class);
         when(Common.class, "getResourceUrl", any(), any())

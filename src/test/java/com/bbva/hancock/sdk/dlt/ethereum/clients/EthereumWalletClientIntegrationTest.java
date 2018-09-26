@@ -1,7 +1,6 @@
 package com.bbva.hancock.sdk.dlt.ethereum.clients;
 
 import com.bbva.hancock.sdk.Common;
-import com.bbva.hancock.sdk.dlt.ethereum.EthereumRawTransaction;
 import com.bbva.hancock.sdk.dlt.ethereum.EthereumWallet;
 import com.bbva.hancock.sdk.dlt.ethereum.models.wallet.GetBalanceResponse;
 import com.bbva.hancock.sdk.exception.HancockException;
@@ -13,11 +12,9 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.web3j.crypto.Keys;
-import org.web3j.crypto.RawTransaction;
 
 import java.math.BigInteger;
 import java.security.InvalidAlgorithmParameterException;
-import java.security.Key;
 
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -27,12 +24,12 @@ import static org.powermock.api.mockito.PowerMockito.when;
 
 @PowerMockIgnore({"javax.net.ssl.*"})
 @RunWith(PowerMockRunner.class)
-public class HancockEthereumWalletClientIntegrationTest {
+public class EthereumWalletClientIntegrationTest {
 
 //    @PrepareForTest({Common.class})
 //    @Test public void testCreateRawTransaction() throws Exception {
 //
-//        HancockEthereumWalletClient classUnderTest = new HancockEthereumWalletClient();
+//        EthereumWalletClient classUnderTest = new EthereumWalletClient();
 //        EthereumWallet wallet = classUnderTest.generateWallet();
 //
 //        BigInteger nonce = BigInteger.valueOf(1);
@@ -74,7 +71,7 @@ public class HancockEthereumWalletClientIntegrationTest {
 //
 //    @Test public void testGenerateWallet() throws Exception {
 //
-//        HancockEthereumWalletClient classUnderTest = new HancockEthereumWalletClient();
+//        EthereumWalletClient classUnderTest = new EthereumWalletClient();
 //        EthereumWallet wallet = classUnderTest.generateWallet();
 //        assertNotNull("Wallet should have an address", wallet.getAddress());
 //        assertNotNull("Wallet should have an address", wallet.getPublicKey());
@@ -89,7 +86,7 @@ public class HancockEthereumWalletClientIntegrationTest {
         PowerMockito.mockStatic(Keys.class);
         when(Keys.class, "createEcKeyPair").thenThrow(new InvalidAlgorithmParameterException());
 
-        HancockEthereumWalletClient classUnderTest = new HancockEthereumWalletClient();
+        EthereumWalletClient classUnderTest = new EthereumWalletClient();
         EthereumWallet wallet = classUnderTest.generateWallet();
 
     }
@@ -121,8 +118,8 @@ public class HancockEthereumWalletClientIntegrationTest {
 
 
         GetBalanceResponse responseModel= PowerMockito.mock(GetBalanceResponse.class);
-        HancockEthereumWalletClient auxHancockEthereumWalletClient = new HancockEthereumWalletClient();
-        HancockEthereumWalletClient spy_var=PowerMockito.spy(auxHancockEthereumWalletClient);
+        EthereumWalletClient auxEthereumWalletClient = new EthereumWalletClient();
+        EthereumWalletClient spy_var=PowerMockito.spy(auxEthereumWalletClient);
 
         PowerMockito.when(responseModel.getBalance()).thenReturn("10000");
 
@@ -160,8 +157,8 @@ public class HancockEthereumWalletClientIntegrationTest {
         when(Common.class, "makeCall", any(Request.class))
                 .thenReturn(mockedResponse);
 
-        HancockEthereumWalletClient auxHancockEthereumWalletClient = new HancockEthereumWalletClient();
-        HancockEthereumWalletClient spy_var=PowerMockito.spy(auxHancockEthereumWalletClient);
+        EthereumWalletClient auxEthereumWalletClient = new EthereumWalletClient();
+        EthereumWalletClient spy_var=PowerMockito.spy(auxEthereumWalletClient);
 
 
         BigInteger balance = spy_var.getBalance("0xde8e772f0350e992ddef81bf8f51d94a8ea9216d");
@@ -171,8 +168,8 @@ public class HancockEthereumWalletClientIntegrationTest {
     @Test (expected = HancockException.class)
     public void testGetBalanceParameterFail() throws Exception {
 
-        HancockEthereumWalletClient auxHancockEthereumWalletClient = new HancockEthereumWalletClient();
-        HancockEthereumWalletClient spy_var=PowerMockito.spy(auxHancockEthereumWalletClient);
+        EthereumWalletClient auxEthereumWalletClient = new EthereumWalletClient();
+        EthereumWalletClient spy_var=PowerMockito.spy(auxEthereumWalletClient);
 
         BigInteger balance = spy_var.getBalance("");
 

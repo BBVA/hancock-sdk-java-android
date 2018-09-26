@@ -6,11 +6,10 @@ package com.bbva.hancock.sdk.dlt.ethereum.clients;
 
 import com.bbva.hancock.sdk.Common;
 import com.bbva.hancock.sdk.config.HancockConfig;
-import com.bbva.hancock.sdk.dlt.ethereum.EthereumRawTransaction;
 import com.bbva.hancock.sdk.dlt.ethereum.EthereumWallet;
 import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransaction;
+import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransactionAdaptResponse;
 import com.bbva.hancock.sdk.dlt.ethereum.models.HancockGenericResponse;
-import com.bbva.hancock.sdk.dlt.ethereum.models.smartContracts.EthereumAdaptInvokeResponse;
 import com.bbva.hancock.sdk.dlt.ethereum.models.smartContracts.EthereumCallResponse;
 import com.bbva.hancock.sdk.dlt.ethereum.models.transaction.EthereumTransactionResponse;
 import com.bbva.hancock.sdk.dlt.ethereum.models.transaction.TransactionConfig;
@@ -18,11 +17,11 @@ import okhttp3.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.web3j.protocol.core.methods.response.AbiDefinition;
 
 import java.util.ArrayList;
 
@@ -36,16 +35,15 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @PowerMockIgnore("javax.net.ssl.*")
 //@RunWith(MockitoJUnitRunner.class)
 @RunWith(PowerMockRunner.class)
-public class HancockEthereumSmartContractClientIntegrationTest {
+public class EthereumSmartContractClientIntegrationTest {
 
     public static HancockConfig mockedConfig;
     public static TransactionConfig mockedTransactionConfig;
     public static EthereumWallet mockedWallet;
-    public static EthereumRawTransaction mockedEthereumRawTransaction;
-    public static HancockEthereumSmartContractClient mockedHancockEthereumClient;
-    public static HancockEthereumTransactionClient spy_transaction_client;
-    public static HancockEthereumSmartContractClient spy_var;
-    public static EthereumAdaptInvokeResponse mockedEthereumAdaptInvoke;
+    public static EthereumSmartContractClient mockedHancockEthereumClient;
+    public static EthereumTransactionClient spy_transaction_client;
+    public static EthereumSmartContractClient spy_var;
+    public static EthereumTransactionAdaptResponse mockedEthereumAdaptInvoke;
     public static EthereumTransaction mockedEthereumTransaction;
     public static EthereumTransactionResponse mockedEthereumTransactionResponse;
 
@@ -69,9 +67,9 @@ public class HancockEthereumSmartContractClientIntegrationTest {
                 .withPrivateKey("0x6c47653f66ac9b733f3b8bf09ed3d300520b4d9c78711ba90162744f5906b1f8")
                 .build();
 
-        HancockEthereumTransactionClient transactionClient = new HancockEthereumTransactionClient(mockedConfig);
+        EthereumTransactionClient transactionClient = new EthereumTransactionClient(mockedConfig);
         spy_transaction_client = PowerMockito.spy(transactionClient);
-        mockedHancockEthereumClient = new HancockEthereumSmartContractClient(mockedConfig, spy_transaction_client);
+        mockedHancockEthereumClient = new EthereumSmartContractClient(mockedConfig, spy_transaction_client);
         spy_var = PowerMockito.spy(mockedHancockEthereumClient);
 
         mockedWallet = new EthereumWallet("0xde8e772f0350e992ddef81bf8f51d94a8ea9216d","mockPrivateKey","mockPublicKey");
@@ -89,7 +87,7 @@ public class HancockEthereumSmartContractClientIntegrationTest {
         data = "mockedData";
 
         mockedEthereumTransaction = new EthereumTransaction(from, to, value, data, nonce, gasLimit, gasPrice);
-        mockedEthereumAdaptInvoke = new EthereumAdaptInvokeResponse(mockedEthereumTransaction, new HancockGenericResponse(1, "mockedOK"));
+        mockedEthereumAdaptInvoke = new EthereumTransactionAdaptResponse(mockedEthereumTransaction, new HancockGenericResponse(1, "mockedOK"));
         mockedEthereumTransactionResponse = new EthereumTransactionResponse(true);
 
     }
@@ -105,7 +103,7 @@ public class HancockEthereumSmartContractClientIntegrationTest {
         Response.Builder responseBuilder = new Response.Builder();
         responseBuilder.code(200);
         responseBuilder.protocol(Protocol.HTTP_1_1);
-        responseBuilder.body(ResponseBody.create(MediaType.parse("application/json"), "{\"data\":{\"from\": \"0x6c0a14f7561898b9ddc0c57652a53b2c6665443e\",\"data\": \"0xa9059cbb0000000000000000000000006c0a14f7561898b9ddc0c57652a53b2c6665443e0000000000000000000000000000000000000000000000000000000000000001\",\"gasPrice\": \"4\",\"gas\": \"3\",\"value\": \"2\",\"to\": \"0xde8e772f0350e992ddef81bf8f51d94a8ea9216d\",\"nonce\": \"1\"}}"));
+        responseBuilder.body(ResponseBody.create(MediaType.parse("application/json"), "{\"data\":{\"from\": \"0x6c0a14f7561898b9ddc0c57652a53b2c6665443e\",\"data\": \"0xa9059cbb0000000000000000000000006c0a14f7561898b9ddc0c57652a53b2c6665443e0000000000000000000000000000000000000000000000000000000000000001\",\"gasPrice\": \"0x4\",\"gas\": \"0x3\",\"value\": \"0x2\",\"to\": \"0xde8e772f0350e992ddef81bf8f51d94a8ea9216d\",\"nonce\": \"0x1\"}}"));
         responseBuilder.request(requestBuilder.build());
         responseBuilder.message("Smart Contract - Success");
         Response mockedResponse = responseBuilder.build();
@@ -190,7 +188,7 @@ public class HancockEthereumSmartContractClientIntegrationTest {
         when(Common.class, "makeCall", any(Request.class))
                 .thenReturn(mockedResponse);
 
-        HancockGenericResponse response = spy_var.register(addressOrAlias, to, new ArrayList<Object>());
+        HancockGenericResponse response = spy_var.register(addressOrAlias, to, new ArrayList<AbiDefinition>());
         assertTrue("Response is of type HancockGenericResponse", response instanceof HancockGenericResponse);
         assertEquals(response.getDescription(), "mockedDescription");
 
@@ -221,8 +219,8 @@ public class HancockEthereumSmartContractClientIntegrationTest {
         when(Common.class, "makeCall", any(Request.class))
                 .thenReturn(mockedResponse);
 
-        EthereumAdaptInvokeResponse response = spy_var.adaptInvoke(addressOrAlias, method, params, from);
-        assertTrue("Response is of type EthereumAdaptInvokeResponse", response instanceof EthereumAdaptInvokeResponse);
+        EthereumTransactionAdaptResponse response = spy_var.adaptInvoke(addressOrAlias, method, params, from);
+        assertTrue("Response is of type EthereumAdaptInvokeResponse", response instanceof EthereumTransactionAdaptResponse);
         assertEquals(response.getData().getFrom(), from);
         assertEquals(response.getData().getTo(), to);
         assertEquals(response.getData().getData(), "0xa9059cbb0000000000000000000000006c0a14f7561898b9ddc0c57652a53b2c6665443e0000000000000000000000000000000000000000000000000000000000000001");

@@ -1,6 +1,9 @@
 package com.bbva.hancock.sdk.dlt.ethereum;
 
+import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransaction;
 import org.web3j.crypto.RawTransaction;
+import org.web3j.protocol.core.methods.response.AbiDefinition;
+
 import java.math.BigInteger;
 
 public final class EthereumRawTransaction {
@@ -38,6 +41,16 @@ public final class EthereumRawTransaction {
         this.value = value;
         this.gasPrice = gasPrice;
         this.gasLimit = gas;
+    }
+
+    public EthereumRawTransaction(EthereumTransaction tx){
+        this.from = tx.getFrom();
+        this.to = tx.getTo();
+        this.nonce = tx.getNonce() != null ? new BigInteger(tx.getNonce().substring(2), 16) : new BigInteger("0");
+        this.value = tx.getValue() != null ? new BigInteger(tx.getValue().substring(2), 16) : new BigInteger("0");
+        this.data = tx.getData();
+        this.gasPrice = tx.getGasPrice() != null ? new BigInteger(tx.getGasPrice().substring(2), 16) : new BigInteger("0");
+        this.gasLimit = tx.getGas() != null ? new BigInteger(tx.getGas().substring(2), 16) : new BigInteger("0");
     }
 
     public String getFrom() {

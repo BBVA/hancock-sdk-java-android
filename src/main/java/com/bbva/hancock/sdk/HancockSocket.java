@@ -21,8 +21,10 @@ public class HancockSocket {
 
     public HancockSocket(String url) throws URISyntaxException {
 
+        URI wsUri = new URI(url);
+
         this.callbackFunctions = new HashMap<>();
-        this.ws = new WebSocketClient(new URI(url))
+        this.ws = new WebSocketClient(wsUri)
         {
             @Override
             public void onOpen(ServerHandshake handshakedata) {

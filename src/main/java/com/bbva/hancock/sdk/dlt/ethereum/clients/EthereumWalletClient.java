@@ -21,13 +21,13 @@ import okhttp3.Response;
 
 import static com.bbva.hancock.sdk.Common.*;
 
-public class HancockEthereumWalletClient extends HancockClient {
+public class EthereumWalletClient extends HancockClient {
 
-    public HancockEthereumWalletClient() {
+    public EthereumWalletClient() {
         super();
     }
 
-    public HancockEthereumWalletClient(HancockConfig config) throws Exception {
+    public EthereumWalletClient(HancockConfig config) throws Exception {
         super(config);
     }
 

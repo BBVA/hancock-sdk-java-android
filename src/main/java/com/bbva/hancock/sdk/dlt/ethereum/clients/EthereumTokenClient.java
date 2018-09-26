@@ -2,8 +2,8 @@ package com.bbva.hancock.sdk.dlt.ethereum.clients;
 
 import com.bbva.hancock.sdk.HancockClient;
 import com.bbva.hancock.sdk.config.HancockConfig;
-import com.bbva.hancock.sdk.dlt.ethereum.EthereumRawTransaction;
 import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransaction;
+import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransactionAdaptResponse;
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.EthereumTokenRequest;
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.allowance.EthereumTokenAllowanceRequest;
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.approve.EthereumTokenApproveRequest;
@@ -20,28 +20,22 @@ import com.bbva.hancock.sdk.dlt.ethereum.models.transaction.TransactionConfig;
 import com.bbva.hancock.sdk.dlt.ethereum.models.util.ValidateParameters;
 import com.bbva.hancock.sdk.exception.HancockException;
 import com.google.gson.Gson;
-
-import java.math.BigInteger;
-
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-import static com.bbva.hancock.sdk.Common.checkStatus;
-import static com.bbva.hancock.sdk.Common.getRequest;
-import static com.bbva.hancock.sdk.Common.getResourceUrl;
-import static com.bbva.hancock.sdk.Common.makeCall;
+import static com.bbva.hancock.sdk.Common.*;
 
-public class HancockEthereumTokenClient extends HancockClient {
+public class EthereumTokenClient extends HancockClient {
 
-    private HancockEthereumTransactionClient transactionClient;
+    private EthereumTransactionClient transactionClient;
 
-    public HancockEthereumTokenClient(HancockEthereumTransactionClient transactionClient) {
+    public EthereumTokenClient(EthereumTransactionClient transactionClient) {
         super();
         this.transactionClient = transactionClient;
     }
 
-    public HancockEthereumTokenClient(HancockConfig config, HancockEthereumTransactionClient transactionClient) throws Exception {
+    public EthereumTokenClient(HancockConfig config, EthereumTransactionClient transactionClient) throws Exception {
         super(config);
         this.transactionClient = transactionClient;
     }
@@ -122,7 +116,7 @@ public class HancockEthereumTokenClient extends HancockClient {
      * @throws Exception
      */
     public EthereumTransactionResponse transfer(EthereumTokenTransferRequest request, TransactionConfig txConfig) throws Exception{
-        EthereumRawTransaction rawtx = this.adaptTransfer(request);
+        EthereumTransaction rawtx = this.adaptTransfer(request);
         return this.transactionClient.send(rawtx, txConfig);
     }
 
@@ -138,7 +132,7 @@ public class HancockEthereumTokenClient extends HancockClient {
      * @throws Exception
      */
     public EthereumTransactionResponse transferFrom(EthereumTokenTransferFromRequest request, TransactionConfig txConfig) throws Exception{
-        EthereumRawTransaction rawtx = this.adaptTransfer(request);
+        EthereumTransaction rawtx = this.adaptTransfer(request);
         return this.transactionClient.send(rawtx, txConfig);
     }
 
@@ -150,7 +144,7 @@ public class HancockEthereumTokenClient extends HancockClient {
      * @throws Exception
      */
     public EthereumTransactionResponse allowance(EthereumTokenAllowanceRequest request, TransactionConfig txConfig) throws Exception{
-        EthereumRawTransaction rawtx = this.adaptTransfer(request);
+        EthereumTransaction rawtx = this.adaptTransfer(request);
         return this.transactionClient.send(rawtx, txConfig);
     }
 
@@ -158,32 +152,24 @@ public class HancockEthereumTokenClient extends HancockClient {
      * Token owner can approve for `spender` to transferFrom(...) `tokens` from the token owner's account
      * @param request The data of the transaction (token owner's address, token spender's address, amount of tokens (in weis) and the address/alias of the contract)
      * @param txConfig Configuration of how the transaction will be send to the network
-     * @returnThe result of the request
+     * @return The result of the request
      * @throws Exception
      */
     public EthereumTransactionResponse approve(EthereumTokenApproveRequest request, TransactionConfig txConfig) throws Exception{
-        EthereumRawTransaction rawtx = this.adaptTransfer(request);
+        EthereumTransaction rawtx = this.adaptTransfer(request);
         return this.transactionClient.send(rawtx, txConfig);
     }
 
-    protected EthereumRawTransaction adaptTransfer(EthereumTokenRequest txRequest) throws Exception {
-        String url = getTransferUrl(txRequest);
+    protected EthereumTransaction adaptTransfer(EthereumTokenRequest txRequest) throws Exception {
         Gson gson = new Gson();
         String json = gson.toJson(txRequest);
         RequestBody body = RequestBody.create(getContentType(), json);
+        String url = this.getTransferUrl(txRequest);
         Request request = getRequest(url, body);
 
         Response response = makeCall(request);
-        EthereumTransaction rawTx = checkStatus(response, EthereumTransaction.class);
-        return new EthereumRawTransaction(
-                rawTx.getFrom(),
-                rawTx.getTo(),
-                new BigInteger(rawTx.getNonce()),
-                new BigInteger(rawTx.getValue()),
-                rawTx.getData(),
-                new BigInteger(rawTx.getGasPrice()),
-                new BigInteger(rawTx.getGas())
-                );
+        EthereumTransactionAdaptResponse rawTx = checkStatus(response, EthereumTransactionAdaptResponse.class);
+        return rawTx.getData();
     }
 
     protected String getTransferUrl(EthereumTokenRequest txRequest){

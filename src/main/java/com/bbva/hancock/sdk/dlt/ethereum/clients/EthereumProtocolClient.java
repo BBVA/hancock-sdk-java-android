@@ -22,13 +22,13 @@ import static com.bbva.hancock.sdk.Common.getRequest;
 import static com.bbva.hancock.sdk.Common.getResourceUrl;
 import static com.bbva.hancock.sdk.Common.makeCall;
 
-public class HancockEthereumProtocolClient extends HancockClient {
+public class EthereumProtocolClient extends HancockClient {
 
-    public HancockEthereumProtocolClient() {
+    public EthereumProtocolClient() {
         super();
     }
 
-    public HancockEthereumProtocolClient(HancockConfig config) throws Exception {
+    public EthereumProtocolClient(HancockConfig config) throws Exception {
         super(config);
     }
 

@@ -18,6 +18,13 @@ javaPipeline{
         }
       }
 
+      stage("Docs"){
+          container("node"){
+            ./gradlew javadoc
+            upload_doc_shuttle_stage(docName: "docs", docPath: "./build/docs/javadoc")
+          }
+      }
+
       //Build
       // stage("Build"){
       //   container("jdk"){

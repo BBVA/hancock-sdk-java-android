@@ -6,15 +6,11 @@ package com.bbva.hancock.sdk.dlt.ethereum.clients;
 
 import com.bbva.hancock.sdk.Common;
 import com.bbva.hancock.sdk.config.HancockConfig;
-import com.bbva.hancock.sdk.dlt.ethereum.EthereumRawTransaction;
-import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransaction;
 import com.bbva.hancock.sdk.dlt.ethereum.models.protocol.HancockProtocolAction;
 import com.bbva.hancock.sdk.dlt.ethereum.models.protocol.HancockProtocolDecodeResponse;
 import com.bbva.hancock.sdk.dlt.ethereum.models.protocol.HancockProtocolDlt;
 import com.bbva.hancock.sdk.dlt.ethereum.models.protocol.HancockProtocolEncodeRequest;
 import com.bbva.hancock.sdk.dlt.ethereum.models.protocol.HancockProtocolEncodeResponse;
-import com.bbva.hancock.sdk.dlt.ethereum.models.util.ValidateParameters;
-import com.bbva.hancock.sdk.dlt.ethereum.models.wallet.GetBalanceResponse;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -23,16 +19,8 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.web3j.crypto.Credentials;
-import org.web3j.crypto.RawTransaction;
-import org.web3j.crypto.TransactionEncoder;
-import org.web3j.protocol.Web3jFactory;
 
 import java.math.BigInteger;
-
-import okhttp3.Call;
-import okhttp3.OkHttpClient;
-import okhttp3.RequestBody;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.any;
@@ -43,10 +31,10 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 @PowerMockIgnore("javax.net.ssl.*")
 //@RunWith(MockitoJUnitRunner.class)
 @RunWith(PowerMockRunner.class)
-public class HancockEthereumProtocolClientTest {
+public class EthereumProtocolClientTest {
 
     public static HancockConfig mockedConfig;
-    public static HancockEthereumProtocolClient mockedHancockEthereumClient;
+    public static EthereumProtocolClient mockedHancockEthereumClient;
 
     @BeforeClass
     public static void setUp(){
@@ -56,7 +44,7 @@ public class HancockEthereumProtocolClientTest {
                 .withNode("http://mock.node.com", 9999)
                 .withAdapter("http://mock.adapter.com", "/base", 9999)
                 .build();
-        mockedHancockEthereumClient = new HancockEthereumProtocolClient();
+        mockedHancockEthereumClient = new EthereumProtocolClient();
 
     }
 
@@ -66,8 +54,8 @@ public class HancockEthereumProtocolClientTest {
         okhttp3.Request requestMock = mock(okhttp3.Request.class);
         okhttp3.Response responseMock = mock(okhttp3.Response.class);
         HancockProtocolDecodeResponse responseModel = mock(HancockProtocolDecodeResponse.class);
-        HancockEthereumProtocolClient auxHancockEthereumClient = new HancockEthereumProtocolClient();
-        HancockEthereumProtocolClient spy_var = PowerMockito.spy(auxHancockEthereumClient);
+        EthereumProtocolClient auxHancockEthereumClient = new EthereumProtocolClient();
+        EthereumProtocolClient spy_var = PowerMockito.spy(auxHancockEthereumClient);
 
         mockStatic(Common.class);
         PowerMockito.when(Common.class, "getRequest", any(String.class), any(okhttp3.RequestBody.class)).thenReturn(requestMock);
@@ -87,10 +75,10 @@ public class HancockEthereumProtocolClientTest {
         okhttp3.Request requestMock = mock(okhttp3.Request.class);
         okhttp3.Response responseMock = mock(okhttp3.Response.class);
         HancockProtocolEncodeResponse responseModel = mock(HancockProtocolEncodeResponse.class);
-        HancockEthereumProtocolClient auxHancockEthereumClient = new HancockEthereumProtocolClient();
+        EthereumProtocolClient auxHancockEthereumClient = new EthereumProtocolClient();
         PowerMockito.whenNew(HancockProtocolEncodeRequest.class).withAnyArguments().thenReturn(mock(HancockProtocolEncodeRequest.class));
 
-        HancockEthereumProtocolClient spy_var = PowerMockito.spy(auxHancockEthereumClient);
+        EthereumProtocolClient spy_var = PowerMockito.spy(auxHancockEthereumClient);
 
         mockStatic(Common.class);
         PowerMockito.when(Common.class, "getRequest", any(String.class), any(okhttp3.RequestBody.class)).thenReturn(requestMock);

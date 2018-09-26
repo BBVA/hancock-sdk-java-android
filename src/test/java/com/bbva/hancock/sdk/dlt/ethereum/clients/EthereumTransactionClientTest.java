@@ -8,13 +8,10 @@ import com.bbva.hancock.sdk.Common;
 import com.bbva.hancock.sdk.config.HancockConfig;
 import com.bbva.hancock.sdk.dlt.ethereum.EthereumRawTransaction;
 import com.bbva.hancock.sdk.dlt.ethereum.EthereumWallet;
+import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransaction;
 import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransferRequest;
-import com.bbva.hancock.sdk.dlt.ethereum.models.token.register.EthereumTokenRegisterResponse;
 import com.bbva.hancock.sdk.dlt.ethereum.models.transaction.EthereumTransactionResponse;
 import com.bbva.hancock.sdk.dlt.ethereum.models.transaction.TransactionConfig;
-import com.bbva.hancock.sdk.dlt.ethereum.models.util.ValidateParameters;
-import com.bbva.hancock.sdk.dlt.ethereum.models.wallet.GetBalanceResponse;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,14 +23,9 @@ import org.web3j.crypto.Credentials;
 import org.web3j.crypto.RawTransaction;
 import org.web3j.crypto.TransactionEncoder;
 import org.web3j.protocol.Web3j;
-import org.web3j.protocol.Web3jFactory;
 import org.web3j.utils.Numeric;
 
 import java.math.BigInteger;
-
-import okhttp3.Call;
-import okhttp3.OkHttpClient;
-import okhttp3.RequestBody;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -50,13 +42,13 @@ import static org.powermock.api.mockito.PowerMockito.*;
 @PowerMockIgnore("javax.net.ssl.*")
 //@RunWith(MockitoJUnitRunner.class)
 @RunWith(PowerMockRunner.class)
-public class HancockEthereumTransactionClientTest {
+public class EthereumTransactionClientTest {
 
     public static HancockConfig mockedConfig;
     public static EthereumWallet mockedWallet;
-    public static EthereumRawTransaction mockedEthereumRawTransaction;
+    public static EthereumTransaction mockedEthereumRawTransaction;
     public static EthereumTransferRequest mockedEthereumTransferRequest;
-    public static HancockEthereumTransactionClient mockedHancockEthereumClient;
+    public static EthereumTransactionClient mockedHancockEthereumClient;
     public static Common commonAux;
     public static EthereumTransactionResponse mockedEthereumTransactionResponse;
     public static Web3j mockedWeb3;
@@ -70,7 +62,7 @@ public class HancockEthereumTransactionClientTest {
                 .withAdapter("http://mock.adapter.com", "/base", 9999)
                 .withWallet("http://mock.wallet.com", "/base", 9999)
                 .build();
-        mockedHancockEthereumClient = new HancockEthereumTransactionClient(mockedConfig);
+        mockedHancockEthereumClient = new EthereumTransactionClient(mockedConfig);
         mockedWallet = new EthereumWallet("0xmockAddress","mockPrivateKey","mockPublicKey");
         mockedEthereumTransactionResponse = new EthereumTransactionResponse(true);
 
@@ -83,7 +75,7 @@ public class HancockEthereumTransactionClientTest {
         String data = "0xwhatever";
 
         mockedEthereumTransferRequest = new EthereumTransferRequest(from, to, value.toString(), data);
-        mockedEthereumRawTransaction = new EthereumRawTransaction(to, nonce, value, gasPrice, gasLimit);
+        mockedEthereumRawTransaction = new EthereumTransaction(from, to, value.toString(), nonce.toString(), gasLimit.toString(), gasPrice.toString());
         commonAux = new Common();
 
     }
@@ -130,7 +122,7 @@ public class HancockEthereumTransactionClientTest {
                 .withPrivateKey("0x6c47653f66ac9b733f3b8bf09ed3d300520b4d9c78711ba90162744f5906b1f8")
                 .build();
 
-        HancockEthereumTransactionClient spy_var = PowerMockito.spy(mockedHancockEthereumClient);
+        EthereumTransactionClient spy_var = PowerMockito.spy(mockedHancockEthereumClient);
 
         EthereumTransactionResponse mockResult = spy_var.sendSignedTransaction("mockSignedTransaction", txConfig);
 
@@ -159,7 +151,7 @@ public class HancockEthereumTransactionClientTest {
                 .withProvider("mockProvider")
                 .build();
 
-        HancockEthereumTransactionClient spy_var = PowerMockito.spy(mockedHancockEthereumClient);
+        EthereumTransactionClient spy_var = PowerMockito.spy(mockedHancockEthereumClient);
 
         EthereumTransactionResponse mockResult = spy_var.sendToSignProvider(mockedEthereumRawTransaction, txConfig);
 
@@ -184,7 +176,7 @@ public class HancockEthereumTransactionClientTest {
         PowerMockito.when(Common.class, "checkStatus", any(okhttp3.Response.class), eq(EthereumTransactionResponse.class))
                 .thenReturn(mockedEthereumTransactionResponse);
 
-        HancockEthereumTransactionClient spy_var = PowerMockito.spy(mockedHancockEthereumClient);
+        EthereumTransactionClient spy_var = PowerMockito.spy(mockedHancockEthereumClient);
 
         EthereumTransactionResponse mockResult = spy_var.sendRawTransaction(mockedEthereumRawTransaction);
 
@@ -201,11 +193,11 @@ public class HancockEthereumTransactionClientTest {
         TransactionConfig txConfig = new TransactionConfig.Builder()
                 .build();
 
-        HancockEthereumTransactionClient spy_var = PowerMockito.spy(mockedHancockEthereumClient);
+        EthereumTransactionClient spy_var = PowerMockito.spy(mockedHancockEthereumClient);
 
         PowerMockito.doReturn(mockedEthereumTransactionResponse)
                 .when(spy_var)
-                .sendRawTransaction(any(EthereumRawTransaction.class));
+                .sendRawTransaction(any(EthereumTransaction.class));
 
         EthereumTransactionResponse mockResult = spy_var.send(mockedEthereumRawTransaction, txConfig);
 

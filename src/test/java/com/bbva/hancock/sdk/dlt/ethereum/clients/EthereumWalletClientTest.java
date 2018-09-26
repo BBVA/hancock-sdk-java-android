@@ -16,9 +16,6 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.web3j.crypto.Credentials;
-import org.web3j.crypto.ECKeyPair;
-import org.web3j.crypto.Keys;
 
 import java.math.BigInteger;
 
@@ -31,11 +28,11 @@ import static org.powermock.api.mockito.PowerMockito.when;
 
 @PowerMockIgnore("javax.net.ssl.*")
 @RunWith(PowerMockRunner.class)
-public class HancockEthereumWalletClientTest {
+public class EthereumWalletClientTest {
 
   public static HancockConfig mockedConfig;
   public static EthereumWallet mockedWallet;
-  public static HancockEthereumWalletClient mockedHancockEthereumClient;
+  public static EthereumWalletClient mockedHancockEthereumClient;
 
   @BeforeClass
   public static void setUp() throws Exception {
@@ -46,7 +43,7 @@ public class HancockEthereumWalletClientTest {
         .withAdapter("http://mock.adapter.com", "/base", 9999)
         .build();
 
-    HancockEthereumWalletClient hancockEthereumClient = new HancockEthereumWalletClient(mockedConfig);
+    EthereumWalletClient hancockEthereumClient = new EthereumWalletClient(mockedConfig);
 
     mockedHancockEthereumClient = PowerMockito.spy(hancockEthereumClient);
   }
@@ -95,7 +92,7 @@ public class HancockEthereumWalletClientTest {
     okhttp3.Response responseMock = mock(okhttp3.Response.class);
     okhttp3.Request requestMock = mock(okhttp3.Request.class);
 
-//        HancockEthereumWalletClient spy_var = PowerMockito.spy(mockedHancockEthereumClient);
+//        EthereumWalletClient spy_var = PowerMockito.spy(mockedHancockEthereumClient);
 
     mockStatic(Common.class);
     PowerMockito.when(Common.class, "getRequest", any(String.class)).thenReturn(requestMock);

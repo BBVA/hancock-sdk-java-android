@@ -1,16 +1,11 @@
-package com.bbva.hancock.sdk.dlt.ethereum.models.smartContracts;
+package com.bbva.hancock.sdk.dlt.ethereum.models;
 
-import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransaction;
-import com.bbva.hancock.sdk.dlt.ethereum.models.HancockGenericResponse;
-
-import org.web3j.protocol.core.methods.response.Transaction;
-
-public class EthereumAdaptInvokeResponse {
+public class EthereumTransactionAdaptResponse {
 
     private EthereumTransaction data;
     private HancockGenericResponse result;
 
-    public EthereumAdaptInvokeResponse(EthereumTransaction data, HancockGenericResponse result) {
+    public EthereumTransactionAdaptResponse(EthereumTransaction data, HancockGenericResponse result) {
         this.data = data;
         this.result = result;
     }

@@ -1,9 +1,7 @@
 package com.bbva.hancock.sdk.dlt.ethereum.clients;
 
 import com.bbva.hancock.sdk.Common;
-import com.bbva.hancock.sdk.dlt.ethereum.EthereumRawTransaction;
-import com.bbva.hancock.sdk.dlt.ethereum.EthereumWallet;
-import com.bbva.hancock.sdk.dlt.ethereum.models.token.transfer.EthereumTokenTransferRequest;
+import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransaction;
 import com.bbva.hancock.sdk.dlt.ethereum.models.transaction.EthereumTransactionResponse;
 import com.bbva.hancock.sdk.dlt.ethereum.models.transaction.TransactionConfig;
 
@@ -12,13 +10,8 @@ import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.web3j.crypto.Keys;
 
-import java.math.BigInteger;
-
-import okhttp3.Call;
 import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
 import okhttp3.Protocol;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -34,7 +27,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
 
 @PowerMockIgnore({"javax.net.ssl.*"})
 @RunWith(PowerMockRunner.class)
-public class HancockEthereumTransactionClientIntegrationTest {
+public class EthereumTransactionClientIntegrationTest {
 
     @PrepareForTest({ Common.class})
     @Test public void testSendWithSendRawTx() throws Exception {
@@ -42,14 +35,14 @@ public class HancockEthereumTransactionClientIntegrationTest {
         TransactionConfig txConfig = new TransactionConfig.Builder()
                 .build();
 
-        EthereumRawTransaction txRequest = new EthereumRawTransaction(
+        EthereumTransaction txRequest = new EthereumTransaction(
                 "0x6c0a14f7561898b9ddc0c57652a53b2c6665443e",
                 "0xde8e772f0350e992ddef81bf8f51d94a8ea9216d",
-                new BigInteger("1234"),
-                new BigInteger("12334142"),
+                "1234",
+                "12334142",
                 "0x012345",
-                new BigInteger("0260941720000000000"),
-                new BigInteger("31000")
+                "0260941720000000000",
+                "31000"
         );
 
         Request.Builder requestBuilder = new Request.Builder();
@@ -66,7 +59,7 @@ public class HancockEthereumTransactionClientIntegrationTest {
 
         EthereumTransactionResponse mockedTransactionResponse = new EthereumTransactionResponse(true);
 
-        HancockEthereumTransactionClient transactionClient = new HancockEthereumTransactionClient();
+        EthereumTransactionClient transactionClient = new EthereumTransactionClient();
 
         mockStatic(Common.class);
         when(Common.class, "getResourceUrl", any(), any())
@@ -92,14 +85,14 @@ public class HancockEthereumTransactionClientIntegrationTest {
                 .withPrivateKey("0x6c47653f66ac9b733f3b8bf09ed3d300520b4d9c78711ba90162744f5906b1f8")
                 .build();
 
-        EthereumRawTransaction txRequest = new EthereumRawTransaction(
+        EthereumTransaction txRequest = new EthereumTransaction(
                 "0x6c0a14f7561898b9ddc0c57652a53b2c6665443e",
                 "0xde8e772f0350e992ddef81bf8f51d94a8ea9216d",
-                new BigInteger("1234"),
-                new BigInteger("12334142"),
+                "1234",
+                "12334142",
                 "0x012345",
-                new BigInteger("0260941720000000000"),
-                new BigInteger("31000")
+                "0260941720000000000",
+                "31000"
         );
 
         Request.Builder requestBuilder = new Request.Builder();
@@ -116,7 +109,7 @@ public class HancockEthereumTransactionClientIntegrationTest {
 
         EthereumTransactionResponse mockedTransactionResponse = new EthereumTransactionResponse(true);
 
-        HancockEthereumTransactionClient transactionClient = new HancockEthereumTransactionClient();
+        EthereumTransactionClient transactionClient = new EthereumTransactionClient();
 
         mockStatic(Common.class);
         when(Common.class, "getResourceUrl", any(), any())
@@ -142,14 +135,14 @@ public class HancockEthereumTransactionClientIntegrationTest {
                 .withProvider("mockProvider")
                 .build();
 
-        EthereumRawTransaction txRequest = new EthereumRawTransaction(
+        EthereumTransaction txRequest = new EthereumTransaction(
                 "0x6c0a14f7561898b9ddc0c57652a53b2c6665443e",
                 "0xde8e772f0350e992ddef81bf8f51d94a8ea9216d",
-                new BigInteger("1234"),
-                new BigInteger("12334142"),
+                "1234",
+                "12334142",
                 "0x012345",
-                new BigInteger("0260941720000000000"),
-                new BigInteger("31000")
+                "0260941720000000000",
+                "31000"
         );
 
         Request.Builder requestBuilder = new Request.Builder();
@@ -166,7 +159,7 @@ public class HancockEthereumTransactionClientIntegrationTest {
 
         EthereumTransactionResponse mockedTransactionResponse = new EthereumTransactionResponse(true);
 
-        HancockEthereumTransactionClient transactionClient = new HancockEthereumTransactionClient();
+        EthereumTransactionClient transactionClient = new EthereumTransactionClient();
 
         mockStatic(Common.class);
         when(Common.class, "getResourceUrl", any(), any())

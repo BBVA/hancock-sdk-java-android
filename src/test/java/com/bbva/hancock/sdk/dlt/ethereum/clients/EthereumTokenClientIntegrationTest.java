@@ -2,7 +2,7 @@ package com.bbva.hancock.sdk.dlt.ethereum.clients;//package com.bbva.hancock.sdk
 
 import com.bbva.hancock.sdk.Common;
 import com.bbva.hancock.sdk.config.HancockConfig;
-import com.bbva.hancock.sdk.dlt.ethereum.EthereumRawTransaction;
+import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransaction;
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.EthereumTokenRequest;
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.allowance.EthereumTokenAllowanceRequest;
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.approve.EthereumTokenApproveRequest;
@@ -29,15 +29,15 @@ import static org.powermock.api.mockito.PowerMockito.*;
 
 @PowerMockIgnore({"javax.net.ssl.*"})
 @RunWith(PowerMockRunner.class)
-public class HancockEthereumTokenClientIntegrationTest {
+public class EthereumTokenClientIntegrationTest {
 
     @PrepareForTest({ Common.class})
     @Test public void testAdaptTransfer() throws Exception {
 
-        BigInteger nonce = BigInteger.valueOf(1);
-        BigInteger gasPrice = BigInteger.valueOf(4);
-        BigInteger gasLimit = BigInteger.valueOf(3);
-        BigInteger value = BigInteger.valueOf(2);
+        String nonce = "0x1";
+        String gasPrice = "0x4";
+        String gasLimit = "0x3";
+        String value = "0x2";
         String to = "0xmockAddress";
         String data = "0xwhatever";
 
@@ -56,7 +56,7 @@ public class HancockEthereumTokenClientIntegrationTest {
         Response.Builder responseBuilder = new Response.Builder();
         responseBuilder.code(200);
         responseBuilder.protocol(Protocol.HTTP_1_1);
-        responseBuilder.body(ResponseBody.create(MediaType.parse("application/json"), "{\"from\": \"0xde8e772f0350e992ddef81bf8f51d94a8ea9216d\",\"data\": \"0xa9059cbb0000000000000000000000006c0a14f7561898b9ddc0c57652a53b2c6665443e0000000000000000000000000000000000000000000000000000000000000001\",\"gasPrice\": \"4\",\"gas\": \"3\",\"value\": \"2\",\"to\": \"0xmockAddress\",\"nonce\": \"1\"}"));
+        responseBuilder.body(ResponseBody.create(MediaType.parse("application/json"), "{\"data\":{\"from\": \"0xde8e772f0350e992ddef81bf8f51d94a8ea9216d\",\"data\": \"0xa9059cbb0000000000000000000000006c0a14f7561898b9ddc0c57652a53b2c6665443e0000000000000000000000000000000000000000000000000000000000000001\",\"gasPrice\": \"0x4\",\"gas\": \"0x3\",\"value\": \"0x2\",\"to\": \"0xmockAddress\",\"nonce\": \"0x1\"}}"));
         responseBuilder.request(requestBuilder.build());
         responseBuilder.message("Smart Contract - Success");
         Response mockedResponse = responseBuilder.build();
@@ -71,13 +71,13 @@ public class HancockEthereumTokenClientIntegrationTest {
         when(Common.class, "makeCall", any(Request.class))
                 .thenReturn(mockedResponse);
 
-        HancockEthereumTransactionClient transactionClient = new HancockEthereumTransactionClient();
-        HancockEthereumTokenClient auxHancockEthereumTokenClient = new HancockEthereumTokenClient(transactionClient);
-        HancockEthereumTokenClient spy_var = spy(auxHancockEthereumTokenClient);
+        EthereumTransactionClient transactionClient = new EthereumTransactionClient();
+        EthereumTokenClient auxEthereumTokenClient = new EthereumTokenClient(transactionClient);
+        EthereumTokenClient spy_var = spy(auxEthereumTokenClient);
 
-        EthereumRawTransaction rawtx = spy_var.adaptTransfer(transferRequest);
+        EthereumTransaction rawtx = spy_var.adaptTransfer(transferRequest);
 
-        assertTrue("transaction adapted successfully", rawtx instanceof EthereumRawTransaction);
+        assertTrue("transaction adapted successfully", rawtx instanceof EthereumTransaction);
 
         assertEquals(rawtx.getGasPrice(), gasPrice);
         assertEquals(rawtx.getTo(), to);
@@ -106,7 +106,7 @@ public class HancockEthereumTokenClientIntegrationTest {
         Response.Builder responseBuilder = new Response.Builder();
         responseBuilder.code(200);
         responseBuilder.protocol(Protocol.HTTP_1_1);
-        responseBuilder.body(ResponseBody.create(MediaType.parse("application/json"), "{\"from\": \"0xde8e772f0350e992ddef81bf8f51d94a8ea9216d\",\"data\": \"0xa9059cbb0000000000000000000000006c0a14f7561898b9ddc0c57652a53b2c6665443e0000000000000000000000000000000000000000000000000000000000000001\",\"gasPrice\": \"4\",\"gas\": \"3\",\"value\": \"2\",\"to\": \"0xmockAddress\",\"nonce\": \"1\"}"));
+        responseBuilder.body(ResponseBody.create(MediaType.parse("application/json"), "{\"data\":{\"from\": \"0xde8e772f0350e992ddef81bf8f51d94a8ea9216d\",\"data\": \"0xa9059cbb0000000000000000000000006c0a14f7561898b9ddc0c57652a53b2c6665443e0000000000000000000000000000000000000000000000000000000000000001\",\"gasPrice\": \"4\",\"gas\": \"3\",\"value\": \"2\",\"to\": \"0xmockAddress\",\"nonce\": \"1\"}}"));
         responseBuilder.request(requestBuilder.build());
         responseBuilder.message("Smart Contract - Success");
         Response mockedResponse = responseBuilder.build();
@@ -121,9 +121,9 @@ public class HancockEthereumTokenClientIntegrationTest {
 
         EthereumTransactionResponse mockedTransactionResponse = new EthereumTransactionResponse(true);
 
-        HancockEthereumTransactionClient transactionClient = new HancockEthereumTransactionClient();
-        HancockEthereumTokenClient auxHancockEthereumTokenClient = new HancockEthereumTokenClient(transactionClient);
-        HancockEthereumTokenClient spy_var= spy(auxHancockEthereumTokenClient);
+        EthereumTransactionClient transactionClient = new EthereumTransactionClient();
+        EthereumTokenClient auxEthereumTokenClient = new EthereumTokenClient(transactionClient);
+        EthereumTokenClient spy_var= spy(auxEthereumTokenClient);
 
         mockStatic(Common.class);
         when(Common.class, "getResourceUrl", any(), any())
@@ -165,7 +165,7 @@ public class HancockEthereumTokenClientIntegrationTest {
         Response.Builder responseBuilder = new Response.Builder();
         responseBuilder.code(200);
         responseBuilder.protocol(Protocol.HTTP_1_1);
-        responseBuilder.body(ResponseBody.create(MediaType.parse("application/json"), "{\"from\": \"0xde8e772f0350e992ddef81bf8f51d94a8ea9216d\",\"data\": \"0xa9059cbb0000000000000000000000006c0a14f7561898b9ddc0c57652a53b2c6665443e0000000000000000000000000000000000000000000000000000000000000001\",\"gasPrice\": \"4\",\"gas\": \"3\",\"value\": \"2\",\"to\": \"0xmockAddress\",\"nonce\": \"1\"}"));
+        responseBuilder.body(ResponseBody.create(MediaType.parse("application/json"), "{\"data\":{\"from\": \"0xde8e772f0350e992ddef81bf8f51d94a8ea9216d\",\"data\": \"0xa9059cbb0000000000000000000000006c0a14f7561898b9ddc0c57652a53b2c6665443e0000000000000000000000000000000000000000000000000000000000000001\",\"gasPrice\": \"0x4\",\"gas\": \"0x3\",\"value\": \"0x2\",\"to\": \"0xmockAddress\",\"nonce\": \"0x1\"}}"));
         responseBuilder.request(requestBuilder.build());
         responseBuilder.message("Smart Contract - Success");
         Response mockedResponse = responseBuilder.build();
@@ -180,9 +180,9 @@ public class HancockEthereumTokenClientIntegrationTest {
 
         EthereumTransactionResponse mockedTransactionResponse = new EthereumTransactionResponse(true);
 
-        HancockEthereumTransactionClient transactionClient = new HancockEthereumTransactionClient();
-        HancockEthereumTokenClient auxHancockEthereumTokenClient = new HancockEthereumTokenClient(transactionClient);
-        HancockEthereumTokenClient spy_var= spy(auxHancockEthereumTokenClient);
+        EthereumTransactionClient transactionClient = new EthereumTransactionClient();
+        EthereumTokenClient auxEthereumTokenClient = new EthereumTokenClient(transactionClient);
+        EthereumTokenClient spy_var= spy(auxEthereumTokenClient);
 
         mockStatic(Common.class);
         when(Common.class, "getResourceUrl", any(), any())
@@ -223,7 +223,7 @@ public class HancockEthereumTokenClientIntegrationTest {
         Response.Builder responseBuilder = new Response.Builder();
         responseBuilder.code(200);
         responseBuilder.protocol(Protocol.HTTP_1_1);
-        responseBuilder.body(ResponseBody.create(MediaType.parse("application/json"), "{\"from\": \"0xde8e772f0350e992ddef81bf8f51d94a8ea9216d\",\"data\": \"0xa9059cbb0000000000000000000000006c0a14f7561898b9ddc0c57652a53b2c6665443e0000000000000000000000000000000000000000000000000000000000000001\",\"gasPrice\": \"4\",\"gas\": \"3\",\"value\": \"2\",\"to\": \"0xmockAddress\",\"nonce\": \"1\"}"));
+        responseBuilder.body(ResponseBody.create(MediaType.parse("application/json"), "{\"data\":{\"from\": \"0xde8e772f0350e992ddef81bf8f51d94a8ea9216d\",\"data\": \"0xa9059cbb0000000000000000000000006c0a14f7561898b9ddc0c57652a53b2c6665443e0000000000000000000000000000000000000000000000000000000000000001\",\"gasPrice\": \"0x4\",\"gas\": \"0x3\",\"value\": \"0x2\",\"to\": \"0xmockAddress\",\"nonce\": \"0x1\"}}"));
         responseBuilder.request(requestBuilder.build());
         responseBuilder.message("Smart Contract - Success");
         Response mockedResponse = responseBuilder.build();
@@ -238,9 +238,9 @@ public class HancockEthereumTokenClientIntegrationTest {
 
         EthereumTransactionResponse mockedTransactionResponse = new EthereumTransactionResponse(true);
 
-        HancockEthereumTransactionClient transactionClient = new HancockEthereumTransactionClient();
-        HancockEthereumTokenClient auxHancockEthereumTokenClient = new HancockEthereumTokenClient(transactionClient);
-        HancockEthereumTokenClient spy_var= spy(auxHancockEthereumTokenClient);
+        EthereumTransactionClient transactionClient = new EthereumTransactionClient();
+        EthereumTokenClient auxEthereumTokenClient = new EthereumTokenClient(transactionClient);
+        EthereumTokenClient spy_var= spy(auxEthereumTokenClient);
 
         mockStatic(Common.class);
         when(Common.class, "getResourceUrl", any(), any())
@@ -281,7 +281,7 @@ public class HancockEthereumTokenClientIntegrationTest {
         Response.Builder responseBuilder = new Response.Builder();
         responseBuilder.code(200);
         responseBuilder.protocol(Protocol.HTTP_1_1);
-        responseBuilder.body(ResponseBody.create(MediaType.parse("application/json"), "{\"from\": \"0xde8e772f0350e992ddef81bf8f51d94a8ea9216d\",\"data\": \"0xa9059cbb0000000000000000000000006c0a14f7561898b9ddc0c57652a53b2c6665443e0000000000000000000000000000000000000000000000000000000000000001\",\"gasPrice\": \"4\",\"gas\": \"3\",\"value\": \"2\",\"to\": \"0xmockAddress\",\"nonce\": \"1\"}"));
+        responseBuilder.body(ResponseBody.create(MediaType.parse("application/json"), "{\"data\":{\"from\": \"0xde8e772f0350e992ddef81bf8f51d94a8ea9216d\",\"data\": \"0xa9059cbb0000000000000000000000006c0a14f7561898b9ddc0c57652a53b2c6665443e0000000000000000000000000000000000000000000000000000000000000001\",\"gasPrice\": \"4\",\"gas\": \"3\",\"value\": \"2\",\"to\": \"0xmockAddress\",\"nonce\": \"1\"}}"));
         responseBuilder.request(requestBuilder.build());
         responseBuilder.message("Smart Contract - Success");
         Response mockedResponse = responseBuilder.build();
@@ -296,9 +296,9 @@ public class HancockEthereumTokenClientIntegrationTest {
 
         EthereumTransactionResponse mockedTransactionResponse = new EthereumTransactionResponse(true);
 
-        HancockEthereumTransactionClient transactionClient = new HancockEthereumTransactionClient();
-        HancockEthereumTokenClient auxHancockEthereumTokenClient = new HancockEthereumTokenClient(transactionClient);
-        HancockEthereumTokenClient spy_var= spy(auxHancockEthereumTokenClient);
+        EthereumTransactionClient transactionClient = new EthereumTransactionClient();
+        EthereumTokenClient auxEthereumTokenClient = new EthereumTokenClient(transactionClient);
+        EthereumTokenClient spy_var= spy(auxEthereumTokenClient);
 
         mockStatic(Common.class);
         when(Common.class, "getResourceUrl", any(), any())
@@ -343,9 +343,9 @@ public class HancockEthereumTokenClientIntegrationTest {
         when(Common.class, "makeCall", any(Request.class))
                 .thenReturn(mockedResponse);
 
-        HancockEthereumTransactionClient transactionClient = new HancockEthereumTransactionClient();
-        HancockEthereumTokenClient auxHancockEthereumTokenClient = new HancockEthereumTokenClient(transactionClient);
-        HancockEthereumTokenClient spy_var = spy(auxHancockEthereumTokenClient);
+        EthereumTransactionClient transactionClient = new EthereumTransactionClient();
+        EthereumTokenClient auxEthereumTokenClient = new EthereumTokenClient(transactionClient);
+        EthereumTokenClient spy_var = spy(auxEthereumTokenClient);
 
 
         EthereumTokenBalanceResponse balance = spy_var.getBalance("0xde8e772f0350e992ddef81bf8f51d94a8ea9216d", "0xde8e772f0350e992ddef81bf8f51d94a8ea9216d");
@@ -381,9 +381,9 @@ public class HancockEthereumTokenClientIntegrationTest {
         when(Common.class, "makeCall", any(Request.class))
                 .thenReturn(mockedResponse);
 
-        HancockEthereumTransactionClient transactionClient = new HancockEthereumTransactionClient();
-        HancockEthereumTokenClient auxHancockEthereumTokenClient = new HancockEthereumTokenClient(transactionClient);
-        HancockEthereumTokenClient spy_var = spy(auxHancockEthereumTokenClient);
+        EthereumTransactionClient transactionClient = new EthereumTransactionClient();
+        EthereumTokenClient auxEthereumTokenClient = new EthereumTokenClient(transactionClient);
+        EthereumTokenClient spy_var = spy(auxEthereumTokenClient);
 
         GetEthereumTokenMetadataResponseData metadata = spy_var.getMetadata("0xde8e772f0350e992ddef81bf8f51d94a8ea9216d");
 
@@ -412,9 +412,9 @@ public class HancockEthereumTokenClientIntegrationTest {
                 .message("Token Register - Success")
                 .build();
 
-        HancockEthereumTransactionClient transactionClient = new HancockEthereumTransactionClient();
-        HancockEthereumTokenClient auxHancockEthereumTokenClient = new HancockEthereumTokenClient(transactionClient);
-        HancockEthereumTokenClient spy_var = spy(auxHancockEthereumTokenClient);
+        EthereumTransactionClient transactionClient = new EthereumTransactionClient();
+        EthereumTokenClient auxEthereumTokenClient = new EthereumTokenClient(transactionClient);
+        EthereumTokenClient spy_var = spy(auxEthereumTokenClient);
 
         mockStatic(Common.class);
         when(Common.class, "getResourceUrl", any(), any())

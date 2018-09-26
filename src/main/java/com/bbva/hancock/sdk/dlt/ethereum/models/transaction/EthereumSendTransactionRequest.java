@@ -1,12 +1,16 @@
 package com.bbva.hancock.sdk.dlt.ethereum.models.transaction;
 
-import com.bbva.hancock.sdk.dlt.ethereum.EthereumRawTransaction;
+import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransaction;
 
 public class EthereumSendTransactionRequest {
 
-    private EthereumRawTransaction tx;
+    private EthereumTransaction tx;
 
-    public EthereumSendTransactionRequest(EthereumRawTransaction tx) {
+    public EthereumSendTransactionRequest(EthereumTransaction tx) {
         this.tx = tx;
+    }
+
+    public EthereumTransaction getTx() {
+        return tx;
     }
 }

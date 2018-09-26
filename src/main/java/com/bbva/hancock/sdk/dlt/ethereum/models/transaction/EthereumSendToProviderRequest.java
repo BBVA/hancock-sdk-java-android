@@ -1,29 +1,29 @@
 package com.bbva.hancock.sdk.dlt.ethereum.models.transaction;
 
-import com.bbva.hancock.sdk.dlt.ethereum.EthereumRawTransaction;
+import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransaction;
 
 public class EthereumSendToProviderRequest {
 
-    private EthereumRawTransaction rawTx;
+    private EthereumTransaction rawTx;
     private String provider;
     private String backUrl;
 
-    public EthereumSendToProviderRequest(EthereumRawTransaction rawTx, String provider) {
+    public EthereumSendToProviderRequest(EthereumTransaction rawTx, String provider) {
         this.rawTx = rawTx;
         this.provider = provider;
     }
 
-    public EthereumSendToProviderRequest(EthereumRawTransaction rawTx, String provider, String backUrl) {
+    public EthereumSendToProviderRequest(EthereumTransaction rawTx, String provider, String backUrl) {
         this.rawTx = rawTx;
         this.provider = provider;
         this.backUrl = backUrl;
     }
 
-    public EthereumRawTransaction getRawTx() {
+    public EthereumTransaction getRawTx() {
         return rawTx;
     }
 
-    public void setRawTx(EthereumRawTransaction rawTx) {
+    public void setRawTx(EthereumTransaction rawTx) {
         this.rawTx = rawTx;
     }
 
