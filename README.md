@@ -35,7 +35,7 @@ dependencies {
 In code:
 
 ```java
-import com.bbva.hancock.sdk.dlt.ethereum.clients.EthereumClient;
+import com.bbva.hancock.sdk.dlt.ethereum.EthereumClient;
 import com.bbva.hancock.sdk.config.HancockConfig;
 
 HancockConfig config = new HancockConfig.Builder("dev").withNode("http://localhost", 8545).build();

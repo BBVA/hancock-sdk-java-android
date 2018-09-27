@@ -1,6 +1,6 @@
 package com.bbva.hancock.sdk.dlt.ethereum.models;
 
-import com.bbva.hancock.sdk.dlt.ethereum.models.util.ValidateParameters;
+import com.bbva.hancock.sdk.util.ValidateParameters;
 import com.bbva.hancock.sdk.exception.HancockException;
 
 public class EthereumTransferRequest {
