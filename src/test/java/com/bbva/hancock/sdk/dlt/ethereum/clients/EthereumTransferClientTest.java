@@ -28,6 +28,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
@@ -106,6 +107,8 @@ public class EthereumTransferClientTest {
 
         EthereumTransactionResponse mockResult = spy_transfer_var.send(mockedEthereumTransferRequest, txConfig);
 
+        verify(spy_transfer_var).adaptTransfer(eq(mockedEthereumTransferRequest));
+        verify(spy_transaction_var).send(any(EthereumTransaction.class), eq(txConfig));
         assertTrue("transaction send and signed successfully", mockResult instanceof EthereumTransactionResponse);
     }
 

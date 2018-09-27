@@ -36,7 +36,7 @@ public class EthereumProtocolClientIntegrationTest {
         Response.Builder responseBuilder = new Response.Builder();
         responseBuilder.code(200);
         responseBuilder.protocol(Protocol.HTTP_1_1);
-        responseBuilder.body(ResponseBody.create(MediaType.parse("application/json"), "{\"data\": {\"action\": \"transfer\", \"dlt\": \"ethereum\", \"body\": {}}}"));
+        responseBuilder.body(ResponseBody.create(MediaType.parse("application/json"), "{\"data\": {\"action\": \"transfer\", \"dlt\": \"ethereum\", \"body\": {\"value\": \"1\", \"to\": \"0xde8e772f0350e992ddef81bf8f51d94a8ea9216d\", \"data\": \"data\"}}}"));
         responseBuilder.request(requestBuilder.build());
         responseBuilder.message("Smart Contract - Success");
         Response mockedResponse = responseBuilder.build();
@@ -54,11 +54,14 @@ public class EthereumProtocolClientIntegrationTest {
         when(Common.class, "makeCall", any(Request.class))
                 .thenReturn(mockedResponse);
 
-        HancockProtocolDecodeResponse response = spy_var.decodeProtocol("hancock://qr?code=%7B%22action%22%3A%22transfer%22%2C%22body%22%3A%7B%22value%22%3A%2210%22%2C%22data%22%3A%22dafsda%22%2C%22to%22%3A%220x1234%22%7D%2C%22dlt%22%3A%22ethereum%22%7D");
+        HancockProtocolDecodeResponse response = spy_var.decodeProtocol("hancock://qr?code=%7B%22action%22%3A%22transfer%22%2C%22body%22%3A%7B%22value%22%3A%221%22%2C%22data%22%3A%22data%22%2C%22to%22%3A%220xde8e772f0350e992ddef81bf8f51d94a8ea9216d%22%7D%2C%22dlt%22%3A%22ethereum%22%7D");
 
         assertTrue("transaction decode successfully", response instanceof HancockProtocolDecodeResponse);
         assertEquals(response.getAction(), HancockProtocolAction.transfer);
         assertEquals(response.getDlt(), HancockProtocolDlt.ethereum);
+        assertEquals(response.getTo(), "0xde8e772f0350e992ddef81bf8f51d94a8ea9216d");
+        assertEquals(response.getBodyData(), "data");
+        assertEquals(response.getValue(), new BigInteger("1"));
 
     }
 
@@ -92,7 +95,7 @@ public class EthereumProtocolClientIntegrationTest {
 
         HancockProtocolEncodeResponse response = spy_var.encodeProtocol(HancockProtocolAction.transfer, new BigInteger("10"), "0x1234", "dafsda", HancockProtocolDlt.ethereum);
 
-        assertTrue("transaction signed successfully", response.getCode().equals("hancock://qr?code=%7B%22action%22%3A%22transfer%22%2C%22body%22%3A%7B%22value%22%3A%2210%22%2C%22data%22%3A%220xa9059cbb0000000000000000000000006c0a14f7561898b9ddc0c57652a53b2c6665443e0000000000000000000000000000000000000000000000000000000000000001%22%2C%22to%22%3A%220x1234%22%7D%2C%22dlt%22%3A%22ethereum%22%7D"));
+        assertEquals(response.getCode(), "hancock://qr?code=%7B%22action%22%3A%22transfer%22%2C%22body%22%3A%7B%22value%22%3A%2210%22%2C%22data%22%3A%220xa9059cbb0000000000000000000000006c0a14f7561898b9ddc0c57652a53b2c6665443e0000000000000000000000000000000000000000000000000000000000000001%22%2C%22to%22%3A%220x1234%22%7D%2C%22dlt%22%3A%22ethereum%22%7D");
         assertTrue("transaction encode successfully", response instanceof HancockProtocolEncodeResponse);
 
     }

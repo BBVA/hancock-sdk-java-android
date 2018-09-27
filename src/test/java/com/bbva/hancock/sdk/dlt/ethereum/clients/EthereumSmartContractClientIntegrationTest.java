@@ -161,6 +161,7 @@ public class EthereumSmartContractClientIntegrationTest {
         EthereumCallResponse response = spy_var.call(addressOrAlias, method, params, from);
         assertTrue("Response is of type CallResponse", response instanceof EthereumCallResponse);
         assertEquals(response.getResult().getDescription(), "mockedDescription");
+        assertEquals(response.getResult().getCode(), new Integer(1));
     }
 
     @PrepareForTest({ Common.class})
@@ -191,6 +192,7 @@ public class EthereumSmartContractClientIntegrationTest {
         HancockGenericResponse response = spy_var.register(addressOrAlias, to, new ArrayList<AbiDefinition>());
         assertTrue("Response is of type HancockGenericResponse", response instanceof HancockGenericResponse);
         assertEquals(response.getDescription(), "mockedDescription");
+        assertEquals(response.getCode(),  new Integer(1));
 
     }
 

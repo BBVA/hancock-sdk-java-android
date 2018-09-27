@@ -133,6 +133,16 @@ public class EthereumSmartContractClient extends HancockClient {
     /**
      * Create a websocket subscription to watch transactions of type "contracts" in the network
      * @param contracts An array of address or alias that will be added to the watch list
+     * @return A HancockSocket object which can add new subscriptions and listen incoming message
+     * @throws HancockException
+     */
+    public HancockSocket subscribe(ArrayList<String> contracts) throws HancockException{
+        return this.subscribe(contracts, "");
+    }
+
+    /**
+     * Create a websocket subscription to watch transactions of type "contracts" in the network
+     * @param contracts An array of address or alias that will be added to the watch list
      * @param consumer A consumer plugin previously configured in hancock that will handle each received event
      * @return A HancockSocket object which can add new subscriptions and listen incoming message
      * @throws HancockException

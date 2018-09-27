@@ -39,6 +39,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.*;
 
 //import org.mockito.InjectMocks;
@@ -196,6 +197,8 @@ public class EthereumTokenClientTest {
         EthereumTransactionResponse mockResult = spy_var.transfer(mockedEthereumTokenTransferRequest, txConfig);
 
         assertEquals(mockResult, mockedEthereumTransactionResponse);
+        verify(spy_var).adaptTransfer(eq(mockedEthereumTokenTransferRequest));
+        verify(spy_transaction_client).send(any(EthereumTransaction.class), eq(txConfig));
         assertTrue("transaction send and signed successfully", mockResult instanceof EthereumTransactionResponse);
 
     }
@@ -220,6 +223,8 @@ public class EthereumTokenClientTest {
 
         EthereumTransactionResponse mockResult = spy_var.transferFrom(mockedEthereumTokenTransferFromRequest, txConfig);
 
+        verify(spy_var).adaptTransfer(eq(mockedEthereumTokenTransferFromRequest));
+        verify(spy_transaction_client).send(any(EthereumTransaction.class), eq(txConfig));
         assertEquals(mockResult, mockedEthereumTransactionResponse);
         assertTrue("transaction send and signed successfully", mockResult instanceof EthereumTransactionResponse);
 
@@ -245,6 +250,9 @@ public class EthereumTokenClientTest {
 
         EthereumTransactionResponse mockResult = spy_var.allowance(mockedEthereumTokenAllowanceRequest, txConfig);
 
+        verify(spy_var).adaptTransfer(eq(mockedEthereumTokenAllowanceRequest));
+        verify(spy_transaction_client).send(any(EthereumTransaction.class), eq(txConfig));
+
         assertEquals(mockResult, mockedEthereumTransactionResponse);
         assertTrue("transaction send and signed successfully", mockResult instanceof EthereumTransactionResponse);
 
@@ -268,6 +276,9 @@ public class EthereumTokenClientTest {
                 .send(any(EthereumTransaction.class), any(TransactionConfig.class));
 
         EthereumTransactionResponse mockResult = spy_var.approve(mockedEthereumTokenApproveRequest, txConfig);
+
+        verify(spy_var).adaptTransfer(eq(mockedEthereumTokenApproveRequest));
+        verify(spy_transaction_client).send(any(EthereumTransaction.class), eq(txConfig));
 
         assertEquals(mockResult, mockedEthereumTransactionResponse);
         assertTrue("transaction send and signed successfully", mockResult instanceof EthereumTransactionResponse);

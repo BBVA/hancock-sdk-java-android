@@ -22,6 +22,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.math.BigInteger;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.eq;
@@ -53,7 +54,7 @@ public class EthereumProtocolClientTest {
 
         okhttp3.Request requestMock = mock(okhttp3.Request.class);
         okhttp3.Response responseMock = mock(okhttp3.Response.class);
-        HancockProtocolDecodeResponse responseModel = mock(HancockProtocolDecodeResponse.class);
+        HancockProtocolDecodeResponse responseModel = new HancockProtocolDecodeResponse();
         EthereumProtocolClient auxHancockEthereumClient = new EthereumProtocolClient();
         EthereumProtocolClient spy_var = PowerMockito.spy(auxHancockEthereumClient);
 
@@ -64,8 +65,9 @@ public class EthereumProtocolClientTest {
         PowerMockito.when(Common.class, "getResourceUrl", any(HancockConfig.class), any(String.class)).thenReturn("mockUrl");
 
         HancockProtocolDecodeResponse mockResult = spy_var.decodeProtocol("mockedCode");
-        assertTrue("transaction decode successfully", mockResult instanceof HancockProtocolDecodeResponse);
 
+        assertTrue("transaction decode successfully", mockResult instanceof HancockProtocolDecodeResponse);
+        assertEquals("mockedCode", mockResult);
 
     }
 
