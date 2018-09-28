@@ -31,6 +31,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
@@ -44,7 +45,7 @@ public class EthereumSmartContractServiceTest {
     public static TransactionConfig mockedTransactionConfig;
     public static EthereumWallet mockedWallet;
     public static EthereumSmartContractService mockedHancockEthereumClient;
-    public static EthereumTransactionService spy_transaction_client;
+    public static EthereumTransactionService spyTransactionService;
     public static EthereumSmartContractService spy_var;
     public static EthereumTransactionAdaptResponse mockedEthereumAdaptInvoke;
     public static EthereumTransaction mockedEthereumTransaction;
@@ -71,8 +72,8 @@ public class EthereumSmartContractServiceTest {
                 .build();
 
         EthereumTransactionService transactionClient = new EthereumTransactionService(mockedConfig);
-        spy_transaction_client = PowerMockito.spy(transactionClient);
-        mockedHancockEthereumClient = new EthereumSmartContractService(mockedConfig, spy_transaction_client);
+        spyTransactionService = PowerMockito.spy(transactionClient);
+        mockedHancockEthereumClient = new EthereumSmartContractService(mockedConfig, spyTransactionService);
         spy_var = PowerMockito.spy(mockedHancockEthereumClient);
 
         mockedWallet = new EthereumWallet("0xmockAddress","mockPrivateKey","mockPublicKey");
@@ -107,11 +108,15 @@ public class EthereumSmartContractServiceTest {
                 .adaptInvoke(any(String.class), any(String.class), any(ArrayList.class), any(String.class));
 
         PowerMockito.doReturn(mockedEthereumTransactionResponse)
-                .when(spy_transaction_client)
+                .when(spyTransactionService)
                 .send(any(EthereumTransaction.class), any(TransactionConfig.class));
 
+
         EthereumTransactionResponse response = spy_var.invoke(addressOrAlias, method, params, from, mockedTransactionConfig);
+
         assertTrue("Response is of type TransactionResponse", response instanceof EthereumTransactionResponse);
+        verify(spy_var).adaptInvoke(eq(addressOrAlias), eq(method), eq(params), eq(from));
+        verify(spyTransactionService).send(eq(mockedEthereumAdaptInvoke.getData()), eq(mockedTransactionConfig));
         assertEquals(response.getSuccess(), true);
 
     }
@@ -132,11 +137,14 @@ public class EthereumSmartContractServiceTest {
                 .adaptInvoke(any(String.class), any(String.class), any(ArrayList.class), any(String.class));
 
         PowerMockito.doReturn(mockedEthereumTransactionResponse)
-                .when(spy_transaction_client)
+                .when(spyTransactionService)
                 .send(any(EthereumTransaction.class), any(TransactionConfig.class));
 
         EthereumTransactionResponse response = spy_var.invoke(addressOrAlias, method, params, from, mockedConfig);
+
         assertTrue("Response is of type TransactionResponse", response instanceof EthereumTransactionResponse);
+        verify(spy_var).adaptInvoke(eq(addressOrAlias), eq(method), eq(params), eq(from));
+        verify(spyTransactionService).send(eq(mockedEthereumAdaptInvoke.getData()), eq(mockedConfig));
         assertEquals(response.getSuccess(), true);
 
     }
@@ -158,11 +166,14 @@ public class EthereumSmartContractServiceTest {
                 .adaptInvoke(any(String.class), any(String.class), any(ArrayList.class), any(String.class));
 
         PowerMockito.doReturn(mockedEthereumTransactionResponse)
-                .when(spy_transaction_client)
+                .when(spyTransactionService)
                 .send(any(EthereumTransaction.class), any(TransactionConfig.class));
 
         EthereumTransactionResponse response = spy_var.invoke(addressOrAlias, method, params, from, mockedConfig);
+
         assertTrue("Response is of type TransactionResponse", response instanceof EthereumTransactionResponse);
+        verify(spy_var).adaptInvoke(eq(addressOrAlias), eq(method), eq(params), eq(from));
+        verify(spyTransactionService).send(eq(mockedEthereumAdaptInvoke.getData()), eq(mockedConfig));
         assertEquals(response.getSuccess(), true);
 
     }

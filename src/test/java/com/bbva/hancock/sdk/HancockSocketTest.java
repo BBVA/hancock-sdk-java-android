@@ -8,6 +8,7 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.function.Function;
 
@@ -24,24 +25,21 @@ public class HancockSocketTest {
     @Test
     public void testHancockSocket()throws Exception {
 
-        /*WebSocketClient spy_socket = mock(WebSocketClient.class);
-        PowerMockito.doReturn(true).when(spy_socket).connect();*/
-
         HancockSocket socketTest = new HancockSocket("http://localhost:3000");
+
+        assertEquals(new URI("http://localhost:3000"), socketTest.getWs().getURI());
+        assertEquals(0, socketTest.getCallbackFunctions().size());
         assertTrue("HancockSocket create correctly", socketTest instanceof HancockSocket);
     }
 
     @Test
     public void testHancockSocketOn()throws Exception {
 
-        Function func = new Function() {
-            @Override
-            public Integer apply(Object o) {
-                if(o instanceof Integer){
-                    return ((Integer) o).intValue() + 2;
-                }
-                return null;
+        Function func = o -> {
+            if(o instanceof Integer){
+                return ((Integer) o).intValue() + 2;
             }
+            return null;
         };
 
         HancockSocket socketTest = new HancockSocket("http://localhost:3000");
@@ -63,7 +61,7 @@ public class HancockSocketTest {
         PowerMockito.doNothing().when(socket_spy).sendMessage(any(String.class), any(ArrayList.class));
         socket_spy.addContract(contracts);
 
-        verify(socket_spy, times(1)).sendMessage(any(String.class), any(ArrayList.class));
+        verify(socket_spy, times(1)).sendMessage(eq("watch-contracts"), eq(contracts));
     }
 
     @Test
@@ -78,7 +76,7 @@ public class HancockSocketTest {
         PowerMockito.doNothing().when(socket_spy).sendMessage(any(String.class), any(ArrayList.class));
         socket_spy.addTransfer(address);
 
-        verify(socket_spy, times(1)).sendMessage(any(String.class), any(ArrayList.class));
+        verify(socket_spy, times(1)).sendMessage(eq("watch-transfers"), eq(address));
     }
 
     @Test
@@ -93,7 +91,7 @@ public class HancockSocketTest {
         PowerMockito.doNothing().when(socket_spy).sendMessage(any(String.class), any(ArrayList.class));
         socket_spy.addTransaction(address);
 
-        verify(socket_spy, times(1)).sendMessage(any(String.class), any(ArrayList.class));
+        verify(socket_spy, times(1)).sendMessage(eq("watch-transactions"), eq(address));
     }
 
     @Test

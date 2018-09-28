@@ -41,7 +41,7 @@ public class EthereumSmartContractServiceIntegrationTest {
     public static TransactionConfig mockedTransactionConfig;
     public static EthereumWallet mockedWallet;
     public static EthereumSmartContractService mockedHancockEthereumClient;
-    public static EthereumTransactionService spy_transaction_client;
+    public static EthereumTransactionService spyTransactionService;
     public static EthereumSmartContractService spy_var;
     public static EthereumTransactionAdaptResponse mockedEthereumAdaptInvoke;
     public static EthereumTransaction mockedEthereumTransaction;
@@ -68,8 +68,8 @@ public class EthereumSmartContractServiceIntegrationTest {
                 .build();
 
         EthereumTransactionService transactionClient = new EthereumTransactionService(mockedConfig);
-        spy_transaction_client = PowerMockito.spy(transactionClient);
-        mockedHancockEthereumClient = new EthereumSmartContractService(mockedConfig, spy_transaction_client);
+        spyTransactionService = PowerMockito.spy(transactionClient);
+        mockedHancockEthereumClient = new EthereumSmartContractService(mockedConfig, spyTransactionService);
         spy_var = PowerMockito.spy(mockedHancockEthereumClient);
 
         mockedWallet = new EthereumWallet("0xde8e772f0350e992ddef81bf8f51d94a8ea9216d","mockPrivateKey","mockPublicKey");
@@ -161,6 +161,7 @@ public class EthereumSmartContractServiceIntegrationTest {
         EthereumCallResponse response = spy_var.call(addressOrAlias, method, params, from);
         assertTrue("Response is of type CallResponse", response instanceof EthereumCallResponse);
         assertEquals(response.getResult().getDescription(), "mockedDescription");
+        assertEquals(response.getResult().getCode(), new Integer(1));
     }
 
     @PrepareForTest({ Common.class})
@@ -191,6 +192,7 @@ public class EthereumSmartContractServiceIntegrationTest {
         HancockGenericResponse response = spy_var.register(addressOrAlias, to, new ArrayList<AbiDefinition>());
         assertTrue("Response is of type HancockGenericResponse", response instanceof HancockGenericResponse);
         assertEquals(response.getDescription(), "mockedDescription");
+        assertEquals(response.getCode(),  new Integer(1));
 
     }
 

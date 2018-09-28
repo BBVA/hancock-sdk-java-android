@@ -7,6 +7,7 @@ import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransferRequest;
 import com.bbva.hancock.sdk.dlt.ethereum.models.transaction.EthereumTransactionResponse;
 import com.bbva.hancock.sdk.models.TransactionConfig;
 import okhttp3.*;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
@@ -18,42 +19,58 @@ import java.math.BigInteger;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.*;
 
 @PowerMockIgnore({"javax.net.ssl.*"})
 @RunWith(PowerMockRunner.class)
 public class EthereumTransferServiceIntegrationTest {
 
-    @PrepareForTest({Common.class})
-    @Test public void testAdaptTransfer() throws Exception {
+    public static String nonce;
+    public static String gasPrice;
+    public static String gasLimit;
+    public static String value;
+    public static String to;
+    public static String from;
+    public static String data;
+    public static String requestContent;
+    public static Response mockedResponse;
+    public static Request.Builder requestBuilder;
+    public static HancockConfig mockedConfig;
 
-        String nonce = "0x1";
-        String gasPrice = "0x4";
-        String gasLimit = "0x3";
-        String value = "0x2";
-        String to = "0xmockAddress";
-        String data = "0xwhatever";
+    @BeforeClass
+    public static void setUp(){
 
-        EthereumTransferRequest transferRequest = new EthereumTransferRequest(
-                "0x6c0a14f7561898b9ddc0c57652a53b2c6665443e",
-                "0xde8e772f0350e992ddef81bf8f51d94a8ea9216d",
-                new BigInteger("0260941720000000000").toString(),
-                "test test"
-        );
+        nonce = "0x1";
+        gasPrice = "0x4";
+        gasLimit = "0x3";
+        value = "0x2";
+        to = "0xde8e772f0350e992ddef81bf8f51d94a8ea9216d";
+        from = "0x6c0a14f7561898b9ddc0c57652a53b2c6665443e";
+        data = "0xa9059cbb0000000000000000000000006c0a14f7561898b9ddc0c57652a53b2c6665443e0000000000000000000000000000000000000000000000000000000000000001";
+        requestContent = "{\"data\":{\"from\": \"" + from + "\",\"data\": \"" + data + "\",\"gasPrice\": \"" + gasPrice + "\",\"gas\": \"" + gasLimit + "\",\"value\": \"" + value + "\",\"to\": \"" + to + "\",\"nonce\": \"" + nonce + "\"}}";
 
-        HancockConfig auxConfig = new HancockConfig.Builder().build();
+        requestBuilder = new Request.Builder();
 
-        Request.Builder requestBuilder = new Request.Builder();
         requestBuilder.get();
         requestBuilder.url("http://localhost");
 
         Response.Builder responseBuilder = new Response.Builder();
         responseBuilder.code(200);
         responseBuilder.protocol(Protocol.HTTP_1_1);
-        responseBuilder.body(ResponseBody.create(MediaType.parse("application/json"), "{\"data\":{\"from\": \"0xde8e772f0350e992ddef81bf8f51d94a8ea9216d\",\"data\": \"0xa9059cbb0000000000000000000000006c0a14f7561898b9ddc0c57652a53b2c6665443e0000000000000000000000000000000000000000000000000000000000000001\",\"gasPrice\": \"0x4\",\"gas\": \"0x3\",\"value\": \"0x2\",\"to\": \"0xmockAddress\",\"nonce\": \"0x1\"}}"));
+        responseBuilder.body(ResponseBody.create(MediaType.parse("application/json"), requestContent));
         responseBuilder.request(requestBuilder.build());
         responseBuilder.message("Smart Contract - Success");
-        Response mockedResponse = responseBuilder.build();
+        mockedResponse = responseBuilder.build();
+
+        mockedConfig = new HancockConfig.Builder().build();
+    }
+
+    @PrepareForTest({Common.class})
+    @Test public void testAdaptTransfer() throws Exception {
+
+        EthereumTransferRequest transferRequest = new EthereumTransferRequest(from, to, value);
 
         mockStatic(Common.class);
         when(Common.class, "getResourceUrl", any(), any())
@@ -65,8 +82,8 @@ public class EthereumTransferServiceIntegrationTest {
         when(Common.class, "makeCall", any(Request.class))
                 .thenReturn(mockedResponse);
 
-        EthereumTransactionService transactionClient = new EthereumTransactionService(auxConfig);
-        EthereumTransferService auxHancockEthereumTokenClient = new EthereumTransferService(auxConfig, transactionClient);
+        EthereumTransactionService transactionClient = new EthereumTransactionService(mockedConfig);
+        EthereumTransferService auxHancockEthereumTokenClient = new EthereumTransferService(mockedConfig, transactionClient);
         EthereumTransferService spy_var = spy(auxHancockEthereumTokenClient);
 
         EthereumTransaction rawtx = spy_var.adaptTransfer(transferRequest);
@@ -86,26 +103,7 @@ public class EthereumTransferServiceIntegrationTest {
                 .withPrivateKey("0x6c47653f66ac9b733f3b8bf09ed3d300520b4d9c78711ba90162744f5906b1f8")
                 .build();
 
-        EthereumTransferRequest txRequest = new EthereumTransferRequest(
-                "0x6c0a14f7561898b9ddc0c57652a53b2c6665443e",
-                "0xde8e772f0350e992ddef81bf8f51d94a8ea9216d",
-                new BigInteger("0260941720000000000").toString(),
-                "test test"
-        );
-
-        HancockConfig auxConfig = new HancockConfig.Builder().build();
-
-        Request.Builder requestBuilder = new Request.Builder();
-        requestBuilder.get();
-        requestBuilder.url("http://localhost");
-
-        Response.Builder responseBuilder = new Response.Builder();
-        responseBuilder.code(200);
-        responseBuilder.protocol(Protocol.HTTP_1_1);
-        responseBuilder.body(ResponseBody.create(MediaType.parse("application/json"), "{\"data\":{\"from\": \"0xde8e772f0350e992ddef81bf8f51d94a8ea9216d\",\"data\": \"0xa9059cbb0000000000000000000000006c0a14f7561898b9ddc0c57652a53b2c6665443e0000000000000000000000000000000000000000000000000000000000000001\",\"gasPrice\": \"0x4\",\"gas\": \"0x3\",\"value\": \"0x2\",\"to\": \"0xmockAddress\",\"nonce\": \"0x1\"}}"));
-        responseBuilder.request(requestBuilder.build());
-        responseBuilder.message("Smart Contract - Success");
-        Response mockedResponse = responseBuilder.build();
+        EthereumTransferRequest transferRequest = new EthereumTransferRequest(from, to, value);
 
         Response.Builder responseBuilder2 = new Response.Builder();
         responseBuilder2.code(200);
@@ -117,8 +115,9 @@ public class EthereumTransferServiceIntegrationTest {
 
         EthereumTransactionResponse mockedTransactionResponse = new EthereumTransactionResponse(true);
 
-        EthereumTransactionService transactionClient = new EthereumTransactionService(auxConfig);
-        EthereumTransferService auxEthereumTransferService = new EthereumTransferService(auxConfig, transactionClient);
+        EthereumTransactionService transactionClient = new EthereumTransactionService(mockedConfig);
+        EthereumTransactionService spyTransactionClient = spy(transactionClient);
+        EthereumTransferService auxEthereumTransferClient = new EthereumTransferService(mockedConfig, spyTransactionClient);
 
         mockStatic(Common.class);
         when(Common.class, "getResourceUrl", any(), any())
@@ -131,8 +130,9 @@ public class EthereumTransferServiceIntegrationTest {
                 .thenReturn(mockedResponse)
                 .thenReturn(mockedResponse2);
 
-        EthereumTransactionResponse rawtx = auxEthereumTransferService.send(txRequest, txConfig);
+        EthereumTransactionResponse rawtx = auxEthereumTransferClient.send(transferRequest, txConfig);
 
+        verify(spyTransactionClient).send(any(EthereumTransaction.class), eq(txConfig));
         assertTrue("transaction adapted successfully", rawtx instanceof EthereumTransactionResponse);
         assertEquals(rawtx.getSuccess(), mockedTransactionResponse.getSuccess());
 
