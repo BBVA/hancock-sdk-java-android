@@ -26,7 +26,7 @@ Once you have access to the repository:
 ```text/plain
 # build.gradle
 dependencies {
-	compile('bbva.ndb:hancock-sdk-client-android:1.0.0-alpha.13')
+	compile('bbva.ndb:hancock-sdk-client-android:1.0.0-alpha.14')
 }
 ```
 
@@ -35,7 +35,7 @@ dependencies {
 In code:
 
 ```java
-import com.bbva.hancock.sdk.HancockEthereumClient;
+import com.bbva.hancock.sdk.dlt.ethereum.EthereumClient;
 import com.bbva.hancock.sdk.config.HancockConfig;
 
 HancockConfig config = new HancockConfig.Builder("dev").withNode("http://localhost", 8545).build();
