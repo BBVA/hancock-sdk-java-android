@@ -1,6 +1,6 @@
 package com.bbva.hancock.sdk.dlt.ethereum.models.smartContracts;
 
-import com.bbva.hancock.sdk.dlt.ethereum.models.HancockGenericResponse;
+import com.bbva.hancock.sdk.models.HancockGenericResponse;
 
 public class EthereumCallResponse {
 

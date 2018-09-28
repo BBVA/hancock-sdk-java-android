@@ -1,5 +1,7 @@
 package com.bbva.hancock.sdk.dlt.ethereum.models;
 
+import com.bbva.hancock.sdk.models.HancockGenericResponse;
+
 public class EthereumTransactionAdaptResponse {
 
     private EthereumTransaction data;
