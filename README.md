@@ -43,7 +43,7 @@ import com.bbva.hancock.sdk.config.HancockConfig;
 HancockConfig config = new HancockConfig.Builder()
     .withAdapter("https://hancock-url.es", "/dlt-adapter", 443)
     .withBroker("ws://hancock-url", "", 80)
-    .withWallet("https://hancock-url", "/wallet-hub", 443)
+    .withWallet("https://hancock-url.es", "/wallet-hub", 443)
     .withEnv("pro")
     .build();
     

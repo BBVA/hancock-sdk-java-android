@@ -16,7 +16,6 @@ public class EthereumClient {
     /**
      * Main interface to interact with Hancock's ethereum interface
      * @param config Configuration of Hancock (Adapter, Broker, WalletHub, DLT Node)
-     * @throws Exception
      */
     public EthereumClient(HancockConfig config) {
 
