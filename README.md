@@ -36,7 +36,7 @@ The main client is the [[EthereumClient]] class. You have to instantiate it pass
 to indicate the client which hancock service it has to use.
 
 Configuration object example:
-```java
+```text/plain
 import com.bbva.hancock.sdk.dlt.ethereum.EthereumClient;
 import com.bbva.hancock.sdk.config.HancockConfig;
 
