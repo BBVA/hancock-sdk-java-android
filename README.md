@@ -55,9 +55,9 @@ EthereumClient client = new EthereumClient(config);
 [[EthereumClient]] provides interfaces to interact with the blockchain 
 allowing common operation like transfers, balance consulting or smart contract interactions. Take a look at the diferent sections of the [docs](https://docs.kickstartteam.es/blockchainhub/kst-hancock-sdk-client-android/docs/index.html) to see examples of use:
 
-- [[EthereumWalletClient]]
-- [[EthereumTransferClient]]
-- [[EthereumTransactionClient]]
-- [[EthereumSmartContractClient]]
-- [[EthereumTokenClient]]
-- [[EthereumProtocolClient]]
+- [[EthereumWalletService]]
+- [[EthereumTransferService]]
+- [[EthereumTransactionService]]
+- [[EthereumSmartContractService]]
+- [[EthereumTokenService]]
+- [[ProtocolService]]
