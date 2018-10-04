@@ -6,8 +6,8 @@ import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransaction;
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.EthereumTokenRequest;
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.allowance.EthereumTokenAllowanceRequest;
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.approve.EthereumTokenApproveRequest;
-import com.bbva.hancock.sdk.dlt.ethereum.models.token.balance.EthereumTokenBalanceResponse;
-import com.bbva.hancock.sdk.dlt.ethereum.models.token.metadata.GetEthereumTokenMetadataResponseData;
+import com.bbva.hancock.sdk.dlt.ethereum.models.token.balance.EthereumTokenBalance;
+import com.bbva.hancock.sdk.dlt.ethereum.models.token.metadata.EthereumTokenMetadata;
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.register.EthereumTokenRegisterResponse;
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.transfer.EthereumTokenTransferRequest;
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.transferFrom.EthereumTokenTransferFromRequest;
@@ -292,7 +292,7 @@ public class EthereumTokenServiceIntegrationTest {
         Response.Builder responseBuilder = new Response.Builder();
         responseBuilder.code(200);
         responseBuilder.protocol(Protocol.HTTP_1_1);
-        responseBuilder.body(ResponseBody.create(MediaType.parse("application/json"), "{\"data\":{\"tokenbalance\":{\"balance\":0 , \"decimals\":2}}}"));
+        responseBuilder.body(ResponseBody.create(MediaType.parse("application/json"), "{\"data\":{\"balance\":0 , \"decimals\":2}}"));
         responseBuilder.request(requestBuilder.build());
         responseBuilder.message("Smart Contract - Success");
         Response mockedResponse = responseBuilder.build();
@@ -314,9 +314,9 @@ public class EthereumTokenServiceIntegrationTest {
         EthereumTokenService spyTokenService = spy(auxEthereumTokenService);
 
 
-        EthereumTokenBalanceResponse balance = spyTokenService.getBalance("0xde8e772f0350e992ddef81bf8f51d94a8ea9216d", "0xde8e772f0350e992ddef81bf8f51d94a8ea9216d");
+        EthereumTokenBalance balance = spyTokenService.getBalance("0xde8e772f0350e992ddef81bf8f51d94a8ea9216d", "0xde8e772f0350e992ddef81bf8f51d94a8ea9216d");
 
-        assertTrue("transaction signed successfully", balance instanceof EthereumTokenBalanceResponse);
+        assertTrue("transaction signed successfully", balance instanceof EthereumTokenBalance);
         assertEquals(balance.getBalance(), BigInteger.valueOf(0));
 
     }
@@ -353,9 +353,9 @@ public class EthereumTokenServiceIntegrationTest {
         EthereumTokenService auxEthereumTokenService = new EthereumTokenService(auxConfig, transactionClient);
         EthereumTokenService spyTokenService = spy(auxEthereumTokenService);
 
-        GetEthereumTokenMetadataResponseData metadata = spyTokenService.getMetadata("0xde8e772f0350e992ddef81bf8f51d94a8ea9216d");
+        EthereumTokenMetadata metadata = spyTokenService.getMetadata("0xde8e772f0350e992ddef81bf8f51d94a8ea9216d");
 
-        assertTrue("metadata obtained successfully", metadata instanceof GetEthereumTokenMetadataResponseData);
+        assertTrue("metadata obtained successfully", metadata instanceof EthereumTokenMetadata);
         assertEquals(metadata.getName(), "mockedName");
         assertEquals(metadata.getSymbol(), "mockedSymbol");
         assertEquals(metadata.getDecimals(), Integer.valueOf(10));

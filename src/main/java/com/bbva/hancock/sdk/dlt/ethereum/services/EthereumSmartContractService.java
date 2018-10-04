@@ -117,7 +117,7 @@ public class EthereumSmartContractService {
                 + this.config.getAdapter().getBase()
                 + this.config.getAdapter().getResources().get("register");
 
-        EthereumRegisterRequest registerBody = new EthereumRegisterRequest(alias, address, abi);
+        EthereumRegisterRequest registerBody = new EthereumRegisterRequest(address, alias, abi);
 
         Gson gson = new Gson();
         String json = gson.toJson(registerBody);

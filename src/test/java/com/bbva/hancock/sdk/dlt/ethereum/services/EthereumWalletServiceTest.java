@@ -16,6 +16,9 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.web3j.crypto.Credentials;
+import org.web3j.crypto.ECKeyPair;
+import org.web3j.crypto.Keys;
 
 import java.math.BigInteger;
 
@@ -48,36 +51,36 @@ public class EthereumWalletServiceTest {
     mockedHancockEthereumClient = PowerMockito.spy(hancockEthereumClient);
   }
 
-//  @PrepareForTest({Credentials.class, org.web3j.crypto.Keys.class})
-//  @Test
-//  public void testGenerateWallet() throws Exception {
-//
-//    ECKeyPair mockECKeyPair = mock(ECKeyPair.class);
-//    PowerMockito.when(mockECKeyPair.getPrivateKey()).thenReturn(new BigInteger("0"));
-//    PowerMockito.when(mockECKeyPair.getPublicKey()).thenReturn(new BigInteger("1"));
-//
-//    mockStatic(Keys.class);
-//    PowerMockito.when(Keys.class, "createEcKeyPair").thenReturn(mockECKeyPair);
-//
-//    Credentials mockCredentials = mock(Credentials.class);
-//    mockStatic(Credentials.class);
-//    PowerMockito.when(Credentials.class, "create", mockECKeyPair).thenReturn(mockCredentials);
-//
-//    PowerMockito.when(mockCredentials.getAddress()).thenReturn("mockedAddress");
-//
-//    PowerMockito.when(mockCredentials.getEcKeyPair()).thenReturn(mockECKeyPair);
-//
-//    mockedWallet = mockedHancockEthereumClient.generateWallet();
-//
-//    assertNotNull("Wallet should have an address", mockedWallet.getAddress());
-//    assertNotNull("Wallet should have a publicKey", mockedWallet.getPublicKey());
-//    assertNotNull("Wallet should have a privateKey", mockedWallet.getPrivateKey());
-//
-//    assertEquals(mockedWallet.getAddress(), "mockedAddress");
-//    assertEquals(mockedWallet.getPrivateKey(), "0x0");
-//    assertEquals(mockedWallet.getPublicKey(), "0x1");
-//
-//  }
+  @PrepareForTest({Credentials.class, org.web3j.crypto.Keys.class})
+  @Test
+  public void testGenerateWallet() throws Exception {
+
+    ECKeyPair mockECKeyPair = mock(ECKeyPair.class);
+    PowerMockito.when(mockECKeyPair.getPrivateKey()).thenReturn(new BigInteger("0"));
+    PowerMockito.when(mockECKeyPair.getPublicKey()).thenReturn(new BigInteger("1"));
+
+    mockStatic(Keys.class);
+    PowerMockito.when(Keys.class, "createEcKeyPair").thenReturn(mockECKeyPair);
+
+    Credentials mockCredentials = mock(Credentials.class);
+    mockStatic(Credentials.class);
+    PowerMockito.when(Credentials.class, "create", mockECKeyPair).thenReturn(mockCredentials);
+
+    PowerMockito.when(mockCredentials.getAddress()).thenReturn("mockedAddress");
+
+    PowerMockito.when(mockCredentials.getEcKeyPair()).thenReturn(mockECKeyPair);
+
+    mockedWallet = mockedHancockEthereumClient.generateWallet();
+
+    assertNotNull("Wallet should have an address", mockedWallet.getAddress());
+    assertNotNull("Wallet should have a publicKey", mockedWallet.getPublicKey());
+    assertNotNull("Wallet should have a privateKey", mockedWallet.getPrivateKey());
+
+    assertEquals(mockedWallet.getAddress(), "mockedAddress");
+    assertEquals(mockedWallet.getPrivateKey(), "0x0");
+    assertEquals(mockedWallet.getPublicKey(), "0x1");
+
+  }
 
   @PrepareForTest({ValidateParameters.class, Common.class})
   @Test
