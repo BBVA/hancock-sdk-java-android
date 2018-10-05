@@ -1,6 +1,6 @@
 package com.bbva.hancock.sdk.dlt.ethereum.models.token.metadata;
 
-public class GetEthereumTokenMetadataResponseData {
+public class EthereumTokenMetadata {
     public String name;
     public String symbol;
     public Integer decimals;

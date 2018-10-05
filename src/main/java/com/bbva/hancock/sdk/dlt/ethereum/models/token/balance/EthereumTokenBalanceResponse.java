@@ -1,16 +1,16 @@
 package com.bbva.hancock.sdk.dlt.ethereum.models.token.balance;
 
-import java.math.BigInteger;
+class EthereumTokenBalanceResponseResult {
+  public int code;
+  public String description;
+}
+
 
 public class EthereumTokenBalanceResponse {
-    private  BigInteger balance;
-    private  Integer decimals;
+  public EthereumTokenBalanceResponseResult result;
+  public EthereumTokenBalance data;
 
-    public BigInteger getBalance() {
-      return balance;
-    }
-    
-    public Integer getDecimals() {
-      return decimals;
-    }
+  public EthereumTokenBalance getTokenBalance() {
+      return this.data;
+  }
 }

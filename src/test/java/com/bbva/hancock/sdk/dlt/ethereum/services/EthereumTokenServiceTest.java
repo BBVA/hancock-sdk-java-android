@@ -9,10 +9,10 @@ import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransferRequest;
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.EthereumTokenRequest;
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.allowance.EthereumTokenAllowanceRequest;
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.approve.EthereumTokenApproveRequest;
+import com.bbva.hancock.sdk.dlt.ethereum.models.token.balance.EthereumTokenBalance;
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.balance.EthereumTokenBalanceResponse;
-import com.bbva.hancock.sdk.dlt.ethereum.models.token.balance.GetEthereumTokenBalanceResponse;
-import com.bbva.hancock.sdk.dlt.ethereum.models.token.metadata.GetEthereumTokenMetadataResponse;
-import com.bbva.hancock.sdk.dlt.ethereum.models.token.metadata.GetEthereumTokenMetadataResponseData;
+import com.bbva.hancock.sdk.dlt.ethereum.models.token.metadata.EthereumTokenMetadata;
+import com.bbva.hancock.sdk.dlt.ethereum.models.token.metadata.EthereumTokenMetadataResponse;
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.register.EthereumTokenRegisterRequest;
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.register.EthereumTokenRegisterResponse;
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.transfer.EthereumTokenTransferRequest;
@@ -100,8 +100,8 @@ public class EthereumTokenServiceTest {
         PowerMockito.doNothing().when(ValidateParameters.class, "checkAddress", any(String.class));
         PowerMockito.doNothing().when(ValidateParameters.class, "checkForContent", any(String.class) , any(String.class));
 
-        EthereumTokenBalanceResponse aux = mock(EthereumTokenBalanceResponse.class);
-        GetEthereumTokenBalanceResponse responseModel = mock(GetEthereumTokenBalanceResponse.class);
+        EthereumTokenBalance aux = mock(EthereumTokenBalance.class);
+        EthereumTokenBalanceResponse responseModel = mock(EthereumTokenBalanceResponse.class);
         okhttp3.Response responseMock = mock(okhttp3.Response.class);
         okhttp3.Request requestMock = mock(okhttp3.Request.class);
         EthereumTokenService spy_var = PowerMockito.spy(mockedHancockEthereumClient);
@@ -113,14 +113,14 @@ public class EthereumTokenServiceTest {
         PowerMockito.when(Common.class, "makeCall", any(okhttp3.Request.class))
                 .thenReturn(responseMock);
 
-        PowerMockito.when(Common.class, "checkStatus", any(okhttp3.Response.class), eq(GetEthereumTokenBalanceResponse.class))
+        PowerMockito.when(Common.class, "checkStatus", any(okhttp3.Response.class), eq(EthereumTokenBalanceResponse.class))
                 .thenReturn(responseModel);
 
         when(responseModel.getTokenBalance()).thenReturn(aux);
         when(aux.getBalance()).thenReturn(BigInteger.valueOf(0));
 
-        EthereumTokenBalanceResponse balance = spy_var.getBalance("mockAlias","mockAddress");
-        assertTrue("Wallet should have a Balance", balance instanceof EthereumTokenBalanceResponse);
+        EthereumTokenBalance balance = spy_var.getBalance("mockAlias","mockAddress");
+        assertTrue("Wallet should have a Balance", balance instanceof EthereumTokenBalance);
         assertEquals(balance.getBalance(), BigInteger.valueOf(0));
 
     }
@@ -131,8 +131,8 @@ public class EthereumTokenServiceTest {
         PowerMockito.mockStatic(ValidateParameters.class);
         PowerMockito.doNothing().when(ValidateParameters.class, "checkForContent", any(String.class) , any(String.class));
 
-        GetEthereumTokenMetadataResponseData aux = mock(GetEthereumTokenMetadataResponseData.class);
-        GetEthereumTokenMetadataResponse responseModel = mock(GetEthereumTokenMetadataResponse.class);
+        EthereumTokenMetadata aux = mock(EthereumTokenMetadata.class);
+        EthereumTokenMetadataResponse responseModel = mock(EthereumTokenMetadataResponse.class);
 
         okhttp3.Response responseMock = mock(okhttp3.Response.class);
         okhttp3.Request requestMock = mock(okhttp3.Request.class);
@@ -146,7 +146,7 @@ public class EthereumTokenServiceTest {
         PowerMockito.when(Common.class, "makeCall", any(okhttp3.Request.class))
                 .thenReturn(responseMock);
 
-        PowerMockito.when(Common.class, "checkStatus", any(okhttp3.Response.class), eq(GetEthereumTokenMetadataResponse.class))
+        PowerMockito.when(Common.class, "checkStatus", any(okhttp3.Response.class), eq(EthereumTokenMetadataResponse.class))
                 .thenReturn(responseModel);
 
         when(responseModel.getTokenMetadata()).thenReturn(aux);
@@ -155,9 +155,9 @@ public class EthereumTokenServiceTest {
         when(aux.getDecimals()).thenReturn(10);
         when(aux.getTotalSupply()).thenReturn(10000);
 
-        GetEthereumTokenMetadataResponseData metadata = spy_var.getMetadata("mockAlias");
+        EthereumTokenMetadata metadata = spy_var.getMetadata("mockAlias");
 
-        assertTrue("Wallet should have a Balance", metadata instanceof GetEthereumTokenMetadataResponseData);
+        assertTrue("Wallet should have a Balance", metadata instanceof EthereumTokenMetadata);
         assertEquals(metadata.getName(), "mockedName");
         assertEquals(metadata.getSymbol(), "mockedSymbol");
         assertEquals(metadata.getDecimals(), Integer.valueOf(10));

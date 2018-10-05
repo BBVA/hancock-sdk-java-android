@@ -6,10 +6,10 @@ import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransactionAdaptResponse
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.EthereumTokenRequest;
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.allowance.EthereumTokenAllowanceRequest;
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.approve.EthereumTokenApproveRequest;
+import com.bbva.hancock.sdk.dlt.ethereum.models.token.balance.EthereumTokenBalance;
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.balance.EthereumTokenBalanceResponse;
-import com.bbva.hancock.sdk.dlt.ethereum.models.token.balance.GetEthereumTokenBalanceResponse;
-import com.bbva.hancock.sdk.dlt.ethereum.models.token.metadata.GetEthereumTokenMetadataResponse;
-import com.bbva.hancock.sdk.dlt.ethereum.models.token.metadata.GetEthereumTokenMetadataResponseData;
+import com.bbva.hancock.sdk.dlt.ethereum.models.token.metadata.EthereumTokenMetadataResponse;
+import com.bbva.hancock.sdk.dlt.ethereum.models.token.metadata.EthereumTokenMetadata;
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.register.EthereumTokenRegisterRequest;
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.register.EthereumTokenRegisterResponse;
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.transfer.EthereumTokenTransferRequest;
@@ -46,7 +46,7 @@ public class EthereumTokenService {
      * @return The result of the request with the balance
      * @throws HancockException
      */
-    public EthereumTokenBalanceResponse getBalance(String addressOrAlias, String address) throws HancockException {
+    public EthereumTokenBalance getBalance(String addressOrAlias, String address) throws HancockException {
 
         ValidateParameters.checkForContent(address, "address");
         ValidateParameters.checkAddress(address);
@@ -56,7 +56,7 @@ public class EthereumTokenService {
         Request request = getRequest(url);
 
         Response response = makeCall(request);
-        GetEthereumTokenBalanceResponse responseModel = checkStatus(response, GetEthereumTokenBalanceResponse.class);
+        EthereumTokenBalanceResponse responseModel = checkStatus(response, EthereumTokenBalanceResponse.class);
         return responseModel.getTokenBalance();
 
     }
@@ -67,7 +67,7 @@ public class EthereumTokenService {
      * @return name, symbol, decimals, and totalSupply of the token
      * @throws HancockException
      */
-    public GetEthereumTokenMetadataResponseData getMetadata(String addressOrAlias) throws HancockException {
+    public EthereumTokenMetadata getMetadata(String addressOrAlias) throws HancockException {
 
         ValidateParameters.checkForContent(addressOrAlias, "address or alias");
         String url = this.config.getAdapter().getHost() + ':' + this.config.getAdapter().getPort() + this.config.getAdapter().getBase() + this.config.getAdapter().getResources().get("tokenMetadata").replaceAll("__ADDRESS_OR_ALIAS__", addressOrAlias);
@@ -75,7 +75,7 @@ public class EthereumTokenService {
         Request request = getRequest(url);
 
         Response response = makeCall(request);
-        GetEthereumTokenMetadataResponse responseModel = checkStatus(response, GetEthereumTokenMetadataResponse.class);
+        EthereumTokenMetadataResponse responseModel = checkStatus(response, EthereumTokenMetadataResponse.class);
         return responseModel.getTokenMetadata();
 
     }
@@ -161,7 +161,7 @@ public class EthereumTokenService {
 
     protected EthereumTransaction adaptTransfer(EthereumTokenRequest txRequest) throws Exception {
         Gson gson = new Gson();
-        String json = gson.toJson(txRequest);
+        String json = gson.toJson(txRequest.getBody());
         RequestBody body = RequestBody.create(this.CONTENT_TYPE_JSON, json);
         String url = this.getTransferUrl(txRequest);
         Request request = getRequest(url, body);
