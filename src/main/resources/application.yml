@@ -15,6 +15,7 @@ adapter:
     tokenAllowance: '/ethereum/token/__ADDRESS_OR_ALIAS__/allowance'
     tokenApprove: '/ethereum/token/__ADDRESS_OR_ALIAS__/approve'
     tokenRegister: '/ethereum/token/register'
+    tokenFindAll: '/ethereum/token'
     decode: '/protocol/decode'
     encode: '/protocol/encode'
 wallet:

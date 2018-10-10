@@ -2,6 +2,7 @@ package com.bbva.hancock.sdk.dlt.ethereum.services;
 
 import com.bbva.hancock.sdk.Common;
 import com.bbva.hancock.sdk.config.HancockConfig;
+import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumRawTransaction;
 import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumWallet;
 import com.bbva.hancock.sdk.dlt.ethereum.models.wallet.GetBalanceResponse;
 import com.bbva.hancock.sdk.exception.HancockException;
@@ -13,6 +14,7 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.web3j.crypto.Keys;
+import org.web3j.crypto.RawTransaction;
 
 import java.math.BigInteger;
 import java.security.InvalidAlgorithmParameterException;
@@ -27,58 +29,59 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @RunWith(PowerMockRunner.class)
 public class EthereumWalletServiceIntegrationTest {
 
-//    @PrepareForTest({Common.class})
-//    @Test public void testCreateRawTransaction() throws Exception {
-//
-//        EthereumWalletService classUnderTest = new EthereumWalletService();
-//        EthereumWallet wallet = classUnderTest.generateWallet();
-//
-//        BigInteger nonce = BigInteger.valueOf(1);
-//        BigInteger gasPrice = BigInteger.valueOf(111);
-//        BigInteger gasLimit = BigInteger.valueOf(222);
-//        BigInteger value = BigInteger.valueOf(333);
-//        String to = wallet.getAddress();
-//        String data = "whatever";
-//
-//        EthereumRawTransaction rawTransaction = new EthereumRawTransaction(to, nonce, value, data, gasPrice, gasLimit);
-//
-//        assertTrue("RawTransaction is well constructed ", rawTransaction instanceof EthereumRawTransaction);
-//        assertTrue("RawTransaction web3 instance is well constructed ", rawTransaction.getWeb3Instance() instanceof RawTransaction);
-//        assertTrue("RawTransaction has nonce ", rawTransaction.getNonce() instanceof BigInteger);
-//        assertEquals(rawTransaction.getNonce(), nonce);
-//        assertTrue("RawTransaction has gasPrice ", rawTransaction.getGasPrice() instanceof BigInteger);
-//        assertTrue("RawTransaction has gasLimit ", rawTransaction.getGasPrice() instanceof BigInteger);
-//        assertTrue("RawTransaction has to ", rawTransaction.getTo() instanceof String);
-//        assertEquals(rawTransaction.getTo(), to);
-//        assertTrue("RawTransaction has value ", rawTransaction.getValue() instanceof BigInteger);
-//        assertEquals(rawTransaction.getValue(), value);
-//        assertTrue("RawTransaction has value ", rawTransaction.getData() instanceof String);
-//        assertEquals(rawTransaction.getData(), data);
-//
-//
-//        rawTransaction = new EthereumRawTransaction(to, nonce, value, gasPrice, gasLimit);
-//
-//        assertTrue("RawTransaction has value ", rawTransaction.getValue() instanceof BigInteger);
-//        assertEquals(rawTransaction.getNonce(), nonce);
-//
-//
-//        rawTransaction = new EthereumRawTransaction(to, nonce, new BigInteger("0"), data, gasPrice, gasLimit);
-//
-//        assertTrue("RawTransaction has value ", rawTransaction.getValue().equals(BigInteger.ZERO));
-//        assertTrue("RawTransaction has value ", rawTransaction.getData() instanceof String);
-//        assertEquals(rawTransaction.getNonce(), nonce);
-//
-//    }
-//
-//    @Test public void testGenerateWallet() throws Exception {
-//
-//        EthereumWalletService classUnderTest = new EthereumWalletService();
-//        EthereumWallet wallet = classUnderTest.generateWallet();
-//        assertNotNull("Wallet should have an address", wallet.getAddress());
-//        assertNotNull("Wallet should have an address", wallet.getPublicKey());
-//        assertNotNull("Wallet should have an address", wallet.getPrivateKey());
-//
-//    }
+    @Test public void testCreateRawTransaction() throws Exception {
+
+        HancockConfig config = new HancockConfig.Builder().build();
+        EthereumWalletService classUnderTest = new EthereumWalletService(config);
+        EthereumWallet wallet = classUnderTest.generateWallet();
+
+        BigInteger nonce = BigInteger.valueOf(1);
+        BigInteger gasPrice = BigInteger.valueOf(111);
+        BigInteger gasLimit = BigInteger.valueOf(222);
+        BigInteger value = BigInteger.valueOf(333);
+        String to = wallet.getAddress();
+        String data = "whatever";
+
+        EthereumRawTransaction rawTransaction = new EthereumRawTransaction(to, nonce, value, data, gasPrice, gasLimit);
+
+        assertTrue("RawTransaction is well constructed ", rawTransaction instanceof EthereumRawTransaction);
+        assertTrue("RawTransaction web3 instance is well constructed ", rawTransaction.getWeb3Instance() instanceof RawTransaction);
+        assertTrue("RawTransaction has nonce ", rawTransaction.getNonce() instanceof BigInteger);
+        assertEquals(rawTransaction.getNonce(), nonce);
+        assertTrue("RawTransaction has gasPrice ", rawTransaction.getGasPrice() instanceof BigInteger);
+        assertTrue("RawTransaction has gasLimit ", rawTransaction.getGasPrice() instanceof BigInteger);
+        assertTrue("RawTransaction has to ", rawTransaction.getTo() instanceof String);
+        assertEquals(rawTransaction.getTo(), to);
+        assertTrue("RawTransaction has value ", rawTransaction.getValue() instanceof BigInteger);
+        assertEquals(rawTransaction.getValue(), value);
+        assertTrue("RawTransaction has value ", rawTransaction.getData() instanceof String);
+        assertEquals(rawTransaction.getData(), data);
+
+
+        rawTransaction = new EthereumRawTransaction(to, nonce, value, gasPrice, gasLimit);
+
+        assertTrue("RawTransaction has value ", rawTransaction.getValue() instanceof BigInteger);
+        assertEquals(rawTransaction.getNonce(), nonce);
+
+
+        rawTransaction = new EthereumRawTransaction(to, nonce, new BigInteger("0"), data, gasPrice, gasLimit);
+
+        assertTrue("RawTransaction has value ", rawTransaction.getValue().equals(BigInteger.ZERO));
+        assertTrue("RawTransaction has value ", rawTransaction.getData() instanceof String);
+        assertEquals(rawTransaction.getNonce(), nonce);
+
+    }
+
+    @Test public void testGenerateWallet() throws Exception {
+
+        HancockConfig config = new HancockConfig.Builder().build();
+        EthereumWalletService classUnderTest = new EthereumWalletService(config);
+        EthereumWallet wallet = classUnderTest.generateWallet();
+        assertNotNull("Wallet should have an address", wallet.getAddress());
+        assertNotNull("Wallet should have an address", wallet.getPublicKey());
+        assertNotNull("Wallet should have an address", wallet.getPrivateKey());
+
+    }
 
     @PrepareForTest({Keys.class})
     @Test (expected = HancockException.class)

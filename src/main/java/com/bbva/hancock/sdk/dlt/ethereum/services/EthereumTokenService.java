@@ -1,8 +1,10 @@
 package com.bbva.hancock.sdk.dlt.ethereum.services;
 
 import com.bbva.hancock.sdk.config.HancockConfig;
+import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumSmartContractRetrieveResponse;
 import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransaction;
 import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransactionAdaptResponse;
+import com.bbva.hancock.sdk.dlt.ethereum.models.smartContracts.EthereumContractInstance;
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.EthereumTokenRequest;
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.allowance.EthereumTokenAllowanceRequest;
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.approve.EthereumTokenApproveRequest;
@@ -24,6 +26,8 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import java.util.ArrayList;
+
 import static com.bbva.hancock.sdk.Common.*;
 
 public class EthereumTokenService {
@@ -37,6 +41,23 @@ public class EthereumTokenService {
     public EthereumTokenService(HancockConfig config, EthereumTransactionService transactionClient) {
         this.config = config;
         this.transactionClient = transactionClient;
+    }
+
+    /**
+     * Get the list of all tokens registered in Hancock
+     * @return The list of all tokens registered in Hancock
+     * @throws HancockException
+     */
+    public ArrayList<EthereumContractInstance> getAllTokens() throws HancockException {
+
+        String url = this.config.getAdapter().getHost() + ':' + this.config.getAdapter().getPort() + this.config.getAdapter().getBase() + this.config.getAdapter().getResources().get("tokenFindAll");
+
+        Request request = getRequest(url);
+
+        Response response = makeCall(request);
+        EthereumSmartContractRetrieveResponse responseModel = checkStatus(response, EthereumSmartContractRetrieveResponse.class);
+        return responseModel.getData();
+
     }
 
     /**

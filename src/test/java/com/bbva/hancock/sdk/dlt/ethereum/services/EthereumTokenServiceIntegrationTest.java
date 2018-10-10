@@ -3,6 +3,7 @@ package com.bbva.hancock.sdk.dlt.ethereum.services;//package com.bbva.hancock.sd
 import com.bbva.hancock.sdk.Common;
 import com.bbva.hancock.sdk.config.HancockConfig;
 import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransaction;
+import com.bbva.hancock.sdk.dlt.ethereum.models.smartContracts.EthereumContractInstance;
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.EthereumTokenRequest;
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.allowance.EthereumTokenAllowanceRequest;
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.approve.EthereumTokenApproveRequest;
@@ -22,6 +23,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -360,6 +362,46 @@ public class EthereumTokenServiceIntegrationTest {
         assertEquals(metadata.getSymbol(), "mockedSymbol");
         assertEquals(metadata.getDecimals(), Integer.valueOf(10));
         assertEquals(metadata.getTotalSupply(), Integer.valueOf(10000));
+
+
+    }
+
+    @PrepareForTest({ Common.class})
+    @Test public void testGetAllTokens() throws Exception {
+
+        Request.Builder requestBuilder = new Request.Builder();
+        requestBuilder.get();
+        requestBuilder.url("http://localhost");
+
+        Response.Builder responseBuilder = new Response.Builder();
+        responseBuilder.code(200);
+        responseBuilder.protocol(Protocol.HTTP_1_1);
+        responseBuilder.body(ResponseBody.create(MediaType.parse("application/json"), "{\"data\":[{ \"_id\": \"5b7fad42c13b16add2c9856f\",\"alias\": \"tkn\",\"abiName\": \"erc20\" ,\"address\": \"0x9dee2e4f57ddb4bc86d53ead86a5db718ea64c00\"}]}"));
+        responseBuilder.request(requestBuilder.build());
+        responseBuilder.message("Token - Success");
+
+        Response mockedResponse = responseBuilder.build();
+
+        mockStatic(Common.class);
+        when(Common.class, "checkStatus", any(), any())
+                .thenCallRealMethod();
+        when(Common.class, "getRequest", any())
+                .thenCallRealMethod();
+        when(Common.class, "makeCall", any(Request.class))
+                .thenReturn(mockedResponse);
+
+        HancockConfig auxConfig = new HancockConfig.Builder().build();
+
+        EthereumTransactionService transactionClient = new EthereumTransactionService(auxConfig);
+        EthereumTokenService auxEthereumTokenService = new EthereumTokenService(auxConfig, transactionClient);
+        EthereumTokenService spyTokenService = spy(auxEthereumTokenService);
+
+        ArrayList<EthereumContractInstance> responseList = spyTokenService.getAllTokens();
+
+        assertEquals(responseList.size(), 1);
+        assertEquals(responseList.get(0).getAlias(), "tkn");
+        assertEquals(responseList.get(0).getAddress(), "0x9dee2e4f57ddb4bc86d53ead86a5db718ea64c00");
+        assertEquals(responseList.get(0).getAbiName(), "erc20");
 
 
     }
