@@ -8,6 +8,7 @@ import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumWallet;
 import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransaction;
 import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransferRequest;
 import com.bbva.hancock.sdk.dlt.ethereum.models.smartContracts.EthereumContractInstance;
+import com.bbva.hancock.sdk.dlt.ethereum.models.token.EthereumTokenInstance;
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.EthereumTokenRequest;
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.allowance.EthereumTokenAllowanceRequest;
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.approve.EthereumTokenApproveRequest;
@@ -171,8 +172,8 @@ public class EthereumTokenServiceTest {
     @PrepareForTest({ Common.class})
     @Test public void testGetAllTokens() throws Exception {
 
-        EthereumContractInstance instanceAux = new EthereumContractInstance("erc20", "TKN", "mockedAddress");
-        ArrayList<EthereumContractInstance> list = new ArrayList<>();
+        EthereumTokenInstance instanceAux = new EthereumTokenInstance("erc20", "TKN", "mockedAddress", "TKN", "tkn", 10, 10000000);
+        ArrayList<EthereumTokenInstance> list = new ArrayList<>();
         list.add(instanceAux);
         HancockGenericResponse result = mock(HancockGenericResponse.class);
         EthereumSmartContractRetrieveResponse responseModel = new EthereumSmartContractRetrieveResponse(list, result);
@@ -192,7 +193,7 @@ public class EthereumTokenServiceTest {
         PowerMockito.when(Common.class, "checkStatus", any(okhttp3.Response.class), eq(EthereumSmartContractRetrieveResponse.class))
                 .thenReturn(responseModel);
 
-        ArrayList<EthereumContractInstance> responseList = spy_var.getAllTokens();
+        ArrayList<EthereumTokenInstance> responseList = spy_var.getAllTokens();
 
         assertEquals(responseList.size(), 1);
         assertEquals(responseList.get(0).getAbiName(), "erc20");

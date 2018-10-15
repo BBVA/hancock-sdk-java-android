@@ -5,7 +5,7 @@ public class EthereumTransaction {
     private String from;
     private String to;
     private String value;
-    private String data = "data";
+    private String data;
     private String nonce;
     private String gas;
     private String gasPrice;
@@ -25,6 +25,7 @@ public class EthereumTransaction {
         this.to = to;
         this.value = value;
         this.nonce = nonce;
+        this.data = "";
         this.gas = gas;
         this.gasPrice = gasPrice;
     }

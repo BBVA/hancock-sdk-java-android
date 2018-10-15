@@ -4,6 +4,7 @@ import com.bbva.hancock.sdk.Common;
 import com.bbva.hancock.sdk.config.HancockConfig;
 import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransaction;
 import com.bbva.hancock.sdk.dlt.ethereum.models.smartContracts.EthereumContractInstance;
+import com.bbva.hancock.sdk.dlt.ethereum.models.token.EthereumTokenInstance;
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.EthereumTokenRequest;
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.allowance.EthereumTokenAllowanceRequest;
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.approve.EthereumTokenApproveRequest;
@@ -376,7 +377,7 @@ public class EthereumTokenServiceIntegrationTest {
         Response.Builder responseBuilder = new Response.Builder();
         responseBuilder.code(200);
         responseBuilder.protocol(Protocol.HTTP_1_1);
-        responseBuilder.body(ResponseBody.create(MediaType.parse("application/json"), "{\"data\":[{ \"_id\": \"5b7fad42c13b16add2c9856f\",\"alias\": \"tkn\",\"abiName\": \"erc20\" ,\"address\": \"0x9dee2e4f57ddb4bc86d53ead86a5db718ea64c00\"}]}"));
+        responseBuilder.body(ResponseBody.create(MediaType.parse("application/json"), "{\"data\":[{ \"_id\": \"5b7fad42c13b16add2c9856f\",\"alias\": \"tkn\",\"abiName\": \"erc20\" ,\"address\": \"0x9dee2e4f57ddb4bc86d53ead86a5db718ea64c00\" ,\"symbol\": \"TKN\" ,\"name\": \"tkn\" ,\"decimals\": 10 ,\"totalSupply\": 10000}]}"));
         responseBuilder.request(requestBuilder.build());
         responseBuilder.message("Token - Success");
 
@@ -396,7 +397,7 @@ public class EthereumTokenServiceIntegrationTest {
         EthereumTokenService auxEthereumTokenService = new EthereumTokenService(auxConfig, transactionClient);
         EthereumTokenService spyTokenService = spy(auxEthereumTokenService);
 
-        ArrayList<EthereumContractInstance> responseList = spyTokenService.getAllTokens();
+        ArrayList<EthereumTokenInstance> responseList = spyTokenService.getAllTokens();
 
         assertEquals(responseList.size(), 1);
         assertEquals(responseList.get(0).getAlias(), "tkn");
