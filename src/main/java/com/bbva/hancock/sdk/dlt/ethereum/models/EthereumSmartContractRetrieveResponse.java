@@ -1,21 +1,21 @@
 package com.bbva.hancock.sdk.dlt.ethereum.models;
 
-import com.bbva.hancock.sdk.dlt.ethereum.models.smartContracts.EthereumContractInstance;
+import com.bbva.hancock.sdk.dlt.ethereum.models.token.EthereumTokenInstance;
 import com.bbva.hancock.sdk.models.HancockGenericResponse;
 
 import java.util.ArrayList;
 
 public class EthereumSmartContractRetrieveResponse {
 
-    private ArrayList<EthereumContractInstance> data;
+    private ArrayList<EthereumTokenInstance> data;
     private HancockGenericResponse result;
 
-    public EthereumSmartContractRetrieveResponse(ArrayList<EthereumContractInstance> data, HancockGenericResponse result) {
+    public EthereumSmartContractRetrieveResponse(ArrayList<EthereumTokenInstance> data, HancockGenericResponse result) {
         this.data = data;
         this.result = result;
     }
 
-    public ArrayList<EthereumContractInstance> getData() {
+    public ArrayList<EthereumTokenInstance> getData() {
         return data;
     }
 
