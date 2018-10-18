@@ -61,7 +61,7 @@ public class TransactionConfig {
         private String provider;
         private String node;
         private HancockCallbackOptions callbackOptions;
-        private boolean sendLocally = true;
+        private boolean sendLocally = false;
 
         public Builder withPrivateKey(String privateKey) {
             this.privateKey = privateKey;
