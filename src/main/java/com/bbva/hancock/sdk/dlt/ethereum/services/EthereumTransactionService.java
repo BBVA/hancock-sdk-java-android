@@ -49,6 +49,8 @@ public class EthereumTransactionService {
 
         if (txConfig.getPrivateKey() != null) {
             String signedTransaction = this.signTransaction(new EthereumRawTransaction(rawtx), txConfig.getPrivateKey());
+            if(txConfig.getSendLocally())
+                return this.sendSignedTransactionLocally(signedTransaction);
             return this.sendSignedTransaction(signedTransaction, txConfig);
         } else if (txConfig.getProvider() != null){
             return this.sendToSignProvider(rawtx, txConfig);
@@ -156,15 +158,16 @@ public class EthereumTransactionService {
      * @throws InterruptedException
      * @throws ExecutionException
      */
-    public String sendSignedTransactionLocally(String signedTransaction) throws InterruptedException, ExecutionException {
+    public EthereumTransactionResponse sendSignedTransactionLocally(String signedTransaction) throws InterruptedException, ExecutionException {
 
         Web3j web3j = Web3jFactory.build(new HttpService(this.config.getNode().getHost() + ":" + this.config.getNode().getPort()));
 
         EthSendTransaction ethSendTransaction = web3j.ethSendRawTransaction(signedTransaction).sendAsync().get();
         String transactionHash = ethSendTransaction.getTransactionHash();
 
-        return transactionHash;
+        EthereumTransactionResponse response = new EthereumTransactionResponse(true, transactionHash);
 
+        return response;
 
     }
 

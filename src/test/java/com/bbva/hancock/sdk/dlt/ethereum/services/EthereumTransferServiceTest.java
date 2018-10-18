@@ -111,34 +111,6 @@ public class EthereumTransferServiceTest {
         assertTrue("transaction send and signed successfully", mockResult instanceof EthereumTransactionResponse);
     }
 
-    @PrepareForTest({ Common.class})
-    @Test public void testSendLocally() throws Exception {
-        TransactionConfig txConfig = new TransactionConfig.Builder()
-                .withPrivateKey("0x6c47653f66ac9b733f3b8bf09ed3d300520b4d9c78711ba90162744f5906b1f8")
-                .build();
-
-
-        EthereumTransferService spy_transfer_var = PowerMockito.spy(mockedHancockEthereumClient);
-
-        PowerMockito.doReturn(mock(EthereumTransaction.class))
-                .when(spy_transfer_var)
-                .adaptTransfer(any(EthereumTransferRequest.class));
-
-        PowerMockito.doReturn(mock(String.class))
-                .when(spy_transaction_var)
-                .signTransaction(any(EthereumRawTransaction.class), any(String.class));
-
-        PowerMockito.doReturn(mock(String.class))
-                .when(spy_transaction_var)
-                .sendSignedTransactionLocally(any(String.class));
-
-        String mockResult = spy_transfer_var.sendLocally(mockedEthereumTransferRequest, txConfig);
-
-        verify(spy_transfer_var).adaptTransfer(eq(mockedEthereumTransferRequest));
-        verify(spy_transaction_var).sendSignedTransactionLocally(any(String.class));
-        assertTrue("transaction sendLocally and signed successfully", mockResult instanceof String);
-    }
-
 //    @PrepareForTest({ Common.class})
 //    @Test public void testAdaptTransfer() throws Exception {
 //

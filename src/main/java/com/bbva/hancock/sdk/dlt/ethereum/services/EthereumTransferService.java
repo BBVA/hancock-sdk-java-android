@@ -48,19 +48,6 @@ public class EthereumTransferService {
     }
 
     /**
-     * Send ethers between two accounts directly to the node
-     * @param tx Data of the transaction (sender address, receiver addres, amount of ether, data)
-     * @param txConfig Configuration of how the transaction will be send to the network
-     * @return The tx hash
-     * @throws Exception
-     */
-    public String sendLocally(EthereumTransferRequest tx, TransactionConfig txConfig) throws Exception {
-        EthereumTransaction rawtx = this.adaptTransfer(tx);
-        String signedTransaction = this.transactionClient.signTransaction(new EthereumRawTransaction(rawtx), txConfig.getPrivateKey());
-        return this.transactionClient.sendSignedTransactionLocally(signedTransaction);
-    }
-
-    /**
      * Create a websocket subscription to watch transactions of type "transfer" in the network
      * @param addresses An array of address that will be added to the watch list
      * @return A HancockSocket object which can add new subscriptions and listen incoming message
