@@ -2,6 +2,7 @@ package com.bbva.hancock.sdk.dlt.ethereum.services;
 
 import com.bbva.hancock.sdk.HancockSocket;
 import com.bbva.hancock.sdk.config.HancockConfig;
+import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumRawTransaction;
 import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransaction;
 import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransactionAdaptResponse;
 import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransferRequest;
@@ -44,6 +45,19 @@ public class EthereumTransferService {
     public EthereumTransactionResponse send(EthereumTransferRequest tx, TransactionConfig txConfig) throws Exception{
         EthereumTransaction rawtx = this.adaptTransfer(tx);
         return this.transactionClient.send(rawtx, txConfig);
+    }
+
+    /**
+     * Send ethers between two accounts directly to the node
+     * @param tx Data of the transaction (sender address, receiver addres, amount of ether, data)
+     * @param txConfig Configuration of how the transaction will be send to the network
+     * @return The tx hash
+     * @throws Exception
+     */
+    public String sendLocally(EthereumTransferRequest tx, TransactionConfig txConfig) throws Exception {
+        EthereumTransaction rawtx = this.adaptTransfer(tx);
+        String signedTransaction = this.transactionClient.signTransaction(new EthereumRawTransaction(rawtx), txConfig.getPrivateKey());
+        return this.transactionClient.sendSignedTransactionLocally(signedTransaction);
     }
 
     /**

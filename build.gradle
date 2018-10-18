@@ -76,7 +76,7 @@ publishing {
     }
 }
 
-version = '1.0.0-alpha.15'
+version = '1.0.0-alpha.17'
 
 jar {
     manifest {
