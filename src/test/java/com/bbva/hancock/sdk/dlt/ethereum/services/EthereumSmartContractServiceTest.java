@@ -9,6 +9,7 @@ import com.bbva.hancock.sdk.config.HancockConfig;
 import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumWallet;
 import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransaction;
 import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransactionAdaptResponse;
+import com.bbva.hancock.sdk.dlt.ethereum.models.smartContracts.EthereumRegisterResponse;
 import com.bbva.hancock.sdk.models.HancockGenericResponse;
 import com.bbva.hancock.sdk.dlt.ethereum.models.smartContracts.EthereumCallResponse;
 import com.bbva.hancock.sdk.dlt.ethereum.models.transaction.EthereumTransactionResponse;
@@ -223,7 +224,7 @@ public class EthereumSmartContractServiceTest {
 
         okhttp3.Request requestMock = mock(okhttp3.Request.class);
         okhttp3.Response responseMock = mock(okhttp3.Response.class);
-        HancockGenericResponse responseModelMock = new HancockGenericResponse(1,"mockedOk");
+        EthereumRegisterResponse responseModelMock = new EthereumRegisterResponse(new HancockGenericResponse(1,"mockedOk"));
 
         mockStatic(Common.class);
         PowerMockito.when(Common.class, "getRequest", any(String.class), any(RequestBody.class))
@@ -232,12 +233,12 @@ public class EthereumSmartContractServiceTest {
         PowerMockito.when(Common.class, "makeCall", any(okhttp3.Request.class))
                 .thenReturn(responseMock);
 
-        PowerMockito.when(Common.class, "checkStatus", any(okhttp3.Response.class), eq(HancockGenericResponse.class))
+        PowerMockito.when(Common.class, "checkStatus", any(okhttp3.Response.class), eq(EthereumRegisterResponse.class))
                 .thenReturn(responseModelMock);
 
-        HancockGenericResponse response = spy_var.register(addressOrAlias, to, new ArrayList<AbiDefinition>());
-        assertTrue("Response is of type HancockGenericResponse", response instanceof HancockGenericResponse);
-        assertEquals(response.getDescription(), "mockedOk");
+        EthereumRegisterResponse response = spy_var.register(addressOrAlias, to, new ArrayList<AbiDefinition>());
+        assertTrue("Response is of type EthereumRegisterResponse", response instanceof EthereumRegisterResponse);
+        assertEquals(response.getResult().getDescription(), "mockedOk");
 
     }
 

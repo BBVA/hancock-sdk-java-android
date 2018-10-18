@@ -9,6 +9,7 @@ import com.bbva.hancock.sdk.config.HancockConfig;
 import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumWallet;
 import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransaction;
 import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransactionAdaptResponse;
+import com.bbva.hancock.sdk.dlt.ethereum.models.smartContracts.EthereumRegisterResponse;
 import com.bbva.hancock.sdk.models.HancockGenericResponse;
 import com.bbva.hancock.sdk.dlt.ethereum.models.smartContracts.EthereumCallResponse;
 import com.bbva.hancock.sdk.dlt.ethereum.models.transaction.EthereumTransactionResponse;
@@ -174,7 +175,7 @@ public class EthereumSmartContractServiceIntegrationTest {
         Response.Builder responseBuilder = new Response.Builder();
         responseBuilder.code(200);
         responseBuilder.protocol(Protocol.HTTP_1_1);
-        responseBuilder.body(ResponseBody.create(MediaType.parse("application/json"), "{\"code\":1 , \"description\": \"mockedDescription\"}"));
+        responseBuilder.body(ResponseBody.create(MediaType.parse("application/json"), "{ \"result\": {\"code\":1 , \"description\": \"mockedDescription\"}}"));
         responseBuilder.request(requestBuilder.build());
         responseBuilder.message("Smart Contract - Success");
         Response mockedResponse = responseBuilder.build();
@@ -189,10 +190,10 @@ public class EthereumSmartContractServiceIntegrationTest {
         when(Common.class, "makeCall", any(Request.class))
                 .thenReturn(mockedResponse);
 
-        HancockGenericResponse response = spy_var.register(addressOrAlias, to, new ArrayList<AbiDefinition>());
-        assertTrue("Response is of type HancockGenericResponse", response instanceof HancockGenericResponse);
-        assertEquals(response.getDescription(), "mockedDescription");
-        assertEquals(response.getCode(),  new Integer(1));
+        EthereumRegisterResponse response = spy_var.register(addressOrAlias, to, new ArrayList<AbiDefinition>());
+        assertTrue("Response is of type HancockGenericResponse", response instanceof EthereumRegisterResponse);
+        assertEquals(response.getResult().getDescription(), "mockedDescription");
+        assertEquals(response.getResult().getCode(),  new Integer(1));
 
     }
 

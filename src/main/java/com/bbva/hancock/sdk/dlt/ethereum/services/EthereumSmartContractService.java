@@ -3,6 +3,7 @@ package com.bbva.hancock.sdk.dlt.ethereum.services;
 import com.bbva.hancock.sdk.HancockSocket;
 import com.bbva.hancock.sdk.config.HancockConfig;
 import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransactionAdaptResponse;
+import com.bbva.hancock.sdk.dlt.ethereum.models.smartContracts.EthereumRegisterResponse;
 import com.bbva.hancock.sdk.models.HancockGenericResponse;
 import com.bbva.hancock.sdk.dlt.ethereum.models.smartContracts.EthereumAdaptInvokeRequest;
 import com.bbva.hancock.sdk.dlt.ethereum.models.smartContracts.EthereumCallResponse;
@@ -106,7 +107,7 @@ public class EthereumSmartContractService {
      * @return The result of the request
      * @throws HancockException
      */
-    public HancockGenericResponse register(String alias, String address, ArrayList<AbiDefinition> abi) throws HancockException {
+    public EthereumRegisterResponse register(String alias, String address, ArrayList<AbiDefinition> abi) throws HancockException {
 
         ValidateParameters.checkForContent(alias, "Alias");
         ValidateParameters.checkForContent(address, "Address");
@@ -126,7 +127,7 @@ public class EthereumSmartContractService {
         Request request = getRequest(url, body);
 
         Response response = makeCall(request);
-        HancockGenericResponse responseModel = checkStatus(response, HancockGenericResponse.class);
+        EthereumRegisterResponse responseModel = checkStatus(response, EthereumRegisterResponse.class);
         return responseModel;
     }
 
