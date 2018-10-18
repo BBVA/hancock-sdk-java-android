@@ -26,7 +26,7 @@ Once you have access to the repository:
 ```text/plain
 # build.gradle
 dependencies {
-	compile('bbva.ndb:hancock-sdk-client-android:1.0.0-alpha.14')
+	compile('bbva.ndb:hancock-sdk-client-android:1.0.0-alpha.20')
 }
 ```
 

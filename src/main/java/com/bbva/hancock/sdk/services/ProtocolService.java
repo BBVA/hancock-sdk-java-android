@@ -36,7 +36,7 @@ public class ProtocolService {
         Gson gson = new Gson();
         HancockProtocolDecodeRequest hancockRequest = new HancockProtocolDecodeRequest(code);
         String json = gson.toJson(hancockRequest);
-        RequestBody body = RequestBody.create(this.CONTENT_TYPE_JSON, json);
+        RequestBody body = RequestBody.create(CONTENT_TYPE_JSON, json);
 
         Request request = getRequest(url, body);
 
@@ -63,7 +63,7 @@ public class ProtocolService {
         Gson gson = new Gson();
         HancockProtocolEncodeRequest hancockRequest = new HancockProtocolEncodeRequest(action, value, to, data, dlt);
         String json = gson.toJson(hancockRequest);
-        RequestBody body = RequestBody.create(this.CONTENT_TYPE_JSON, json);
+        RequestBody body = RequestBody.create(CONTENT_TYPE_JSON, json);
 
         Request request = getRequest(url, body);
 

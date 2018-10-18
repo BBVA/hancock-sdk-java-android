@@ -89,7 +89,7 @@ public class EthereumTransferService {
         String url = getResourceUrl(this.config,"transfer");
         Gson gson = new Gson();
         String json = gson.toJson(txRequest);
-        RequestBody body = RequestBody.create(this.CONTENT_TYPE_JSON, json);
+        RequestBody body = RequestBody.create(CONTENT_TYPE_JSON, json);
         Request request = getRequest(url, body);
 
         Response response = makeCall(request);

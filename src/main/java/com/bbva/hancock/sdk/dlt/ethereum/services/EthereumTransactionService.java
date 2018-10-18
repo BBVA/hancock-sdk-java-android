@@ -15,15 +15,22 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import org.web3j.crypto.Credentials;
+import org.web3j.crypto.Sign;
 import org.web3j.crypto.TransactionEncoder;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.Web3jFactory;
 import org.web3j.protocol.core.methods.response.EthSendTransaction;
 import org.web3j.protocol.http.HttpService;
+import org.web3j.rlp.RlpEncoder;
+import org.web3j.rlp.RlpList;
+import org.web3j.rlp.RlpString;
+import org.web3j.rlp.RlpType;
+import org.web3j.utils.Bytes;
 import org.web3j.utils.Numeric;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import static com.bbva.hancock.sdk.Common.*;
@@ -60,6 +67,33 @@ public class EthereumTransactionService {
     }
 
     /**
+     * Sign a raw message with the given private key
+     * @param message A raw message which will be signed
+     * @param privateKey The private key with which the raw message will be signed
+     * @return The result of the request as hex string
+     */
+    public String signMessage(String message , String privateKey) {
+
+        byte[] messageBytes = message.getBytes();
+
+        Credentials credentials = Credentials.create(privateKey);
+        Sign.SignatureData signatureData = Sign.signMessage(messageBytes, credentials.getEcKeyPair());
+
+        List<RlpType> values = new ArrayList<RlpType>();
+
+        // values.add(RlpString.create(messageBytes));
+
+        values.add(RlpString.create(signatureData.getV()));
+        values.add(RlpString.create(Bytes.trimLeadingZeroes(signatureData.getR())));
+        values.add(RlpString.create(Bytes.trimLeadingZeroes(signatureData.getS())));
+
+        RlpList rlpList = new RlpList(values);
+        byte[] returned = RlpEncoder.encode(rlpList);
+        return  Numeric.toHexString(returned);
+
+    }
+
+    /**
      * Sign a raw transaction with a given private key
      * @param rawTransaction A raw transaction which will be signed with the privatekey
      * @param privateKey The private key with which the raw transaction will be signed
@@ -85,7 +119,7 @@ public class EthereumTransactionService {
         EthereumSendTransactionRequest sendBody = new EthereumSendTransactionRequest(rawTx);
         Gson gson = new Gson();
         String json = gson.toJson(sendBody);
-        RequestBody body = RequestBody.create(this.CONTENT_TYPE_JSON, json);
+        RequestBody body = RequestBody.create(CONTENT_TYPE_JSON, json);
         Request request = getRequest(url, body);
 
         Response response = makeCall(request);
@@ -110,7 +144,7 @@ public class EthereumTransactionService {
         }
         Gson gson = new Gson();
         String json = gson.toJson(sendBody);
-        RequestBody body = RequestBody.create(this.CONTENT_TYPE_JSON, json);
+        RequestBody body = RequestBody.create(CONTENT_TYPE_JSON, json);
         Request request = new Request.Builder()
                 .url(url)
                 .post(body)
@@ -135,10 +169,13 @@ public class EthereumTransactionService {
         EthereumSignedTransactionRequest signedTxBody = new EthereumSignedTransactionRequest(signedTransaction);
         Gson gson = new Gson();
         String json = gson.toJson(signedTxBody);
-        RequestBody body = RequestBody.create(this.CONTENT_TYPE_JSON, json);
+        RequestBody body = RequestBody.create(CONTENT_TYPE_JSON, json);
         String requestId = "";
-        if (txConfig.getCallbackOptions() != null)
+
+        if (txConfig.getCallbackOptions() != null) {
             requestId = txConfig.getCallbackOptions().getRequestId();
+        }
+
         Request request = new Request.Builder()
                 .url(url)
                 .post(body)

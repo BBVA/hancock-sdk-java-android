@@ -4,7 +4,6 @@ import com.bbva.hancock.sdk.config.HancockConfig;
 import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumSmartContractRetrieveResponse;
 import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransaction;
 import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransactionAdaptResponse;
-import com.bbva.hancock.sdk.dlt.ethereum.models.smartContracts.EthereumContractInstance;
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.EthereumTokenInstance;
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.EthereumTokenRequest;
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.allowance.EthereumTokenAllowanceRequest;
