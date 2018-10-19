@@ -4,6 +4,7 @@ public class TransactionConfig {
 
     private String privateKey;
     private String provider;
+    private HancockCallbackOptions callbackOptions;
     private String node;
     private boolean sendLocally = true;
 
@@ -39,15 +40,28 @@ public class TransactionConfig {
         this.provider = provider;
     }
 
-    private TransactionConfig() {
+    public HancockCallbackOptions getCallbackOptions() {
+        return callbackOptions;
     }
 
-    static public class Builder {
+    public void setCallbackOptions(HancockCallbackOptions callbackOptions) {
+        this.callbackOptions = callbackOptions;
+    }
+
+    public boolean isSendLocally() {
+        return sendLocally;
+    }
+
+    public TransactionConfig() {
+    }
+
+    public static class Builder {
 
         private String privateKey;
         private String provider;
         private String node;
-        private boolean sendLocally = true;
+        private HancockCallbackOptions callbackOptions;
+        private boolean sendLocally = false;
 
         public Builder withPrivateKey(String privateKey) {
             this.privateKey = privateKey;
@@ -69,13 +83,22 @@ public class TransactionConfig {
             return this;
         }
 
+        public Builder withCallbackOptions(String backUrl, String requestId) {
+            this.callbackOptions = new HancockCallbackOptions(backUrl, requestId);
+            return this;
+        }
+
         public TransactionConfig build() {
             TransactionConfig config = new TransactionConfig();
 
             if (this.privateKey != null) {
                 config.setPrivateKey(this.privateKey);
             } else if (this.provider != null) {
-                config.setPrivateKey(this.provider);
+                config.setProvider(this.provider);
+            }
+
+            if (this.callbackOptions != null) {
+                config.setCallbackOptions(this.callbackOptions);
             }
 
             if (this.sendLocally && this.node != null) {

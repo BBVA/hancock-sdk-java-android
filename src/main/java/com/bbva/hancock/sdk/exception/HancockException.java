@@ -1,7 +1,5 @@
 package com.bbva.hancock.sdk.exception;
 
-import com.bbva.hancock.sdk.exception.HancockTypeErrorEnum;
-
 public class HancockException extends Exception {
 
   private static final long serialVersionUID = 1L;
