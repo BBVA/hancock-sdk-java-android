@@ -1,15 +1,19 @@
 package com.bbva.hancock.sdk.dlt.ethereum.models.token.balance;
 
-class EthereumTokenBalanceResponseResult {
-  public int code;
-  public String description;
-}
-
+import com.bbva.hancock.sdk.models.HancockGenericResponse;
 
 public class EthereumTokenBalanceResponse {
-  public EthereumTokenBalanceResponseResult result;
+  private HancockGenericResponse result;
   public EthereumTokenBalance data;
 
+  public EthereumTokenBalanceResponse(HancockGenericResponse result) {
+    this.result = result;
+  }
+  
+  public HancockGenericResponse getResult() {
+      return result;
+  }
+  
   public EthereumTokenBalance getTokenBalance() {
       return this.data;
   }
