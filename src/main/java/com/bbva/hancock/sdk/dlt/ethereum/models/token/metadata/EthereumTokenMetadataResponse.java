@@ -1,14 +1,19 @@
 package com.bbva.hancock.sdk.dlt.ethereum.models.token.metadata;
 
-class EthereumTokenMetadataResponseResult {
-    public int code;
-    public String description;
-}
+import com.bbva.hancock.sdk.models.HancockGenericResponse;
 
 public class EthereumTokenMetadataResponse {
-    public EthereumTokenMetadataResponseResult result;
+    private HancockGenericResponse result;
     public EthereumTokenMetadata data;
 
+    public EthereumTokenMetadataResponse(HancockGenericResponse result) {
+      this.result = result;
+    }
+    
+    public HancockGenericResponse getResult() {
+        return result;
+    }
+    
     public EthereumTokenMetadata getTokenMetadata() {
         return this.data;
     }
