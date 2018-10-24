@@ -1,14 +1,11 @@
 package com.bbva.hancock.sdk.dlt.ethereum.models.token.register;
 
-class EthereumTokenRegisterResponseResult {
-    public int code;
-    public String description;
-}
+import com.bbva.hancock.sdk.models.HancockGenericResponse;
 
 public class EthereumTokenRegisterResponse {
-    private EthereumTokenRegisterResponseResult result;
+    private HancockGenericResponse result;
 
-    public EthereumTokenRegisterResponseResult getResult() {
+    public HancockGenericResponse getResult() {
         return result;
     }
 
