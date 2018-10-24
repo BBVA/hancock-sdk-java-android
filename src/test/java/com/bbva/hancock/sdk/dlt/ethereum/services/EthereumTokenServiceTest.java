@@ -318,12 +318,11 @@ public class EthereumTokenServiceTest {
         PowerMockito.mockStatic(ValidateParameters.class);
         PowerMockito.doNothing().when(ValidateParameters.class, "checkAddress", any(String.class));
         PowerMockito.doNothing().when(ValidateParameters.class, "checkForContent", any(String.class) , any(String.class));
-
+//        HancockGenericResponse result = mock(HancockGenericResponse.class);
+        
         okhttp3.Request requestMock = mock(okhttp3.Request.class);
         okhttp3.Response responseMock = mock(okhttp3.Response.class);
-        EthereumTokenRegisterResponse responseModelMock = mock(EthereumTokenRegisterResponse.class);
-        EthereumTokenRegisterRequest requestModelMock = mock(EthereumTokenRegisterRequest.class);
-
+        EthereumTokenRegisterResponse responseModel = new EthereumTokenRegisterResponse(new HancockGenericResponse(200, "success"));
         EthereumTokenService spy_var = PowerMockito.spy(mockedHancockEthereumClient);
 
         mockStatic(Common.class);
@@ -337,11 +336,11 @@ public class EthereumTokenServiceTest {
                 .thenReturn(responseMock);
 
         PowerMockito.when(Common.class, "checkStatus", any(okhttp3.Response.class), eq(EthereumTokenRegisterResponse.class))
-                .thenReturn(responseModelMock);
+                .thenReturn(responseModel);
 
-        EthereumTokenRegisterResponse result = spy_var.register("mockAlias", "mockaddress");
-
-        assertTrue("tokenRegister called successfully", result instanceof EthereumTokenRegisterResponse);
+        EthereumTokenRegisterResponse resultFinal = spy_var.register("mockAlias", "mockaddress");
+        
+        assertTrue("tokenRegister called successfully", resultFinal instanceof EthereumTokenRegisterResponse);
 
     }
 
