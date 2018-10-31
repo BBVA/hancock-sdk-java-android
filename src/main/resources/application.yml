@@ -5,6 +5,7 @@ adapter:
   base: ''
   resources:
     invoke: '/ethereum/smartcontracts/invoke/__ADDRESS_OR_ALIAS__'
+    invokeAbi: '/ethereum/smartcontracts/invoke/abi'
     register: '/ethereum/smartcontracts/register'
     balance: '/ethereum/balance/__ADDRESS__'
     transfer: '/ethereum/transfers'

@@ -5,6 +5,7 @@ import com.bbva.hancock.sdk.config.HancockConfig;
 import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransactionAdaptResponse;
 import com.bbva.hancock.sdk.dlt.ethereum.models.smartContracts.EthereumRegisterResponse;
 import com.bbva.hancock.sdk.models.HancockGenericResponse;
+import com.bbva.hancock.sdk.dlt.ethereum.models.smartContracts.EthereumAdaptInvokeAbiRequest;
 import com.bbva.hancock.sdk.dlt.ethereum.models.smartContracts.EthereumAdaptInvokeRequest;
 import com.bbva.hancock.sdk.dlt.ethereum.models.smartContracts.EthereumCallResponse;
 import com.bbva.hancock.sdk.dlt.ethereum.models.smartContracts.EthereumRegisterRequest;
@@ -63,6 +64,34 @@ public class EthereumSmartContractService {
         EthereumTransactionAdaptResponse invokeResponse = this.adaptInvoke(contractAddressOrAlias, method, params, from);
         return this.transactionClient.send(invokeResponse.getData(), options);
     }
+    
+    /**
+     * Makes an invocation to an smart contract method with a specific raw abi.
+     * Invocations are used to call smart contract methods that writes information in the blockchain consuming gas
+     * @param contractAddressOrAlias Address or alias of the smart contract registered in Hancock
+     * @param method The name of the method to call
+     * @param params An array of arguments passed to the method
+     * @param from The address of the account doing the call
+     * @param options Configuration of how the transaction will be send to the network
+     * @param abi raw in json format
+     * @return The returned value from the smart contract method
+     * @throws Exception
+     */
+    public EthereumTransactionResponse invokeAbi(String contractAddressOrAlias, String method, ArrayList<String> params, String from, TransactionConfig options, String abi) throws Exception {
+
+        if (options.getPrivateKey() == null && options.getProvider() == null) {
+            throw new HancockException(HancockTypeErrorEnum.ERROR_INTERNAL, "50007", 500, HancockErrorEnum.ERROR_NOKEY_NOPROVIDER.getMessage(), HancockErrorEnum.ERROR_NOKEY_NOPROVIDER.getMessage());
+        }
+        ValidateParameters.checkForContent(contractAddressOrAlias, "Address or Alias");
+        ValidateParameters.checkForContent(method, "Method");
+        ValidateParameters.checkForContent(from, "From");
+        ValidateParameters.checkAddress(from);
+
+        String action = "send";
+        Response response = this.adaptInvokeAbi(contractAddressOrAlias, method, params, from, action, abi);
+        EthereumTransactionAdaptResponse responseModel = checkStatus(response, EthereumTransactionAdaptResponse.class);
+        return this.transactionClient.send(responseModel.getData(), options);
+    }
 
     /**
      * Makes a call to an smart contract method. Calls only fetch information from blockchain so it doesn't consume gas
@@ -94,6 +123,29 @@ public class EthereumSmartContractService {
 
         Response response = makeCall(request);
         EthereumCallResponse responseModel = checkStatus(response, EthereumCallResponse.class);
+        return responseModel;
+    }
+    
+    /**
+     * Makes a call to an smart contract method. Calls only fetch information from blockchain so it doesn't consume gas
+     * @param contractAddressOrAlias Address or alias of the smart contract registered in Hancock
+     * @param method The name of the method to call
+     * @param params An array of arguments passed to the method
+     * @param from The address of the account doing the call
+     * @param abi raw in json format
+     * @return The returned value from the smart contract method
+     * @throws HancockException
+     */
+    public EthereumCallResponse callAbi(String contractAddressOrAlias, String method, ArrayList<String> params, String from, String abi) throws HancockException {
+
+        ValidateParameters.checkForContent(contractAddressOrAlias, "Address or Alias");
+        ValidateParameters.checkForContent(method, "Method");
+        ValidateParameters.checkForContent(from, "From");
+        ValidateParameters.checkAddress(from);
+
+        String action = "call";
+        Response response = this.adaptInvokeAbi(contractAddressOrAlias, method, params, from, action, abi);
+        EthereumCallResponse responseModel = checkStatus(response, EthereumCallResponse.class);        
         return responseModel;
     }
 
@@ -189,4 +241,23 @@ public class EthereumSmartContractService {
         EthereumTransactionAdaptResponse responseModel = checkStatus(response, EthereumTransactionAdaptResponse.class);
         return responseModel;
     }
+    
+    protected Response adaptInvokeAbi(String to, String method, ArrayList<String> params, String from, String action, String abi) throws HancockException {
+
+      String url = this.config.getAdapter().getHost() + ':'
+              + this.config.getAdapter().getPort()
+              + this.config.getAdapter().getBase()
+              + this.config.getAdapter().getResources().get("invokeAbi");
+
+      EthereumAdaptInvokeAbiRequest invokeabibody = new EthereumAdaptInvokeAbiRequest(method, from, params, action, to, abi);
+
+      Gson gson = new Gson();
+      String json = gson.toJson(invokeabibody);
+      RequestBody body = RequestBody.create(this.CONTENT_TYPE_JSON, json);
+
+      Request request = getRequest(url, body);
+
+      Response response = makeCall(request);
+      return response;
+  }
 }

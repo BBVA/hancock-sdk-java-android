@@ -17,6 +17,8 @@ import com.bbva.hancock.sdk.models.TransactionConfig;
 import com.bbva.hancock.sdk.util.ValidateParameters;
 import com.bbva.hancock.sdk.exception.HancockException;
 import okhttp3.RequestBody;
+import okhttp3.Response;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -57,6 +59,7 @@ public class EthereumSmartContractServiceTest {
     public static String method;
     public static String data;
     public static String addressOrAlias;
+    public static String abi;
     public static ArrayList<String> params;
 
     @BeforeClass
@@ -87,6 +90,7 @@ public class EthereumSmartContractServiceTest {
         to = mockedWallet.getAddress();
         method = "mockedMethod";
         addressOrAlias = "mockedAlias";
+        abi = "mockedAbi";
         params = new ArrayList<>();
         params.add("mockedFirtsParam");
         data = "mockedData";
@@ -189,6 +193,78 @@ public class EthereumSmartContractServiceTest {
     }
 
     @PrepareForTest({ValidateParameters.class, Common.class})
+    @Test public void testInvokeAbi() throws Exception {
+
+        PowerMockito.mockStatic(ValidateParameters.class);
+        PowerMockito.doNothing().when(ValidateParameters.class, "checkAddress", any(String.class));
+        PowerMockito.doNothing().when(ValidateParameters.class, "checkForContent", any(String.class) , any(String.class));
+        EthereumTransactionAdaptResponse responseModelMock = new EthereumTransactionAdaptResponse(mockedEthereumTransaction, new HancockGenericResponse(1,"mockedOk"));
+        okhttp3.Response responseMock = mock(okhttp3.Response.class);
+        
+        mockStatic(Common.class);
+        PowerMockito.doReturn(responseMock)
+                .when(spy_var)
+                .adaptInvokeAbi(any(String.class), any(String.class), any(ArrayList.class), any(String.class), any(String.class), any(String.class));
+
+        PowerMockito.when(Common.class, "checkStatus", any(okhttp3.Response.class), eq(EthereumTransactionAdaptResponse.class))
+                .thenReturn(responseModelMock);
+        
+        PowerMockito.doReturn(mockedEthereumTransactionResponse)
+                .when(spyTransactionService)
+                .send(any(EthereumTransaction.class), any(TransactionConfig.class));       
+
+        EthereumTransactionResponse response = spy_var.invokeAbi(addressOrAlias, method, params, from, mockedTransactionConfig, abi);
+
+        assertTrue("Response is of type TransactionResponse", response instanceof EthereumTransactionResponse);
+        verify(spy_var).adaptInvokeAbi(eq(addressOrAlias), eq(method), eq(params), eq(from), eq("send"), eq(abi));
+        verify(spyTransactionService).send(eq(mockedEthereumAdaptInvoke.getData()), eq(mockedTransactionConfig));
+        assertEquals(response.getSuccess(), true);
+
+    }
+    
+    @PrepareForTest({ValidateParameters.class, Common.class})
+    @Test(expected = HancockException.class)
+    public void testInvokeAbiException() throws Exception {
+
+        TransactionConfig mockedConfig = new TransactionConfig();
+        EthereumTransactionResponse response = spy_var.invokeAbi(addressOrAlias, method, params, from, mockedConfig,abi);
+
+    }
+    
+    @PrepareForTest({ValidateParameters.class, Common.class})
+    @Test public void testCallAbi() throws Exception {
+
+        PowerMockito.mockStatic(ValidateParameters.class);
+        PowerMockito.doNothing().when(ValidateParameters.class, "checkAddress", any(String.class));
+        PowerMockito.doNothing().when(ValidateParameters.class, "checkForContent", any(String.class) , any(String.class));
+        EthereumCallResponse responseModelMock = new EthereumCallResponse(mockedEthereumTransaction, new HancockGenericResponse(1,"mockedOk"));
+        okhttp3.Response responseMock = mock(okhttp3.Response.class);
+        
+        mockStatic(Common.class);
+        PowerMockito.doReturn(responseMock)
+                .when(spy_var)
+                .adaptInvokeAbi(any(String.class), any(String.class), any(ArrayList.class), any(String.class), any(String.class), any(String.class));
+
+        PowerMockito.when(Common.class, "checkStatus", any(okhttp3.Response.class), eq(EthereumCallResponse.class))
+                .thenReturn(responseModelMock);    
+
+        EthereumCallResponse response = spy_var.callAbi(addressOrAlias, method, params, from, abi);
+
+        assertTrue("Response is of type CallResponse", response instanceof EthereumCallResponse);
+        verify(spy_var).adaptInvokeAbi(eq(addressOrAlias), eq(method), eq(params), eq(from), eq("call"), eq(abi));
+        assertEquals(response.getResult().getDescription(), "mockedOk");
+
+    }
+    
+    @PrepareForTest({ValidateParameters.class, Common.class})
+    @Test(expected = HancockException.class)
+    public void testCallAbiException() throws Exception {
+
+        EthereumCallResponse response = spy_var.callAbi(addressOrAlias, method, params, from, abi);
+
+    }
+    
+    @PrepareForTest({ValidateParameters.class, Common.class})
     @Test public void testCall() throws Exception {
 
         PowerMockito.mockStatic(ValidateParameters.class);
@@ -264,6 +340,25 @@ public class EthereumSmartContractServiceTest {
         assertEquals(response.getData().getFrom(), from);
         assertEquals(response.getData().getTo(), to);
         assertEquals(response.getData().getData(), data);
+
+    }
+    
+    @PrepareForTest({ValidateParameters.class, Common.class})
+    @Test public void testAdaptInvokeAbi() throws Exception {
+
+        okhttp3.Request requestMock = mock(okhttp3.Request.class);
+        okhttp3.Response responseMock = mock(okhttp3.Response.class);
+        EthereumTransactionAdaptResponse responseModelMock = new EthereumTransactionAdaptResponse(mockedEthereumTransaction, new HancockGenericResponse(1,"mockedOk"));
+
+        mockStatic(Common.class);
+        PowerMockito.when(Common.class, "getRequest", any(String.class), any(RequestBody.class))
+                .thenReturn(requestMock);
+
+        PowerMockito.when(Common.class, "makeCall", any(okhttp3.Request.class))
+                .thenReturn(responseMock);
+
+        Response response = spy_var.adaptInvokeAbi(addressOrAlias, method, params, from, "call", abi);
+        assertTrue("Response is of type Response", response instanceof Response);
 
     }
 
