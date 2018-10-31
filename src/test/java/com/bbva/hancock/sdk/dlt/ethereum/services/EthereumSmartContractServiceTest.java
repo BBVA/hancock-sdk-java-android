@@ -59,7 +59,7 @@ public class EthereumSmartContractServiceTest {
     public static String method;
     public static String data;
     public static String addressOrAlias;
-    public static String abi;
+    public static ArrayList<AbiDefinition> abi;
     public static ArrayList<String> params;
 
     @BeforeClass
@@ -90,7 +90,7 @@ public class EthereumSmartContractServiceTest {
         to = mockedWallet.getAddress();
         method = "mockedMethod";
         addressOrAlias = "mockedAlias";
-        abi = "mockedAbi";
+        abi = new ArrayList<AbiDefinition>();
         params = new ArrayList<>();
         params.add("mockedFirtsParam");
         data = "mockedData";
@@ -204,7 +204,7 @@ public class EthereumSmartContractServiceTest {
         mockStatic(Common.class);
         PowerMockito.doReturn(responseMock)
                 .when(spy_var)
-                .adaptInvokeAbi(any(String.class), any(String.class), any(ArrayList.class), any(String.class), any(String.class), any(String.class));
+                .adaptInvokeAbi(any(String.class), any(String.class), any(ArrayList.class), any(String.class), any(String.class), eq(new ArrayList<AbiDefinition>()));
 
         PowerMockito.when(Common.class, "checkStatus", any(okhttp3.Response.class), eq(EthereumTransactionAdaptResponse.class))
                 .thenReturn(responseModelMock);
@@ -243,7 +243,7 @@ public class EthereumSmartContractServiceTest {
         mockStatic(Common.class);
         PowerMockito.doReturn(responseMock)
                 .when(spy_var)
-                .adaptInvokeAbi(any(String.class), any(String.class), any(ArrayList.class), any(String.class), any(String.class), any(String.class));
+                .adaptInvokeAbi(any(String.class), any(String.class), any(ArrayList.class), any(String.class), any(String.class), eq(new ArrayList<AbiDefinition>()));
 
         PowerMockito.when(Common.class, "checkStatus", any(okhttp3.Response.class), eq(EthereumCallResponse.class))
                 .thenReturn(responseModelMock);    

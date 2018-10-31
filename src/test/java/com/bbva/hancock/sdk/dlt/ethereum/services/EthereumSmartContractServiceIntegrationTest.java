@@ -53,7 +53,7 @@ public class EthereumSmartContractServiceIntegrationTest {
     public static String method;
     public static String data;
     public static String addressOrAlias;
-    public static String abi;
+    public static ArrayList<AbiDefinition> abi;
     public static ArrayList<String> params;
 
     @BeforeClass
@@ -82,7 +82,7 @@ public class EthereumSmartContractServiceIntegrationTest {
         String value = String.valueOf(333);
         from = mockedWallet.getAddress();
         to = mockedWallet.getAddress();
-        abi = "mockedabi";
+        abi = new ArrayList<AbiDefinition>();
         method = "mockedMethod";
         addressOrAlias = "mockedAlias";
         params = new ArrayList<>();

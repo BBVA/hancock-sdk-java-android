@@ -2,6 +2,8 @@ package com.bbva.hancock.sdk.dlt.ethereum.models.smartContracts;
 
 import java.util.ArrayList;
 
+import org.web3j.protocol.core.methods.response.AbiDefinition;
+
 public class EthereumAdaptInvokeAbiRequest {
 
     private String method;
@@ -9,9 +11,9 @@ public class EthereumAdaptInvokeAbiRequest {
     private ArrayList<String> params;
     private String action;
     private String to;
-    private String abi;
+    private ArrayList<AbiDefinition> abi;
 
-    public EthereumAdaptInvokeAbiRequest(String method, String from, ArrayList<String> params, String action, String to, String abi) {
+    public EthereumAdaptInvokeAbiRequest(String method, String from, ArrayList<String> params, String action, String to, ArrayList<AbiDefinition> abi) {
         this.method = method;
         this.from = from;
         this.params = params;
@@ -60,11 +62,11 @@ public class EthereumAdaptInvokeAbiRequest {
       this.to = to;
     }
 
-    public String getAbi() {
+    public ArrayList<AbiDefinition> getAbi() {
       return abi;
     }
 
-    public void setAbi(String abi) {
+    public void setAbi(ArrayList<AbiDefinition> abi) {
       this.abi = abi;
     }
     

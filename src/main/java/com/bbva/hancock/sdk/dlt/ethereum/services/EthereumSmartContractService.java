@@ -77,7 +77,7 @@ public class EthereumSmartContractService {
      * @return The returned value from the smart contract method
      * @throws Exception
      */
-    public EthereumTransactionResponse invokeAbi(String contractAddressOrAlias, String method, ArrayList<String> params, String from, TransactionConfig options, String abi) throws Exception {
+    public EthereumTransactionResponse invokeAbi(String contractAddressOrAlias, String method, ArrayList<String> params, String from, TransactionConfig options, ArrayList<AbiDefinition> abi) throws Exception {
 
         if (options.getPrivateKey() == null && options.getProvider() == null) {
             throw new HancockException(HancockTypeErrorEnum.ERROR_INTERNAL, "50007", 500, HancockErrorEnum.ERROR_NOKEY_NOPROVIDER.getMessage(), HancockErrorEnum.ERROR_NOKEY_NOPROVIDER.getMessage());
@@ -136,7 +136,7 @@ public class EthereumSmartContractService {
      * @return The returned value from the smart contract method
      * @throws HancockException
      */
-    public EthereumCallResponse callAbi(String contractAddressOrAlias, String method, ArrayList<String> params, String from, String abi) throws HancockException {
+    public EthereumCallResponse callAbi(String contractAddressOrAlias, String method, ArrayList<String> params, String from, ArrayList<AbiDefinition> abi) throws HancockException {
 
         ValidateParameters.checkForContent(contractAddressOrAlias, "Address or Alias");
         ValidateParameters.checkForContent(method, "Method");
@@ -242,7 +242,7 @@ public class EthereumSmartContractService {
         return responseModel;
     }
     
-    protected Response adaptInvokeAbi(String to, String method, ArrayList<String> params, String from, String action, String abi) throws HancockException {
+    protected Response adaptInvokeAbi(String to, String method, ArrayList<String> params, String from, String action, ArrayList<AbiDefinition> abi) throws HancockException {
 
       String url = this.config.getAdapter().getHost() + ':'
               + this.config.getAdapter().getPort()
