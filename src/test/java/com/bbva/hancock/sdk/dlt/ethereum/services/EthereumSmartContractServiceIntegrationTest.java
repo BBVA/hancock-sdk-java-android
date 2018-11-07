@@ -53,6 +53,7 @@ public class EthereumSmartContractServiceIntegrationTest {
     public static String method;
     public static String data;
     public static String addressOrAlias;
+    public static ArrayList<AbiDefinition> abi;
     public static ArrayList<String> params;
 
     @BeforeClass
@@ -81,6 +82,7 @@ public class EthereumSmartContractServiceIntegrationTest {
         String value = String.valueOf(333);
         from = mockedWallet.getAddress();
         to = mockedWallet.getAddress();
+        abi = new ArrayList<AbiDefinition>();
         method = "mockedMethod";
         addressOrAlias = "mockedAlias";
         params = new ArrayList<>();
@@ -133,7 +135,80 @@ public class EthereumSmartContractServiceIntegrationTest {
         assertEquals(response.getSuccess(), true);
 
     }
+    
+    @PrepareForTest({ Common.class})
+    @Test public void testInvokeAbi() throws Exception {
 
+        Request.Builder requestBuilder = new Request.Builder();
+        requestBuilder.get();
+        requestBuilder.url("http://localhost");
+
+        Response.Builder responseBuilder = new Response.Builder();
+        responseBuilder.code(200);
+        responseBuilder.protocol(Protocol.HTTP_1_1);
+        responseBuilder.body(ResponseBody.create(MediaType.parse("application/json"), "{\"data\":{\"from\": \"0x6c0a14f7561898b9ddc0c57652a53b2c6665443e\",\"data\": \"0xa9059cbb0000000000000000000000006c0a14f7561898b9ddc0c57652a53b2c6665443e0000000000000000000000000000000000000000000000000000000000000001\",\"gasPrice\": \"0x4\",\"gas\": \"0x3\",\"value\": \"0x2\",\"to\": \"0xde8e772f0350e992ddef81bf8f51d94a8ea9216d\",\"nonce\": \"0x1\"}}"));
+        responseBuilder.request(requestBuilder.build());
+        responseBuilder.message("Smart Contract - Success");
+        Response mockedResponse = responseBuilder.build();
+
+        Response.Builder responseBuilder2 = new Response.Builder();
+        responseBuilder2.code(200);
+        responseBuilder2.protocol(Protocol.HTTP_1_1);
+        responseBuilder2.body(ResponseBody.create(MediaType.parse("application/json"), "{\"success\": \"true\"}"));
+        responseBuilder2.request(requestBuilder.build());
+        responseBuilder2.message("Smart Contract - Success");
+        Response mockedResponse2 = responseBuilder2.build();
+
+        mockStatic(Common.class);
+        when(Common.class, "getResourceUrl", any(), any())
+                .thenCallRealMethod();
+        when(Common.class, "checkStatus", any(), any())
+                .thenCallRealMethod();
+        when(Common.class, "getRequest", any(), any())
+                .thenCallRealMethod();
+        when(Common.class, "makeCall", any(Request.class))
+                .thenReturn(mockedResponse)
+                .thenReturn(mockedResponse2);
+
+        EthereumTransactionResponse response = spy_var.invokeAbi(addressOrAlias, method, params, from, mockedTransactionConfig, abi);
+        assertTrue("Response is of type TransactionResponse", response instanceof EthereumTransactionResponse);
+        assertEquals(response.getSuccess(), true);
+
+    }
+
+    @PrepareForTest({ Common.class})
+    @Test public void testCallAbi() throws Exception {
+
+        Request.Builder requestBuilder = new Request.Builder();
+        requestBuilder.get();
+        requestBuilder.url("http://localhost");
+
+        Response.Builder responseBuilder = new Response.Builder();
+        responseBuilder.code(200);
+        responseBuilder.protocol(Protocol.HTTP_1_1);
+        responseBuilder.body(ResponseBody.create(MediaType.parse("application/json"), "{\"data\": \"mockedData\" ,\"result\":{\"code\": 1, \"description\": \"mockedDescription\"}}"));
+        responseBuilder.request(requestBuilder.build());
+        responseBuilder.message("Smart Contract - Success");
+        Response mockedResponse = responseBuilder.build();
+
+        mockStatic(Common.class);
+        when(Common.class, "getResourceUrl", any(), any())
+                .thenCallRealMethod();
+        when(Common.class, "checkStatus", any(), any())
+                .thenCallRealMethod();
+        when(Common.class, "getRequest", any(), any())
+                .thenCallRealMethod();
+        when(Common.class, "makeCall", any(Request.class))
+                .thenReturn(mockedResponse);
+
+        EthereumCallResponse response = spy_var.callAbi(addressOrAlias, method, params, from, abi);
+        assertTrue("Response is of type CallResponse", response instanceof EthereumCallResponse);
+        assertEquals(response.getResult().getDescription(), "mockedDescription");
+        assertEquals(response.getResult().getCode(), new Integer(1));
+
+    }
+
+    
     @PrepareForTest({ Common.class})
     @Test public void testCall() throws Exception {
 
@@ -228,6 +303,35 @@ public class EthereumSmartContractServiceIntegrationTest {
         assertEquals(response.getData().getTo(), to);
         assertEquals(response.getData().getData(), "0xa9059cbb0000000000000000000000006c0a14f7561898b9ddc0c57652a53b2c6665443e0000000000000000000000000000000000000000000000000000000000000001");
 
+    }
+    @PrepareForTest({ Common.class})
+    @Test public void testAdaptInvokeAbi() throws Exception {
+
+        Request.Builder requestBuilder = new Request.Builder();
+        requestBuilder.get();
+        requestBuilder.url("http://localhost");
+
+        Response.Builder responseBuilder = new Response.Builder();
+        responseBuilder.code(200);
+        responseBuilder.protocol(Protocol.HTTP_1_1);
+        responseBuilder.body(ResponseBody.create(MediaType.parse("application/json"), "{\"data\": {\"from\": \"0xde8e772f0350e992ddef81bf8f51d94a8ea9216d\",\"data\": \"0xa9059cbb0000000000000000000000006c0a14f7561898b9ddc0c57652a53b2c6665443e0000000000000000000000000000000000000000000000000000000000000001\",\"gasPrice\": \"4\",\"gas\": \"3\",\"value\": \"2\",\"to\": \"0xde8e772f0350e992ddef81bf8f51d94a8ea9216d\",\"nonce\": \"1\"} ,\"result\":{\"code\": 1, \"description\": \"mockedDescription\"}}"));
+        responseBuilder.request(requestBuilder.build());
+        responseBuilder.message("Smart Contract - Success");
+        Response mockedResponse = responseBuilder.build();
+
+        mockStatic(Common.class);
+        when(Common.class, "getResourceUrl", any(), any())
+                .thenCallRealMethod();
+        when(Common.class, "checkStatus", any(), any())
+                .thenCallRealMethod();
+        when(Common.class, "getRequest", any(), any())
+                .thenCallRealMethod();
+        when(Common.class, "makeCall", any(Request.class))
+                .thenReturn(mockedResponse);
+
+        Response response = spy_var.adaptInvokeAbi(addressOrAlias, method, params, from, "send", abi);
+        assertTrue("Response is of type Response", response instanceof Response);
+        assertEquals(response.code(), 200);
     }
 
 }
