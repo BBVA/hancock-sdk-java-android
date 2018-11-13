@@ -15,6 +15,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import org.web3j.crypto.Credentials;
+import org.web3j.crypto.Hash;
 import org.web3j.crypto.Sign;
 import org.web3j.crypto.TransactionEncoder;
 import org.web3j.protocol.Web3j;
@@ -70,26 +71,36 @@ public class EthereumTransactionService {
      * Sign a raw message with the given private key
      * @param message A raw message which will be signed
      * @param privateKey The private key with which the raw message will be signed
-     * @return The result of the request as hex string
+     * @return The signed message as hex string
      */
     public String signMessage(String message , String privateKey) {
 
         byte[] messageBytes = message.getBytes();
-
+        byte[] messageHash = Hash.sha3(messageBytes);
         Credentials credentials = Credentials.create(privateKey);
-        Sign.SignatureData signatureData = Sign.signMessage(messageBytes, credentials.getEcKeyPair());
+        Sign.SignatureData signatureData = Sign.signMessage(messageHash, credentials.getEcKeyPair(), false);
 
-        List<RlpType> values = new ArrayList<RlpType>();
+        String strR = Numeric.toHexString(signatureData.getR(), 0, 32, false);
+        String strS = Numeric.toHexString(signatureData.getS(), 0, 32, false);
+        String strV = Numeric.toHexString(new byte[] {signatureData.getV()}, 0, 1, false);
 
-        // values.add(RlpString.create(messageBytes));
+        return "0x" + (strR.concat(strS).concat(strV));
 
-        values.add(RlpString.create(signatureData.getV()));
-        values.add(RlpString.create(Bytes.trimLeadingZeroes(signatureData.getR())));
-        values.add(RlpString.create(Bytes.trimLeadingZeroes(signatureData.getS())));
+    }
 
-        RlpList rlpList = new RlpList(values);
-        byte[] returned = RlpEncoder.encode(rlpList);
-        return  Numeric.toHexString(returned);
+    /**
+     * Sign a raw personal message with the given private key using
+     * https://github.com/ethereum/EIPs/blob/master/EIPS/eip-712.md
+     * @param message A raw message which will be signed
+     * @param privateKey The private key with which the raw message will be signed
+     * @return The signed message as hex string
+     */
+    public String signPersonalMessage(String message , String privateKey) {
+
+        String prefix = "\u0019Ethereum Signed Message:\n" + message.length();
+        String msg = prefix + message;
+
+        return this.signMessage(msg, privateKey);
 
     }
 
