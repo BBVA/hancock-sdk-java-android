@@ -85,7 +85,13 @@ public class EthereumTransferService {
         }
     }
 
-    protected EthereumTransaction adaptTransfer(EthereumTransferRequest txRequest) throws Exception {
+    /**
+     * Given a transaction request, fills it with all the info necessary
+     * @param txRequest The transaction with the minimum data to be fill (From, To, Value)
+     * @return The transaction with all the data fill (Gas, GasPrice, Nonce)
+     * @throws Exception
+     */
+    public EthereumTransaction adaptTransfer(EthereumTransferRequest txRequest) throws Exception {
         String url = getResourceUrl(this.config,"transfer");
         Gson gson = new Gson();
         String json = gson.toJson(txRequest);
