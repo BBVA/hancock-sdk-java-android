@@ -208,7 +208,9 @@ public class EthereumTransactionService {
      */
     public EthereumTransactionResponse sendSignedTransactionLocally(String signedTransaction) throws InterruptedException, ExecutionException {
 
-        Web3j web3j = Web3jFactory.build(new HttpService(this.config.getNode().getHost() + ":" + this.config.getNode().getPort()));
+        String port =  this.config.getNode().getPort() >= 0 ? ":" + String.valueOf(this.config.getNode().getPort()) : "";
+
+        Web3j web3j = Web3jFactory.build(new HttpService(this.config.getNode().getHost() + port));
 
         EthSendTransaction ethSendTransaction = web3j.ethSendRawTransaction(signedTransaction).sendAsync().get();
         String transactionHash = ethSendTransaction.getTransactionHash();
