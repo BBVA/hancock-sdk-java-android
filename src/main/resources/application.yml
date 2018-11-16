@@ -34,4 +34,4 @@ broker:
     events: '/ethereum/subscribe?address=__ADDRESS__&sender=__SENDER__&consumer=__CONSUMER__'
 node:
   host: http://localhost
-  port: -1
+  port: 8545
