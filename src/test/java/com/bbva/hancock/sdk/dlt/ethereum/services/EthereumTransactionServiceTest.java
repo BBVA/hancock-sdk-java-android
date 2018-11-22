@@ -12,6 +12,7 @@ import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransaction;
 import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransferRequest;
 import com.bbva.hancock.sdk.dlt.ethereum.models.transaction.EthereumTransactionResponse;
 import com.bbva.hancock.sdk.models.TransactionConfig;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,9 +24,14 @@ import org.web3j.crypto.Credentials;
 import org.web3j.crypto.RawTransaction;
 import org.web3j.crypto.TransactionEncoder;
 import org.web3j.protocol.Web3j;
+import org.web3j.protocol.Web3jFactory;
+import org.web3j.protocol.core.Request;
+import org.web3j.protocol.core.methods.response.EthSendTransaction;
+import org.web3j.protocol.http.HttpService;
 import org.web3j.utils.Numeric;
 
 import java.math.BigInteger;
+import java.util.concurrent.Future;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -55,7 +61,7 @@ public class EthereumTransactionServiceTest {
 
     @BeforeClass
     public static void setUp() throws Exception{
-
+      
         mockedConfig = new HancockConfig.Builder()
                 .withEnv("custom")
                 .withNode("http://mock.node.com", 9999)
@@ -80,6 +86,40 @@ public class EthereumTransactionServiceTest {
 
     }
 
+    @PrepareForTest({Request.class, Web3jFactory.class,RawTransaction.class})
+    @Test public void testSendSignedTransactionLocally() throws Exception {
+
+        mockedWeb3 = mock(Web3j.class);
+        
+        PowerMockito.mockStatic(Web3jFactory.class);
+        when(Web3jFactory.build(any(HttpService.class))).thenReturn(mockedWeb3);       
+        
+        EthSendTransaction mockTransaction = new EthSendTransaction();
+        
+        @SuppressWarnings("rawtypes")
+        Future mockFuture = mock(Future.class);
+        
+        @SuppressWarnings("rawtypes")
+        Request mockRequest = mock(Request.class);
+        
+        PowerMockito.doReturn(mockTransaction)
+        .when(mockFuture)
+        .get();
+        
+        PowerMockito.doReturn(mockFuture)
+        .when(mockRequest)
+        .sendAsync();
+        
+        PowerMockito.doReturn(mockRequest)
+        .when(mockedWeb3)
+        .ethSendRawTransaction(any(String.class));
+        
+        EthereumTransactionResponse signedTransaction = mockedHancockEthereumClient.sendSignedTransactionLocally("mockedsignedTransaction");
+        assertTrue("message signed successfully", signedTransaction instanceof EthereumTransactionResponse);
+        assertEquals(signedTransaction.getSuccess(),  true);
+
+    }
+    
     @PrepareForTest({Common.class, Credentials.class, TransactionEncoder.class,RawTransaction.class})
     @Test public void testSignTransaction() throws Exception {
 
