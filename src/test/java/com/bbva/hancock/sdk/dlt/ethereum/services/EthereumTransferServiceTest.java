@@ -7,9 +7,9 @@ package com.bbva.hancock.sdk.dlt.ethereum.services;
 import com.bbva.hancock.sdk.Common;
 import com.bbva.hancock.sdk.config.HancockConfig;
 import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumRawTransaction;
-import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumWallet;
 import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransaction;
 import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransferRequest;
+import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumWallet;
 import com.bbva.hancock.sdk.dlt.ethereum.models.transaction.EthereumTransactionResponse;
 import com.bbva.hancock.sdk.models.TransactionConfig;
 import org.junit.BeforeClass;
@@ -23,14 +23,11 @@ import org.web3j.crypto.RawTransaction;
 
 import java.math.BigInteger;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.when;
 
 
 @PowerMockIgnore("javax.net.ssl.*")
@@ -47,7 +44,7 @@ public class EthereumTransferServiceTest {
     public static EthereumTransactionService spy_transaction_var;
 
     @BeforeClass
-    public static void setUp() throws Exception{
+    public static void setUp() throws Exception {
 
         mockedConfig = new HancockConfig.Builder()
                 .withEnv("custom")
@@ -58,24 +55,25 @@ public class EthereumTransferServiceTest {
         mockedHancockEthereumClientTransaction = new EthereumTransactionService(mockedConfig);
         spy_transaction_var = PowerMockito.spy(mockedHancockEthereumClientTransaction);
         mockedHancockEthereumClient = new EthereumTransferService(mockedConfig, spy_transaction_var);
-        mockedWallet = new EthereumWallet("0xmockAddress","mockPrivateKey","mockPublicKey");
+        mockedWallet = new EthereumWallet("0xmockAddress", "mockPrivateKey", "mockPublicKey");
 
-        BigInteger nonce = BigInteger.valueOf(1);
-        BigInteger gasPrice = BigInteger.valueOf(111);
-        BigInteger gasLimit = BigInteger.valueOf(222);
-        BigInteger value = BigInteger.valueOf(333);
-        String from = mockedWallet.getAddress();
-        String to = mockedWallet.getAddress();
-        String data = "0xwhatever";
+        final BigInteger nonce = BigInteger.valueOf(1);
+        final BigInteger gasPrice = BigInteger.valueOf(111);
+        final BigInteger gasLimit = BigInteger.valueOf(222);
+        final BigInteger value = BigInteger.valueOf(333);
+        final String from = mockedWallet.getAddress();
+        final String to = mockedWallet.getAddress();
+        final String data = "0xwhatever";
 
         mockedEthereumTransferRequest = new EthereumTransferRequest(from, to, value.toString(), data);
         mockedEthereumRawTransaction = new EthereumRawTransaction(to, nonce, value, gasPrice, gasLimit);
-        mockedEthereumTransaction= new EthereumTransaction(from, to, value.toString(), nonce.toString(), gasLimit.toString(), gasPrice.toString());
+        mockedEthereumTransaction = new EthereumTransaction(from, to, value.toString(), nonce.toString(), gasLimit.toString(), gasPrice.toString());
 
     }
 
-    @PrepareForTest({ Common.class})
-    @Test public void testCreateRawTransaction() throws Exception {
+    @PrepareForTest({Common.class})
+    @Test
+    public void testCreateRawTransaction() throws Exception {
 
         assertTrue("RawTransaction is well constructed ", mockedEthereumRawTransaction instanceof EthereumRawTransaction);
         assertTrue("RawTransaction web3 instance is well constructed ", mockedEthereumRawTransaction.getWeb3Instance() instanceof RawTransaction);
@@ -87,14 +85,15 @@ public class EthereumTransferServiceTest {
 
     }
 
-    @PrepareForTest({ Common.class})
-    @Test public void testSend() throws Exception {
-        TransactionConfig txConfig = new TransactionConfig.Builder()
+    @PrepareForTest({Common.class})
+    @Test
+    public void testSend() throws Exception {
+        final TransactionConfig txConfig = new TransactionConfig.Builder()
                 .withPrivateKey("0x6c47653f66ac9b733f3b8bf09ed3d300520b4d9c78711ba90162744f5906b1f8")
                 .build();
 
 
-        EthereumTransferService spy_transfer_var = PowerMockito.spy(mockedHancockEthereumClient);
+        final EthereumTransferService spy_transfer_var = PowerMockito.spy(mockedHancockEthereumClient);
 
         PowerMockito.doReturn(mock(EthereumTransaction.class))
                 .when(spy_transfer_var)
@@ -104,7 +103,7 @@ public class EthereumTransferServiceTest {
                 .when(spy_transaction_var)
                 .send(any(EthereumTransaction.class), any(TransactionConfig.class));
 
-        EthereumTransactionResponse mockResult = spy_transfer_var.send(mockedEthereumTransferRequest, txConfig);
+        final EthereumTransactionResponse mockResult = spy_transfer_var.send(mockedEthereumTransferRequest, txConfig);
 
         verify(spy_transfer_var).adaptTransfer(eq(mockedEthereumTransferRequest));
         verify(spy_transaction_var).send(any(EthereumTransaction.class), eq(txConfig));

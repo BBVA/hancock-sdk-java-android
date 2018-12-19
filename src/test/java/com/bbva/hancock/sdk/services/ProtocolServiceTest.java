@@ -6,12 +6,7 @@ package com.bbva.hancock.sdk.services;
 
 import com.bbva.hancock.sdk.Common;
 import com.bbva.hancock.sdk.config.HancockConfig;
-import com.bbva.hancock.sdk.models.protocol.HancockProtocolAction;
-import com.bbva.hancock.sdk.models.protocol.HancockProtocolDecodeResponse;
-import com.bbva.hancock.sdk.models.protocol.HancockProtocolDlt;
-import com.bbva.hancock.sdk.models.protocol.HancockProtocolEncodeRequest;
-import com.bbva.hancock.sdk.models.protocol.HancockProtocolEncodeResponse;
-
+import com.bbva.hancock.sdk.models.protocol.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,7 +17,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.math.BigInteger;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.eq;
@@ -38,7 +32,7 @@ public class ProtocolServiceTest {
     public static ProtocolService mockedHancockEthereumClient;
 
     @BeforeClass
-    public static void setUp(){
+    public static void setUp() {
 
         mockedConfig = new HancockConfig.Builder()
                 .withEnv("custom")
@@ -49,15 +43,16 @@ public class ProtocolServiceTest {
 
     }
 
-    @PrepareForTest({ Common.class})
-    @Test public void testDecodeProtocol() throws Exception {
+    @PrepareForTest({Common.class})
+    @Test
+    public void testDecodeProtocol() throws Exception {
 
-        okhttp3.Request requestMock = mock(okhttp3.Request.class);
-        okhttp3.Response responseMock = mock(okhttp3.Response.class);
+        final okhttp3.Request requestMock = mock(okhttp3.Request.class);
+        final okhttp3.Response responseMock = mock(okhttp3.Response.class);
 
-        HancockProtocolDecodeResponse responseModel = new HancockProtocolDecodeResponse();
-        ProtocolService auxHancockEthereumClient = new ProtocolService(mockedConfig);
-        ProtocolService spy_var = PowerMockito.spy(auxHancockEthereumClient);
+        final HancockProtocolDecodeResponse responseModel = new HancockProtocolDecodeResponse();
+        final ProtocolService auxHancockEthereumClient = new ProtocolService(mockedConfig);
+        final ProtocolService spy_var = PowerMockito.spy(auxHancockEthereumClient);
 
         mockStatic(Common.class);
         PowerMockito.when(Common.class, "getRequest", any(String.class), any(okhttp3.RequestBody.class)).thenReturn(requestMock);
@@ -65,22 +60,23 @@ public class ProtocolServiceTest {
         PowerMockito.when(Common.class, "checkStatus", any(okhttp3.Response.class), eq(HancockProtocolDecodeResponse.class)).thenReturn(responseModel);
         PowerMockito.when(Common.class, "getResourceUrl", any(HancockConfig.class), any(String.class)).thenReturn("mockUrl");
 
-        HancockProtocolDecodeResponse mockResult = spy_var.decodeProtocol("mockedCode");
+        final HancockProtocolDecodeResponse mockResult = spy_var.decodeProtocol("mockedCode");
 
         assertTrue("transaction decode successfully", mockResult instanceof HancockProtocolDecodeResponse);
 
     }
 
-    @PrepareForTest({ Common.class})
-    @Test public void testEncodeProtocol() throws Exception {
+    @PrepareForTest({Common.class})
+    @Test
+    public void testEncodeProtocol() throws Exception {
 
-        okhttp3.Request requestMock = mock(okhttp3.Request.class);
-        okhttp3.Response responseMock = mock(okhttp3.Response.class);
-        HancockProtocolEncodeResponse responseModel = mock(HancockProtocolEncodeResponse.class);
-        ProtocolService auxHancockEthereumClient = new ProtocolService(mockedConfig);
+        final okhttp3.Request requestMock = mock(okhttp3.Request.class);
+        final okhttp3.Response responseMock = mock(okhttp3.Response.class);
+        final HancockProtocolEncodeResponse responseModel = mock(HancockProtocolEncodeResponse.class);
+        final ProtocolService auxHancockEthereumClient = new ProtocolService(mockedConfig);
         PowerMockito.whenNew(HancockProtocolEncodeRequest.class).withAnyArguments().thenReturn(mock(HancockProtocolEncodeRequest.class));
 
-        ProtocolService spy_var = PowerMockito.spy(auxHancockEthereumClient);
+        final ProtocolService spy_var = PowerMockito.spy(auxHancockEthereumClient);
 
         mockStatic(Common.class);
         PowerMockito.when(Common.class, "getRequest", any(String.class), any(okhttp3.RequestBody.class)).thenReturn(requestMock);
@@ -88,7 +84,7 @@ public class ProtocolServiceTest {
         PowerMockito.when(Common.class, "checkStatus", any(okhttp3.Response.class), eq(HancockProtocolEncodeResponse.class)).thenReturn(responseModel);
         PowerMockito.when(Common.class, "getResourceUrl", any(HancockConfig.class), any(String.class)).thenReturn("mockUrl");
 
-        HancockProtocolEncodeResponse mockResult = spy_var.encodeProtocol(HancockProtocolAction.transfer, new BigInteger("10"), "0x1234", "dafsda", HancockProtocolDlt.ethereum);
+        final HancockProtocolEncodeResponse mockResult = spy_var.encodeProtocol(HancockProtocolAction.transfer, BigInteger.TEN, "0x1234", "dafsda", HancockProtocolDlt.ethereum);
 
         assertTrue("transaction encode successfully", mockResult instanceof HancockProtocolEncodeResponse);
 

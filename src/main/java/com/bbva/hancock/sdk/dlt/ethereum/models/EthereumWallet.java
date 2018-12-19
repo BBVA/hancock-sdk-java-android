@@ -1,7 +1,10 @@
 package com.bbva.hancock.sdk.dlt.ethereum.models;
 
-public class EthereumWallet implements java.io.Serializable {
+import java.io.Serializable;
 
+public class EthereumWallet implements Serializable {
+
+    private static final long serialVersionUID = -3028994169964742049L;
     private String address;
     private String privateKey;
     private String publicKey;
@@ -9,27 +12,27 @@ public class EthereumWallet implements java.io.Serializable {
     public EthereumWallet() {
     }
 
-    public EthereumWallet(String address, String privateKey, String publicKey) {
+    public EthereumWallet(final String address, final String privateKey, final String publicKey) {
         this.address = address;
         this.privateKey = privateKey;
         this.publicKey = publicKey;
     }
 
-    public EthereumWallet(EthereumWallet copy) {
+    public EthereumWallet(final EthereumWallet copy) {
         this.address = copy.getAddress();
         this.privateKey = copy.getPrivateKey();
         this.publicKey = copy.getPublicKey();
     }
 
-    public void setAddress(String address) {
+    public void setAddress(final String address) {
         this.address = address;
     }
 
-    public void setPrivateKey(String privateKey) {
+    public void setPrivateKey(final String privateKey) {
         this.privateKey = privateKey;
     }
 
-    public void setPublicKey(String publicKey) {
+    public void setPublicKey(final String publicKey) {
         this.publicKey = publicKey;
     }
 
@@ -44,5 +47,6 @@ public class EthereumWallet implements java.io.Serializable {
     public String getPublicKey() {
         return (this.publicKey);
     }
+
 
 }

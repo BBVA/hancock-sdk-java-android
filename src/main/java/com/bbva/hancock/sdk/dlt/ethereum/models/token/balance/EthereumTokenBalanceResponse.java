@@ -2,19 +2,34 @@ package com.bbva.hancock.sdk.dlt.ethereum.models.token.balance;
 
 import com.bbva.hancock.sdk.models.HancockGenericResponse;
 
-public class EthereumTokenBalanceResponse {
-  private HancockGenericResponse result;
-  public EthereumTokenBalance data;
+import java.io.Serializable;
 
-  public EthereumTokenBalanceResponse(HancockGenericResponse result) {
-    this.result = result;
-  }
-  
-  public HancockGenericResponse getResult() {
-      return result;
-  }
-  
-  public EthereumTokenBalance getTokenBalance() {
-      return this.data;
-  }
+public class EthereumTokenBalanceResponse implements Serializable {
+    private static final long serialVersionUID = 8602610907944650010L;
+    private HancockGenericResponse result;
+    public EthereumTokenBalance data;
+
+    public EthereumTokenBalanceResponse() {
+
+    }
+
+    public EthereumTokenBalanceResponse(final HancockGenericResponse result) {
+        this.result = result;
+    }
+
+    public HancockGenericResponse getResult() {
+        return result;
+    }
+
+    public EthereumTokenBalance getTokenBalance() {
+        return this.data;
+    }
+
+    public EthereumTokenBalance getData() {
+        return data;
+    }
+
+    public void setData(final EthereumTokenBalance data) {
+        this.data = data;
+    }
 }

@@ -1,16 +1,22 @@
 package com.bbva.hancock.sdk.dlt.ethereum.models.token.metadata;
 
-public class EthereumTokenMetadata {
+import java.io.Serializable;
+
+public class EthereumTokenMetadata implements Serializable {
+    private static final long serialVersionUID = -5132213981532037715L;
     public String name;
     public String symbol;
     public Integer decimals;
     public Integer totalSupply;
 
+    public EthereumTokenMetadata() {
+    }
+
     public Integer getTotalSupply() {
         return totalSupply;
     }
 
-    public void setTotalSupply(Integer totalSupply) {
+    public void setTotalSupply(final Integer totalSupply) {
         this.totalSupply = totalSupply;
     }
 
@@ -18,7 +24,7 @@ public class EthereumTokenMetadata {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -26,7 +32,7 @@ public class EthereumTokenMetadata {
         return symbol;
     }
 
-    public void setSymbol(String symbol) {
+    public void setSymbol(final String symbol) {
         this.symbol = symbol;
     }
 
@@ -34,7 +40,8 @@ public class EthereumTokenMetadata {
         return decimals;
     }
 
-    public void setDecimals(Integer decimals) {
+    public void setDecimals(final Integer decimals) {
         this.decimals = decimals;
     }
+
 }

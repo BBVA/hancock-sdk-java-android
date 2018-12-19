@@ -19,7 +19,8 @@ import org.web3j.crypto.RawTransaction;
 import java.math.BigInteger;
 import java.security.InvalidAlgorithmParameterException;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
@@ -29,19 +30,20 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @RunWith(PowerMockRunner.class)
 public class EthereumWalletServiceIntegrationTest {
 
-    @Test public void testCreateRawTransaction() throws Exception {
+    @Test
+    public void testCreateRawTransaction() throws Exception {
 
-        HancockConfig config = new HancockConfig.Builder().build();
-        EthereumWalletService classUnderTest = new EthereumWalletService(config);
+        final HancockConfig config = new HancockConfig.Builder().build();
+        final EthereumWalletService classUnderTest = new EthereumWalletService(config);
 //        EthereumWallet wallet = classUnderTest.generateWallet();
 
-        BigInteger nonce = BigInteger.valueOf(1);
-        BigInteger gasPrice = BigInteger.valueOf(111);
-        BigInteger gasLimit = BigInteger.valueOf(222);
-        BigInteger value = BigInteger.valueOf(333);
+        final BigInteger nonce = BigInteger.valueOf(1);
+        final BigInteger gasPrice = BigInteger.valueOf(111);
+        final BigInteger gasLimit = BigInteger.valueOf(222);
+        final BigInteger value = BigInteger.valueOf(333);
 //        String to = wallet.getAddress();
-        String to = "0x6c0a14F7561898B9ddc0C57652A53B2C6665443E";
-        String data = "whatever";
+        final String to = "0x6c0a14F7561898B9ddc0C57652A53B2C6665443E";
+        final String data = "whatever";
 
         EthereumRawTransaction rawTransaction = new EthereumRawTransaction(to, nonce, value, data, gasPrice, gasLimit);
 
@@ -65,7 +67,7 @@ public class EthereumWalletServiceIntegrationTest {
         assertEquals(rawTransaction.getNonce(), nonce);
 
 
-        rawTransaction = new EthereumRawTransaction(to, nonce, new BigInteger("0"), data, gasPrice, gasLimit);
+        rawTransaction = new EthereumRawTransaction(to, nonce, BigInteger.ZERO, data, gasPrice, gasLimit);
 
         assertTrue("RawTransaction has value ", rawTransaction.getValue().equals(BigInteger.ZERO));
         assertTrue("RawTransaction has value ", rawTransaction.getData() instanceof String);
@@ -85,33 +87,34 @@ public class EthereumWalletServiceIntegrationTest {
 //    }
 
     @PrepareForTest({Keys.class})
-    @Test (expected = HancockException.class)
+    @Test(expected = HancockException.class)
     public void testGenerateWalletFail() throws Exception {
 
         PowerMockito.mockStatic(Keys.class);
         when(Keys.class, "createEcKeyPair").thenThrow(new InvalidAlgorithmParameterException());
 
-        HancockConfig auxConfig = new HancockConfig.Builder().build();
+        final HancockConfig auxConfig = new HancockConfig.Builder().build();
 
-        EthereumWalletService classUnderTest = new EthereumWalletService(auxConfig);
-        EthereumWallet wallet = classUnderTest.generateWallet();
+        final EthereumWalletService classUnderTest = new EthereumWalletService(auxConfig);
+        final EthereumWallet wallet = classUnderTest.generateWallet();
 
     }
 
     @PrepareForTest({Common.class})
-    @Test public void testGetBalance() throws Exception {
+    @Test
+    public void testGetBalance() throws Exception {
 
-        Request.Builder requestBuilder = new Request.Builder();
+        final Request.Builder requestBuilder = new Request.Builder();
         requestBuilder.get();
         requestBuilder.url("http://localhost");
 
-        Response.Builder responseBuilder = new Response.Builder();
+        final Response.Builder responseBuilder = new Response.Builder();
         responseBuilder.code(200);
         responseBuilder.protocol(Protocol.HTTP_1_1);
         responseBuilder.body(ResponseBody.create(MediaType.parse("application/json"), "{\"data\":{\"balance\": \"10000\"}}"));
         responseBuilder.request(requestBuilder.build());
         responseBuilder.message("Smart Contract - Success");
-        Response mockedResponse = responseBuilder.build();
+        final Response mockedResponse = responseBuilder.build();
 
         mockStatic(Common.class);
         when(Common.class, "getResourceUrl", any(), any())
@@ -124,17 +127,17 @@ public class EthereumWalletServiceIntegrationTest {
                 .thenReturn(mockedResponse);
 
 
-        GetBalanceResponse responseModel= PowerMockito.mock(GetBalanceResponse.class);
+        final GetBalanceResponse responseModel = PowerMockito.mock(GetBalanceResponse.class);
 
-        HancockConfig auxConfig = new HancockConfig.Builder().build();
+        final HancockConfig auxConfig = new HancockConfig.Builder().build();
 
-        EthereumWalletService auxEthereumWalletService = new EthereumWalletService(auxConfig);
-        EthereumWalletService spy_var=PowerMockito.spy(auxEthereumWalletService);
+        final EthereumWalletService auxEthereumWalletService = new EthereumWalletService(auxConfig);
+        final EthereumWalletService spy_var = PowerMockito.spy(auxEthereumWalletService);
 
         PowerMockito.when(responseModel.getBalance()).thenReturn("10000");
 
 
-        BigInteger balance = spy_var.getBalance("0xde8e772f0350e992ddef81bf8f51d94a8ea9216d");
+        final BigInteger balance = spy_var.getBalance("0xde8e772f0350e992ddef81bf8f51d94a8ea9216d");
 
         assertTrue("transaction signed successfully", balance instanceof BigInteger);
         assertEquals(balance, BigInteger.valueOf(10000));
@@ -142,20 +145,20 @@ public class EthereumWalletServiceIntegrationTest {
     }
 
     @PrepareForTest({Common.class})
-    @Test (expected = HancockException.class)
+    @Test(expected = HancockException.class)
     public void testGetBalanceFail() throws Exception {
 
-        Request.Builder requestBuilder = new Request.Builder();
+        final Request.Builder requestBuilder = new Request.Builder();
         requestBuilder.get();
         requestBuilder.url("http://localhost");
 
-        Response.Builder responseBuilder = new Response.Builder();
+        final Response.Builder responseBuilder = new Response.Builder();
         responseBuilder.code(500);
         responseBuilder.protocol(Protocol.HTTP_1_1);
         responseBuilder.body(ResponseBody.create(MediaType.parse("application/json"), "{\"error\": \"500\",\"internalError\": \"HKWH50002\",\"message\": \"Can not fetch SignProvider\",\"extendedMessage\": \"MongoError: there are no users authenticated\"}"));
         responseBuilder.request(requestBuilder.build());
         responseBuilder.message("Smart Contract - Fail");
-        Response mockedResponse = responseBuilder.build();
+        final Response mockedResponse = responseBuilder.build();
 
         mockStatic(Common.class);
         when(Common.class, "getResourceUrl", any(), any())
@@ -167,25 +170,25 @@ public class EthereumWalletServiceIntegrationTest {
         when(Common.class, "makeCall", any(Request.class))
                 .thenReturn(mockedResponse);
 
-        HancockConfig auxConfig = new HancockConfig.Builder().build();
+        final HancockConfig auxConfig = new HancockConfig.Builder().build();
 
-        EthereumWalletService auxEthereumWalletService = new EthereumWalletService(auxConfig);
-        EthereumWalletService spy_var=PowerMockito.spy(auxEthereumWalletService);
+        final EthereumWalletService auxEthereumWalletService = new EthereumWalletService(auxConfig);
+        final EthereumWalletService spy_var = PowerMockito.spy(auxEthereumWalletService);
 
 
-        BigInteger balance = spy_var.getBalance("0xde8e772f0350e992ddef81bf8f51d94a8ea9216d");
+        final BigInteger balance = spy_var.getBalance("0xde8e772f0350e992ddef81bf8f51d94a8ea9216d");
 
     }
 
-    @Test (expected = HancockException.class)
+    @Test(expected = HancockException.class)
     public void testGetBalanceParameterFail() throws Exception {
 
-        HancockConfig auxConfig = new HancockConfig.Builder().build();
+        final HancockConfig auxConfig = new HancockConfig.Builder().build();
 
-        EthereumWalletService auxEthereumWalletService = new EthereumWalletService(auxConfig);
-        EthereumWalletService spy_var=PowerMockito.spy(auxEthereumWalletService);
+        final EthereumWalletService auxEthereumWalletService = new EthereumWalletService(auxConfig);
+        final EthereumWalletService spy_var = PowerMockito.spy(auxEthereumWalletService);
 
-        BigInteger balance = spy_var.getBalance("");
+        final BigInteger balance = spy_var.getBalance("");
 
     }
 
