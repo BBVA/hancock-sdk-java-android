@@ -95,6 +95,7 @@ public class EthereumTransactionServiceTest {
         when(Web3jFactory.build(any(HttpService.class))).thenReturn(mockedWeb3);       
         
         EthSendTransaction mockTransaction = new EthSendTransaction();
+        mockTransaction.setResult("MockResult");
         
         @SuppressWarnings("rawtypes")
         Future mockFuture = mock(Future.class);
