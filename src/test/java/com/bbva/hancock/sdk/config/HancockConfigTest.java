@@ -1,10 +1,5 @@
 package com.bbva.hancock.sdk.config;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.powermock.api.mockito.PowerMockito.*;
-
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
@@ -12,14 +7,20 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.powermock.api.mockito.PowerMockito.mock;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+
 @PowerMockIgnore("javax.net.ssl.*")
 @RunWith(PowerMockRunner.class)
 public class HancockConfigTest {
 
-    @Test public void testConfig() {
+    @Test
+    public void testConfig() {
 
-        HancockConfig.Builder builder = new HancockConfig.Builder();
-        HancockConfig config = builder.withAdapter("http://localhost", "/", 3000)
+        final HancockConfig.Builder builder = new HancockConfig.Builder();
+        final HancockConfig config = builder.withAdapter("http://localhost", "/", 3000)
                 .withBroker("http://localhost", "/", 3001)
                 .withWallet("http://localhost", "/", 3002)
                 .withEnv("dev")
@@ -39,12 +40,13 @@ public class HancockConfigTest {
     }
 
     @PrepareForTest({HancockConfig.Builder.class})
-    @Test public void testConfigWithoutParams() throws Exception {
+    @Test
+    public void testConfigWithoutParams() throws Exception {
 
-        HancockConfig.Builder builder = new HancockConfig.Builder();
+        final HancockConfig.Builder builder = new HancockConfig.Builder();
         mockStatic(HancockConfig.Builder.class);
         PowerMockito.doReturn(mock(HancockConfig.Builder.class)).when(mock(HancockConfig.Builder.class)).fromConfigFile();
-        HancockConfig config = builder.build();
+        final HancockConfig config = builder.build();
 
         assertTrue("Config OK", config instanceof HancockConfig);
         assertEquals(config.getAdapter().getPort(), 3000);

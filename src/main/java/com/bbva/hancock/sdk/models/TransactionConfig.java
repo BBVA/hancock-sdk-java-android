@@ -1,7 +1,10 @@
 package com.bbva.hancock.sdk.models;
 
-public class TransactionConfig {
+import java.io.Serializable;
 
+public class TransactionConfig implements Serializable {
+
+    private static final long serialVersionUID = 841616785347312981L;
     private String privateKey;
     private String provider;
     private HancockCallbackOptions callbackOptions;
@@ -24,19 +27,19 @@ public class TransactionConfig {
         return this.sendLocally;
     }
 
-    public void setNode(String node) {
+    public void setNode(final String node) {
         this.node = node;
     }
 
-    public void setSendLocally(boolean sendLocally) {
+    public void setSendLocally(final boolean sendLocally) {
         this.sendLocally = sendLocally;
     }
 
-    public void setPrivateKey(String privateKey) {
+    public void setPrivateKey(final String privateKey) {
         this.privateKey = privateKey;
     }
 
-    public void setProvider(String provider) {
+    public void setProvider(final String provider) {
         this.provider = provider;
     }
 
@@ -44,7 +47,7 @@ public class TransactionConfig {
         return callbackOptions;
     }
 
-    public void setCallbackOptions(HancockCallbackOptions callbackOptions) {
+    public void setCallbackOptions(final HancockCallbackOptions callbackOptions) {
         this.callbackOptions = callbackOptions;
     }
 
@@ -63,33 +66,33 @@ public class TransactionConfig {
         private HancockCallbackOptions callbackOptions;
         private boolean sendLocally = false;
 
-        public Builder withPrivateKey(String privateKey) {
+        public Builder withPrivateKey(final String privateKey) {
             this.privateKey = privateKey;
             return this;
         }
 
-        public Builder withSendLocally(boolean sendLocally) {
+        public Builder withSendLocally(final boolean sendLocally) {
             this.sendLocally = sendLocally;
             return this;
         }
 
-        public Builder withNode(String node) {
+        public Builder withNode(final String node) {
             this.node = node;
             return this;
         }
 
-        public Builder withProvider(String provider) {
+        public Builder withProvider(final String provider) {
             this.provider = provider;
             return this;
         }
 
-        public Builder withCallbackOptions(String backUrl, String requestId) {
+        public Builder withCallbackOptions(final String backUrl, final String requestId) {
             this.callbackOptions = new HancockCallbackOptions(backUrl, requestId);
             return this;
         }
 
         public TransactionConfig build() {
-            TransactionConfig config = new TransactionConfig();
+            final TransactionConfig config = new TransactionConfig();
 
             if (this.privateKey != null) {
                 config.setPrivateKey(this.privateKey);

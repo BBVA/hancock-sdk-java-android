@@ -1,7 +1,10 @@
 package com.bbva.hancock.sdk.dlt.ethereum.models;
 
-public class EthereumTransaction {
+import java.io.Serializable;
 
+public class EthereumTransaction implements Serializable {
+
+    private static final long serialVersionUID = 7659625467339800148L;
     private String from;
     private String to;
     private String value;
@@ -10,7 +13,10 @@ public class EthereumTransaction {
     private String gas;
     private String gasPrice;
 
-    public EthereumTransaction(String from, String to, String value, String data, String nonce, String gas, String gasPrice) {
+    public EthereumTransaction() {
+    }
+
+    public EthereumTransaction(final String from, final String to, final String value, final String data, final String nonce, final String gas, final String gasPrice) {
         this.from = from;
         this.to = to;
         this.value = value;
@@ -20,7 +26,7 @@ public class EthereumTransaction {
         this.gasPrice = gasPrice;
     }
 
-    public EthereumTransaction(String from, String to, String value, String nonce, String gas, String gasPrice) {
+    public EthereumTransaction(final String from, final String to, final String value, final String nonce, final String gas, final String gasPrice) {
         this.from = from;
         this.to = to;
         this.value = value;
@@ -34,7 +40,7 @@ public class EthereumTransaction {
         return from;
     }
 
-    public void setFrom(String from) {
+    public void setFrom(final String from) {
         this.from = from;
     }
 
@@ -42,7 +48,7 @@ public class EthereumTransaction {
         return to;
     }
 
-    public void setTo(String to) {
+    public void setTo(final String to) {
         this.to = to;
     }
 
@@ -50,7 +56,7 @@ public class EthereumTransaction {
         return value;
     }
 
-    public void setValue(String value) {
+    public void setValue(final String value) {
         this.value = value;
     }
 
@@ -58,7 +64,7 @@ public class EthereumTransaction {
         return data;
     }
 
-    public void setData(String data) {
+    public void setData(final String data) {
         this.data = data;
     }
 
@@ -66,7 +72,7 @@ public class EthereumTransaction {
         return nonce;
     }
 
-    public void setNonce(String nonce) {
+    public void setNonce(final String nonce) {
         this.nonce = nonce;
     }
 
@@ -74,7 +80,7 @@ public class EthereumTransaction {
         return gas;
     }
 
-    public void setGas(String gas) {
+    public void setGas(final String gas) {
         this.gas = gas;
     }
 
@@ -82,7 +88,8 @@ public class EthereumTransaction {
         return gasPrice;
     }
 
-    public void setGasPrice(String gasPrice) {
+    public void setGasPrice(final String gasPrice) {
         this.gasPrice = gasPrice;
     }
+
 }

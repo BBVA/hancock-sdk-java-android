@@ -14,8 +14,6 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.math.BigInteger;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -40,7 +38,7 @@ public class EthereumTransferServiceIntegrationTest {
     public static HancockConfig mockedConfig;
 
     @BeforeClass
-    public static void setUp(){
+    public static void setUp() {
 
         nonce = "0x1";
         gasPrice = "0x4";
@@ -56,7 +54,7 @@ public class EthereumTransferServiceIntegrationTest {
         requestBuilder.get();
         requestBuilder.url("http://localhost");
 
-        Response.Builder responseBuilder = new Response.Builder();
+        final Response.Builder responseBuilder = new Response.Builder();
         responseBuilder.code(200);
         responseBuilder.protocol(Protocol.HTTP_1_1);
         responseBuilder.body(ResponseBody.create(MediaType.parse("application/json"), requestContent));
@@ -68,9 +66,10 @@ public class EthereumTransferServiceIntegrationTest {
     }
 
     @PrepareForTest({Common.class})
-    @Test public void testAdaptTransfer() throws Exception {
+    @Test
+    public void testAdaptTransfer() throws Exception {
 
-        EthereumTransferRequest transferRequest = new EthereumTransferRequest(from, to, value);
+        final EthereumTransferRequest transferRequest = new EthereumTransferRequest(from, to, value);
 
         mockStatic(Common.class);
         when(Common.class, "getResourceUrl", any(), any())
@@ -82,11 +81,11 @@ public class EthereumTransferServiceIntegrationTest {
         when(Common.class, "makeCall", any(Request.class))
                 .thenReturn(mockedResponse);
 
-        EthereumTransactionService transactionClient = new EthereumTransactionService(mockedConfig);
-        EthereumTransferService auxHancockEthereumTokenClient = new EthereumTransferService(mockedConfig, transactionClient);
-        EthereumTransferService spy_var = spy(auxHancockEthereumTokenClient);
+        final EthereumTransactionService transactionClient = new EthereumTransactionService(mockedConfig);
+        final EthereumTransferService auxHancockEthereumTokenClient = new EthereumTransferService(mockedConfig, transactionClient);
+        final EthereumTransferService spy_var = spy(auxHancockEthereumTokenClient);
 
-        EthereumTransaction rawtx = spy_var.adaptTransfer(transferRequest);
+        final EthereumTransaction rawtx = spy_var.adaptTransfer(transferRequest);
 
         assertTrue("transaction adapted successfully", rawtx instanceof EthereumTransaction);
         assertEquals(rawtx.getGasPrice(), gasPrice);
@@ -97,27 +96,28 @@ public class EthereumTransferServiceIntegrationTest {
     }
 
     @PrepareForTest({Common.class})
-    @Test public void testSend() throws Exception {
+    @Test
+    public void testSend() throws Exception {
 
-        TransactionConfig txConfig = new TransactionConfig.Builder()
+        final TransactionConfig txConfig = new TransactionConfig.Builder()
                 .withPrivateKey("0x6c47653f66ac9b733f3b8bf09ed3d300520b4d9c78711ba90162744f5906b1f8")
                 .build();
 
-        EthereumTransferRequest transferRequest = new EthereumTransferRequest(from, to, value);
+        final EthereumTransferRequest transferRequest = new EthereumTransferRequest(from, to, value);
 
-        Response.Builder responseBuilder2 = new Response.Builder();
+        final Response.Builder responseBuilder2 = new Response.Builder();
         responseBuilder2.code(200);
         responseBuilder2.protocol(Protocol.HTTP_1_1);
         responseBuilder2.body(ResponseBody.create(MediaType.parse("application/json"), "{\"success\": \"true\"}"));
         responseBuilder2.request(requestBuilder.build());
         responseBuilder2.message("Smart Contract - Success");
-        Response mockedResponse2 = responseBuilder2.build();
+        final Response mockedResponse2 = responseBuilder2.build();
 
-        EthereumTransactionResponse mockedTransactionResponse = new EthereumTransactionResponse(true);
+        final EthereumTransactionResponse mockedTransactionResponse = new EthereumTransactionResponse(true);
 
-        EthereumTransactionService transactionClient = new EthereumTransactionService(mockedConfig);
-        EthereumTransactionService spyTransactionClient = spy(transactionClient);
-        EthereumTransferService auxEthereumTransferClient = new EthereumTransferService(mockedConfig, spyTransactionClient);
+        final EthereumTransactionService transactionClient = new EthereumTransactionService(mockedConfig);
+        final EthereumTransactionService spyTransactionClient = spy(transactionClient);
+        final EthereumTransferService auxEthereumTransferClient = new EthereumTransferService(mockedConfig, spyTransactionClient);
 
         mockStatic(Common.class);
         when(Common.class, "getResourceUrl", any(), any())
@@ -130,7 +130,7 @@ public class EthereumTransferServiceIntegrationTest {
                 .thenReturn(mockedResponse)
                 .thenReturn(mockedResponse2);
 
-        EthereumTransactionResponse rawtx = auxEthereumTransferClient.send(transferRequest, txConfig);
+        final EthereumTransactionResponse rawtx = auxEthereumTransferClient.send(transferRequest, txConfig);
 
         verify(spyTransactionClient).send(any(EthereumTransaction.class), eq(txConfig));
         assertTrue("transaction adapted successfully", rawtx instanceof EthereumTransactionResponse);

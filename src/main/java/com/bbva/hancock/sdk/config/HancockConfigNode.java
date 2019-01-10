@@ -4,17 +4,19 @@ import java.io.Serializable;
 
 public class HancockConfigNode implements Serializable {
 
+    private static final long serialVersionUID = 8595675037252132505L;
     private String host;
     private int port;
 
-    public HancockConfigNode() {}
+    public HancockConfigNode() {
+    }
 
-    public HancockConfigNode(String host, int port) {
+    public HancockConfigNode(final String host, final int port) {
         this.host = host;
         this.port = port;
     }
 
-    public HancockConfigNode(HancockConfigNode node) {
+    public HancockConfigNode(final HancockConfigNode node) {
         this.host = node.getHost();
         this.port = node.getPort();
     }
@@ -23,7 +25,7 @@ public class HancockConfigNode implements Serializable {
         return host;
     }
 
-    public void setHost(String host) {
+    public void setHost(final String host) {
         this.host = host;
     }
 
@@ -31,7 +33,7 @@ public class HancockConfigNode implements Serializable {
         return port;
     }
 
-    public void setPort(int port) {
+    public void setPort(final int port) {
         this.port = port;
     }
 }

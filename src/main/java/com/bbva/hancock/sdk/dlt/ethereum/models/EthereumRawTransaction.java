@@ -1,13 +1,13 @@
 package com.bbva.hancock.sdk.dlt.ethereum.models;
 
-import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransaction;
 import org.web3j.crypto.RawTransaction;
-import org.web3j.protocol.core.methods.response.AbiDefinition;
 
+import java.io.Serializable;
 import java.math.BigInteger;
 
-public final class EthereumRawTransaction {
+public final class EthereumRawTransaction implements Serializable {
 
+    private static final long serialVersionUID = -6501902289201200387L;
     private String from;
     private String to;
     private BigInteger nonce;
@@ -16,7 +16,11 @@ public final class EthereumRawTransaction {
     private BigInteger gasPrice;
     private BigInteger gasLimit;
 
-    public EthereumRawTransaction(String from, String to, BigInteger nonce, BigInteger value, String data, BigInteger gasPrice, BigInteger gas) {
+    public EthereumRawTransaction() {
+
+    }
+
+    public EthereumRawTransaction(final String from, final String to, final BigInteger nonce, final BigInteger value, final String data, final BigInteger gasPrice, final BigInteger gas) {
         this.from = from;
         this.to = to;
         this.nonce = nonce;
@@ -26,7 +30,7 @@ public final class EthereumRawTransaction {
         this.gasLimit = gas;
     }
 
-    public EthereumRawTransaction(String to, BigInteger nonce, BigInteger value, String data, BigInteger gasPrice, BigInteger gasLimit) {
+    public EthereumRawTransaction(final String to, final BigInteger nonce, final BigInteger value, final String data, final BigInteger gasPrice, final BigInteger gasLimit) {
         this.to = to;
         this.nonce = nonce;
         this.value = value;
@@ -35,7 +39,7 @@ public final class EthereumRawTransaction {
         this.gasLimit = gasLimit;
     }
 
-    public EthereumRawTransaction(String to, BigInteger nonce, BigInteger value, BigInteger gasPrice, BigInteger gas) {
+    public EthereumRawTransaction(final String to, final BigInteger nonce, final BigInteger value, final BigInteger gasPrice, final BigInteger gas) {
         this.to = to;
         this.nonce = nonce;
         this.value = value;
@@ -43,14 +47,14 @@ public final class EthereumRawTransaction {
         this.gasLimit = gas;
     }
 
-    public EthereumRawTransaction(EthereumTransaction tx){
+    public EthereumRawTransaction(final EthereumTransaction tx) {
         this.from = tx.getFrom();
         this.to = tx.getTo();
-        this.nonce = tx.getNonce() != null ? new BigInteger(tx.getNonce().substring(2), 16) : new BigInteger("0");
-        this.value = tx.getValue() != null ? new BigInteger(tx.getValue().substring(2), 16) : new BigInteger("0");
+        this.nonce = tx.getNonce() != null ? new BigInteger(tx.getNonce().substring(2), 16) : BigInteger.ZERO;
+        this.value = tx.getValue() != null ? new BigInteger(tx.getValue().substring(2), 16) : BigInteger.ZERO;
         this.data = tx.getData();
-        this.gasPrice = tx.getGasPrice() != null ? new BigInteger(tx.getGasPrice().substring(2), 16) : new BigInteger("0");
-        this.gasLimit = tx.getGas() != null ? new BigInteger(tx.getGas().substring(2), 16) : new BigInteger("0");
+        this.gasPrice = tx.getGasPrice() != null ? new BigInteger(tx.getGasPrice().substring(2), 16) : BigInteger.ZERO;
+        this.gasLimit = tx.getGas() != null ? new BigInteger(tx.getGas().substring(2), 16) : BigInteger.ZERO;
     }
 
     public String getFrom() {
@@ -79,6 +83,34 @@ public final class EthereumRawTransaction {
 
     public BigInteger getGasLimit() {
         return gasLimit;
+    }
+
+    public void setFrom(final String from) {
+        this.from = from;
+    }
+
+    public void setTo(final String to) {
+        this.to = to;
+    }
+
+    public void setNonce(final BigInteger nonce) {
+        this.nonce = nonce;
+    }
+
+    public void setValue(final BigInteger value) {
+        this.value = value;
+    }
+
+    public void setData(final String data) {
+        this.data = data;
+    }
+
+    public void setGasPrice(final BigInteger gasPrice) {
+        this.gasPrice = gasPrice;
+    }
+
+    public void setGasLimit(final BigInteger gasLimit) {
+        this.gasLimit = gasLimit;
     }
 
     public RawTransaction getWeb3Instance() {

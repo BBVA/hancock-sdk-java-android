@@ -2,11 +2,16 @@ package com.bbva.hancock.sdk.dlt.ethereum.models.transaction;
 
 import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransaction;
 
-public class EthereumSendToProviderRequest {
+import java.io.Serializable;
+
+public class EthereumSendToProviderRequest implements Serializable {
 
     private EthereumTransaction rawTx;
     private String provider;
     private String backUrl;
+
+    public EthereumSendToProviderRequest() {
+    }
 
     public EthereumSendToProviderRequest(EthereumTransaction rawTx, String provider) {
         this.rawTx = rawTx;
@@ -42,4 +47,5 @@ public class EthereumSendToProviderRequest {
     public void setBackUrl(String backUrl) {
         this.backUrl = backUrl;
     }
+
 }

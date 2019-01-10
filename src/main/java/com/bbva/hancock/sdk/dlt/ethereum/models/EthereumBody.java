@@ -1,21 +1,28 @@
 package com.bbva.hancock.sdk.dlt.ethereum.models;
 
-public class EthereumBody {
+import java.io.Serializable;
 
+public class EthereumBody implements Serializable {
+
+    private static final long serialVersionUID = -4442436200964932879L;
     private String from;
     private String to;
     private String value;
 
-    public EthereumBody(String from) {
+    public EthereumBody() {
+
+    }
+
+    public EthereumBody(final String from) {
         this.from = from;
     }
 
-    public EthereumBody(String from, String value) {
+    public EthereumBody(final String from, final String value) {
         this.from = from;
         this.value = value;
     }
 
-    public EthereumBody(String from, String to, String value) {
+    public EthereumBody(final String from, final String to, final String value) {
         this.from = from;
         this.to = to;
         this.value = value;
@@ -25,7 +32,7 @@ public class EthereumBody {
         return from;
     }
 
-    public void setFrom(String from) {
+    public void setFrom(final String from) {
         this.from = from;
     }
 
@@ -33,7 +40,7 @@ public class EthereumBody {
         return to;
     }
 
-    public void setTo(String to) {
+    public void setTo(final String to) {
         this.to = to;
     }
 
@@ -41,7 +48,8 @@ public class EthereumBody {
         return value;
     }
 
-    public void setValue(String value) {
+    public void setValue(final String value) {
         this.value = value;
     }
+
 }

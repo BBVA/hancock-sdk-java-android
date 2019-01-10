@@ -2,15 +2,21 @@ package com.bbva.hancock.sdk.dlt.ethereum.models.smartContracts;
 
 import org.web3j.protocol.core.methods.response.AbiDefinition;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class EthereumRegisterRequest {
+public class EthereumRegisterRequest implements Serializable {
 
+    private static final long serialVersionUID = -1815399594736850037L;
     private String address;
     private String alias;
     private ArrayList<AbiDefinition> abi;
 
-    public EthereumRegisterRequest(String address, String alias, ArrayList<AbiDefinition> abi) {
+    public EthereumRegisterRequest() {
+
+    }
+
+    public EthereumRegisterRequest(final String address, final String alias, final ArrayList<AbiDefinition> abi) {
         this.address = address;
         this.alias = alias;
         this.abi = abi;
@@ -20,7 +26,7 @@ public class EthereumRegisterRequest {
         return address;
     }
 
-    public void setAddress(String address) {
+    public void setAddress(final String address) {
         this.address = address;
     }
 
@@ -28,7 +34,7 @@ public class EthereumRegisterRequest {
         return alias;
     }
 
-    public void setAlias(String alias) {
+    public void setAlias(final String alias) {
         this.alias = alias;
     }
 
@@ -36,7 +42,8 @@ public class EthereumRegisterRequest {
         return abi;
     }
 
-    public void setAbi(ArrayList<AbiDefinition> abi) {
+    public void setAbi(final ArrayList<AbiDefinition> abi) {
         this.abi = abi;
     }
+
 }

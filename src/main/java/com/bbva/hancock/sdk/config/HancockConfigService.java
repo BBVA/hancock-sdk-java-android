@@ -6,21 +6,23 @@ import java.util.Map;
 
 public class HancockConfigService implements Serializable {
 
+    private static final long serialVersionUID = 4385139048947826920L;
     private String host;
     private String base;
     private int port;
     private Map<String, String> resources;
 
-    public HancockConfigService() {}
+    public HancockConfigService() {
+    }
 
-    public HancockConfigService(String host, String base, int port, Map<String, String> resources) {
+    public HancockConfigService(final String host, final String base, final int port, final Map<String, String> resources) {
         this.host = host;
         this.base = base;
         this.port = port;
         this.resources = resources;
     }
 
-    public HancockConfigService(HancockConfigService service) {
+    public HancockConfigService(final HancockConfigService service) {
         this.host = service.getHost();
         this.base = service.getBase();
         this.port = service.getPort();
@@ -31,7 +33,7 @@ public class HancockConfigService implements Serializable {
         return host;
     }
 
-    public void setHost(String host) {
+    public void setHost(final String host) {
         this.host = host;
     }
 
@@ -39,7 +41,7 @@ public class HancockConfigService implements Serializable {
         return base;
     }
 
-    public void setBase(String base) {
+    public void setBase(final String base) {
         this.base = base;
     }
 
@@ -47,7 +49,7 @@ public class HancockConfigService implements Serializable {
         return port;
     }
 
-    public void setPort(int port) {
+    public void setPort(final int port) {
         this.port = port;
     }
 
@@ -55,7 +57,7 @@ public class HancockConfigService implements Serializable {
         return resources;
     }
 
-    public void setResources(Map<String, String> resources) {
+    public void setResources(final Map<String, String> resources) {
         this.resources = resources;
     }
 

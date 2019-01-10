@@ -2,12 +2,19 @@ package com.bbva.hancock.sdk.dlt.ethereum.models.smartContracts;
 
 import com.bbva.hancock.sdk.models.HancockGenericResponse;
 
-public class EthereumCallResponse {
+import java.io.Serializable;
 
+public class EthereumCallResponse implements Serializable {
+
+    private static final long serialVersionUID = -1879043266148806288L;
     private Object data;
     private HancockGenericResponse result;
 
-    public EthereumCallResponse(Object data, HancockGenericResponse result) {
+    public EthereumCallResponse() {
+
+    }
+
+    public EthereumCallResponse(final Object data, final HancockGenericResponse result) {
         this.data = data;
         this.result = result;
     }
@@ -16,7 +23,7 @@ public class EthereumCallResponse {
         return data;
     }
 
-    public void setData(Object data) {
+    public void setData(final Object data) {
         this.data = data;
     }
 
@@ -24,7 +31,8 @@ public class EthereumCallResponse {
         return result;
     }
 
-    public void setResult(HancockGenericResponse result) {
+    public void setResult(final HancockGenericResponse result) {
         this.result = result;
     }
+
 }

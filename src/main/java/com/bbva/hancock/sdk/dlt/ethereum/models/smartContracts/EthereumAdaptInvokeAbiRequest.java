@@ -1,11 +1,13 @@
 package com.bbva.hancock.sdk.dlt.ethereum.models.smartContracts;
 
-import java.util.ArrayList;
-
 import org.web3j.protocol.core.methods.response.AbiDefinition;
 
-public class EthereumAdaptInvokeAbiRequest {
+import java.io.Serializable;
+import java.util.ArrayList;
 
+public class EthereumAdaptInvokeAbiRequest implements Serializable {
+
+    private static final long serialVersionUID = 928894613662366476L;
     private String method;
     private String from;
     private ArrayList<String> params;
@@ -13,7 +15,10 @@ public class EthereumAdaptInvokeAbiRequest {
     private String to;
     private ArrayList<AbiDefinition> abi;
 
-    public EthereumAdaptInvokeAbiRequest(String method, String from, ArrayList<String> params, String action, String to, ArrayList<AbiDefinition> abi) {
+    public EthereumAdaptInvokeAbiRequest() {
+    }
+
+    public EthereumAdaptInvokeAbiRequest(final String method, final String from, final ArrayList<String> params, final String action, final String to, final ArrayList<AbiDefinition> abi) {
         this.method = method;
         this.from = from;
         this.params = params;
@@ -26,7 +31,7 @@ public class EthereumAdaptInvokeAbiRequest {
         return method;
     }
 
-    public void setMethod(String method) {
+    public void setMethod(final String method) {
         this.method = method;
     }
 
@@ -34,7 +39,7 @@ public class EthereumAdaptInvokeAbiRequest {
         return from;
     }
 
-    public void setFrom(String from) {
+    public void setFrom(final String from) {
         this.from = from;
     }
 
@@ -42,7 +47,7 @@ public class EthereumAdaptInvokeAbiRequest {
         return params;
     }
 
-    public void setParams(ArrayList<String> params) {
+    public void setParams(final ArrayList<String> params) {
         this.params = params;
     }
 
@@ -50,24 +55,25 @@ public class EthereumAdaptInvokeAbiRequest {
         return action;
     }
 
-    public void setAction(String action) {
+    public void setAction(final String action) {
         this.action = action;
     }
 
     public String getTo() {
-      return to;
+        return to;
     }
 
-    public void setTo(String to) {
-      this.to = to;
+    public void setTo(final String to) {
+        this.to = to;
     }
 
     public ArrayList<AbiDefinition> getAbi() {
-      return abi;
+        return abi;
     }
 
-    public void setAbi(ArrayList<AbiDefinition> abi) {
-      this.abi = abi;
+    public void setAbi(final ArrayList<AbiDefinition> abi) {
+        this.abi = abi;
     }
-    
+
+
 }

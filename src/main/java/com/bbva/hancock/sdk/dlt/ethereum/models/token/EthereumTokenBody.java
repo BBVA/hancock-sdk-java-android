@@ -2,21 +2,28 @@ package com.bbva.hancock.sdk.dlt.ethereum.models.token;
 
 import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumBody;
 
-public class EthereumTokenBody extends EthereumBody{
+import java.io.Serializable;
 
+public class EthereumTokenBody extends EthereumBody implements Serializable {
+
+    private static final long serialVersionUID = 8190822402396330128L;
     private String spender;
     private String tokenOwner;
     private String sender;
 
-    public EthereumTokenBody(String from) {
+    public EthereumTokenBody() {
+
+    }
+
+    public EthereumTokenBody(final String from) {
         super(from);
     }
 
-    public EthereumTokenBody(String from, String value) {
+    public EthereumTokenBody(final String from, final String value) {
         super(from, value);
     }
 
-    public EthereumTokenBody(String from, String to, String value) {
+    public EthereumTokenBody(final String from, final String to, final String value) {
         super(from, to, value);
     }
 
@@ -32,15 +39,16 @@ public class EthereumTokenBody extends EthereumBody{
         return sender;
     }
 
-    public void setSpender(String spender) {
+    public void setSpender(final String spender) {
         this.spender = spender;
     }
 
-    public void setTokenOwner(String tokenOwner) {
+    public void setTokenOwner(final String tokenOwner) {
         this.tokenOwner = tokenOwner;
     }
 
-    public void setSender(String sender) {
+    public void setSender(final String sender) {
         this.sender = sender;
     }
+
 }
