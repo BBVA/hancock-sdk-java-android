@@ -219,10 +219,22 @@ public class EthereumTransactionService {
 
         final Web3j web3j = Web3jFactory.build(new HttpService(this.config.getNode().getHost() + port));
 
+
         final EthSendTransaction ethSendTransaction = web3j.ethSendRawTransaction(signedTransaction).sendAsync().get();
+
+        final Boolean success;
+
         final String transactionHash = ethSendTransaction.getTransactionHash();
 
-        final EthereumTransactionResponse response = new EthereumTransactionResponse(true, transactionHash);
+        if (transactionHash != null && !transactionHash.isEmpty()) {
+            success = true;
+        } else {
+            success = false;
+            System.out.println("web3j error: " + ethSendTransaction.getResult());
+            throw new ExecutionException(ethSendTransaction.getError().getMessage(), null);
+        }
+
+        final EthereumTransactionResponse response = new EthereumTransactionResponse(success, transactionHash);
 
         return response;
 
