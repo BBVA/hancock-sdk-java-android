@@ -79,7 +79,7 @@ public class EthereumTransferService {
         try {
             final HancockSocket socket = new HancockSocket(url);
             socket.on("ready", o -> {
-                socket.addTransfer(addresses);
+                socket.watchTransfer(addresses);
                 return null;
             });
             return socket;

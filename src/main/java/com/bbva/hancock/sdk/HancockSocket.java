@@ -72,7 +72,7 @@ public class HancockSocket {
      * Add new addresses to be listened for event of type "transfers".
      * @param addresses New Addresses to be listened
      */
-    public void addTransfer(ArrayList<String> addresses){
+    public void watchTransfer(ArrayList<String> addresses){
         if (!addresses.isEmpty()) {
             this.sendMessage("watch-transfers", addresses);
         }
@@ -82,7 +82,7 @@ public class HancockSocket {
      * Add new addresses to be listened for event of type "transactions".
      * @param addresses New Addresses to be listened
      */
-    public void addTransaction(ArrayList<String> addresses){
+    public void watchTransaction(ArrayList<String> addresses){
         if (!addresses.isEmpty()) {
             this.sendMessage("watch-transactions", addresses);
         }
@@ -92,9 +92,39 @@ public class HancockSocket {
      * Add new addresses or alias to be listened for event of type "contracts".
      * @param contracts New address or alias to be listened
      */
-    public void addContract(ArrayList<String> contracts){
+    public void watchContract(ArrayList<String> contracts){
         if (!contracts.isEmpty()) {
             this.sendMessage("watch-contracts", contracts);
+        }
+    }
+
+    /**
+     * Stop listening the addresses for event of type "transfers".
+     * @param addresses Addresses to stop listening
+     */
+    public void unwatchTransfer(ArrayList<String> addresses){
+        if (!addresses.isEmpty()) {
+            this.sendMessage("unwatch-transfers", addresses);
+        }
+    }
+
+    /**
+     * Stop listening the addresses for event of type "transactions".
+     * @param addresses Addresses to stop listening
+     */
+    public void unwatchTransaction(ArrayList<String> addresses){
+        if (!addresses.isEmpty()) {
+            this.sendMessage("unwatch-transactions", addresses);
+        }
+    }
+
+    /**
+     * Stop listening the contracts for event of type "contracts".
+     * @param contracts Contracts to stop listening
+     */
+    public void unwatchContract(ArrayList<String> contracts){
+        if (!contracts.isEmpty()) {
+            this.sendMessage("unwatch-contracts", contracts);
         }
     }
 
