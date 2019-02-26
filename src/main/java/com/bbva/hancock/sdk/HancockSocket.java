@@ -8,16 +8,14 @@ import org.java_websocket.handshake.ServerHandshake;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 
 public class HancockSocket {
 
-    private WebSocketClient ws;
-    private Map<String, Function> callbackFunctions;
+    private final WebSocketClient ws;
+    private final Map<String, List<Function>> callbackFunctions;
 
     public HancockSocket(String url) throws URISyntaxException {
 
@@ -49,10 +47,17 @@ public class HancockSocket {
             }
 
             protected void executeFunction(String event, Object obj) {
-                Function function = callbackFunctions.get(event);
-                if (function != null) {
-                    function.apply(obj);
+
+                final List<Function> functionList = callbackFunctions.get(event);
+
+                if (functionList != null) {
+
+                    for (Function function : functionList) {
+                        function.apply(obj);
+                    }
+
                 }
+
             }
         };
 
@@ -65,7 +70,62 @@ public class HancockSocket {
      * @param function The function to be called
      */
     public void on(String event, Function function){
-        this.callbackFunctions.put(event, function);
+
+        List<Function> functionList = callbackFunctions.get(event);
+
+        if (functionList == null) {
+
+            functionList = new ArrayList<>();
+
+        }
+
+        functionList.add(function);
+        callbackFunctions.put(event, functionList);
+
+    }
+
+    /**
+     * Remove a function from the handlers list of an specific event
+     * @param event The event which is listened
+     * @param function The function to be removed
+     */
+    public void off(String event, Function function){
+
+        final List<Function> functionList = callbackFunctions.get(event);
+
+        if (functionList != null) {
+
+            for (Function fn : functionList) {
+
+                if (fn.equals(function)) {
+
+                    functionList.remove(fn);
+
+                }
+
+            }
+
+        }
+
+    }
+
+    /**
+     * Remove all functions from the handlers list of an specific event
+     * @param event The event which is listened
+     */
+    public void removeAllListeners(String event){
+
+        final List<Function> functionList = callbackFunctions.remove(event);
+
+    }
+
+    /**
+     * Remove all handlers for all event types
+     */
+    public void removeAllListeners(){
+
+        callbackFunctions.clear();
+
     }
 
     /**
@@ -102,7 +162,7 @@ public class HancockSocket {
         return ws;
     }
 
-    public Map<String, Function> getCallbackFunctions() {
+    public Map<String, List<Function>> getCallbackFunctions() {
         return callbackFunctions;
     }
 
