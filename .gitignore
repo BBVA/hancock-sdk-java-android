@@ -10,3 +10,4 @@ bin/
 out/
 .vscode
 tests/
+*.iml

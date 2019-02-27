@@ -10,6 +10,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 
 import static org.junit.Assert.assertEquals;
@@ -44,7 +45,11 @@ public class HancockSocketTest {
 
         HancockSocket socketTest = new HancockSocket("http://localhost:3000");
         socketTest.on("open", func);
-        Object response = socketTest.getCallbackFunctions().get("open").apply(new Integer(2));
+
+        final List<Function> fnList = socketTest.getCallbackFunctions().get("open");
+        assertEquals(fnList.size(), 1);
+
+        Object response = fnList.get(0).apply(new Integer(2));
         assertEquals(response, 4);
         assertEquals(socketTest.getCallbackFunctions().size(), 1);
     }
@@ -52,7 +57,7 @@ public class HancockSocketTest {
     @Test
     public void testHancockSocketAddContracts()throws Exception {
 
-        ArrayList<String> contracts = new ArrayList<String>();
+        ArrayList<String> contracts = new ArrayList<>();
         contracts.add("test_contract");
 
         HancockSocket socketTest = new HancockSocket("http://localhost:3000");
@@ -67,7 +72,7 @@ public class HancockSocketTest {
     @Test
     public void testHancockSocketAddTransfer()throws Exception {
 
-        ArrayList<String> address = new ArrayList<String>();
+        ArrayList<String> address = new ArrayList<>();
         address.add("0xde8e772f0350e992ddef81bf8f51d94a8ea9216d");
 
         HancockSocket socketTest = new HancockSocket("http://localhost:3000");
@@ -82,7 +87,7 @@ public class HancockSocketTest {
     @Test
     public void testHancockSocketAddTransaction()throws Exception {
 
-        ArrayList<String> address = new ArrayList<String>();
+        ArrayList<String> address = new ArrayList<>();
         address.add("0xde8e772f0350e992ddef81bf8f51d94a8ea9216d");
 
         HancockSocket socketTest = new HancockSocket("http://localhost:3000");
@@ -97,7 +102,7 @@ public class HancockSocketTest {
     @Test
     public void testHancockSocketAddContractsWithNoParams()throws Exception {
 
-        ArrayList<String> contracts = new ArrayList<String>();
+        ArrayList<String> contracts = new ArrayList<>();
 
         HancockSocket socketTest = new HancockSocket("http://localhost:3000");
         HancockSocket socket_spy = spy(socketTest);
@@ -111,7 +116,7 @@ public class HancockSocketTest {
     @Test
     public void testHancockSocketAddTransferWithNoParams()throws Exception {
 
-        ArrayList<String> address = new ArrayList<String>();
+        ArrayList<String> address = new ArrayList<>();
 
         HancockSocket socketTest = new HancockSocket("http://localhost:3000");
         HancockSocket socket_spy = spy(socketTest);
@@ -125,7 +130,7 @@ public class HancockSocketTest {
     @Test
     public void testHancockSocketAddTransactionWithNoParams()throws Exception {
 
-        ArrayList<String> address = new ArrayList<String>();
+        ArrayList<String> address = new ArrayList<>();
 
         HancockSocket socketTest = new HancockSocket("http://localhost:3000");
         HancockSocket socket_spy = spy(socketTest);
