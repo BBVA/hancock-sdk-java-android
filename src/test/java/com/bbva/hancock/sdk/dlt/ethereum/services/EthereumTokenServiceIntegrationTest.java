@@ -362,7 +362,7 @@ public class EthereumTokenServiceIntegrationTest {
         assertEquals(metadata.getName(), "mockedName");
         assertEquals(metadata.getSymbol(), "mockedSymbol");
         assertEquals(metadata.getDecimals(), Integer.valueOf(10));
-        assertEquals(metadata.getTotalSupply(), Integer.valueOf(10000));
+        assertEquals(metadata.getTotalSupply(), BigInteger.valueOf(10000));
 
 
     }

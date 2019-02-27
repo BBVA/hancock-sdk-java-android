@@ -1,22 +1,23 @@
 package com.bbva.hancock.sdk.dlt.ethereum.models.token.metadata;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 
 public class EthereumTokenMetadata implements Serializable {
     private static final long serialVersionUID = -5132213981532037715L;
     public String name;
     public String symbol;
     public Integer decimals;
-    public Integer totalSupply;
+    public BigInteger totalSupply;
 
     public EthereumTokenMetadata() {
     }
 
-    public Integer getTotalSupply() {
+    public BigInteger getTotalSupply() {
         return totalSupply;
     }
 
-    public void setTotalSupply(final Integer totalSupply) {
+    public void setTotalSupply(final BigInteger totalSupply) {
         this.totalSupply = totalSupply;
     }
 

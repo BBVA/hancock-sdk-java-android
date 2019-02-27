@@ -161,7 +161,7 @@ public class EthereumTokenServiceTest {
         when(aux.getName()).thenReturn("mockedName");
         when(aux.getSymbol()).thenReturn("mockedSymbol");
         when(aux.getDecimals()).thenReturn(10);
-        when(aux.getTotalSupply()).thenReturn(10000);
+        when(aux.getTotalSupply()).thenReturn(BigInteger.valueOf(10000));
         when(responseModel.getResult()).thenReturn(mockResult);
 
         final EthereumTokenMetadata metadata = spy_var.getMetadata("mockAlias");
@@ -170,14 +170,14 @@ public class EthereumTokenServiceTest {
         assertEquals(metadata.getName(), "mockedName");
         assertEquals(metadata.getSymbol(), "mockedSymbol");
         assertEquals(metadata.getDecimals(), Integer.valueOf(10));
-        assertEquals(metadata.getTotalSupply(), Integer.valueOf(10000));
+        assertEquals(metadata.getTotalSupply(), BigInteger.valueOf(10000));
     }
 
     @PrepareForTest({Common.class})
     @Test
     public void testGetAllTokens() throws Exception {
 
-        final EthereumTokenInstance instanceAux = new EthereumTokenInstance("erc20", "TKN", "mockedAddress", "TKN", "tkn", 10, 10000000);
+        final EthereumTokenInstance instanceAux = new EthereumTokenInstance("erc20", "TKN", "mockedAddress", "TKN", "tkn", 10, new BigInteger("10000000"));
         final ArrayList<EthereumTokenInstance> list = new ArrayList<>();
         list.add(instanceAux);
         final HancockGenericResponse result = mock(HancockGenericResponse.class);

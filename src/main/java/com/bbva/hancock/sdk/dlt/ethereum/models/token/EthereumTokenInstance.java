@@ -3,6 +3,7 @@ package com.bbva.hancock.sdk.dlt.ethereum.models.token;
 import com.bbva.hancock.sdk.dlt.ethereum.models.smartContracts.EthereumContractInstance;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 
 public class EthereumTokenInstance extends EthereumContractInstance implements Serializable {
 
@@ -10,12 +11,12 @@ public class EthereumTokenInstance extends EthereumContractInstance implements S
     private String name;
     private String symbol;
     private Integer decimals;
-    private Integer totalSupply;
+    private BigInteger totalSupply;
 
     public EthereumTokenInstance() {
     }
 
-    public EthereumTokenInstance(final String abiName, final String alias, final String address, final String symbol, final String name, final Integer decimals, final Integer totalSupply) {
+    public EthereumTokenInstance(final String abiName, final String alias, final String address, final String symbol, final String name, final Integer decimals, final BigInteger totalSupply) {
         super(abiName, alias, address);
         this.name = name;
         this.symbol = symbol;
@@ -35,7 +36,7 @@ public class EthereumTokenInstance extends EthereumContractInstance implements S
         return decimals;
     }
 
-    public Integer getTotalSupply() {
+    public BigInteger getTotalSupply() {
         return totalSupply;
     }
 
@@ -51,7 +52,7 @@ public class EthereumTokenInstance extends EthereumContractInstance implements S
         this.decimals = decimals;
     }
 
-    public void setTotalSupply(Integer totalSupply) {
+    public void setTotalSupply(BigInteger totalSupply) {
         this.totalSupply = totalSupply;
     }
 }
