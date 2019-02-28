@@ -270,7 +270,7 @@ public class EthereumTransactionService {
         try {
             final HancockSocket socket = new HancockSocket(url);
             socket.on("ready", o -> {
-                socket.addTransaction(addresses);
+                socket.watchTransaction(addresses);
                 return null;
             });
             return socket;
