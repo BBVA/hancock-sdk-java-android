@@ -215,10 +215,9 @@ public class EthereumSmartContractService {
         try {
             final HancockSocket socket = new HancockSocket(url);
             socket.on("ready", o -> {
-                socket.watchTransfer(contracts);
+                socket.watchContract(contracts);
                 return null;
             });
-            socket.watchContract(contracts);
             return socket;
         } catch (final URISyntaxException e) {
             LOGGER.error(e.getMessage());
