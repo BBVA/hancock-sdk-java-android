@@ -1,18 +1,20 @@
 package com.bbva.hancock.sdk.models;
 
+import com.google.gson.JsonObject;
+
 import java.io.Serializable;
 
 public class HancockSocketMessage implements Serializable {
 
     private static final long serialVersionUID = -5868311404867886960L;
     private String kind;
-    private Object body;
+    private JsonObject body;
     private String matchedAddress;
 
     public HancockSocketMessage() {
     }
 
-    public HancockSocketMessage(final String kind, final Object body, final String matchedAddress) {
+    public HancockSocketMessage(final String kind, final JsonObject body, final String matchedAddress) {
         this.kind = kind;
         this.body = body;
         this.matchedAddress = matchedAddress;
@@ -22,7 +24,7 @@ public class HancockSocketMessage implements Serializable {
         return kind;
     }
 
-    public Object getBody() {
+    public JsonObject getBody() {
         return body;
     }
 
@@ -34,7 +36,7 @@ public class HancockSocketMessage implements Serializable {
         this.kind = kind;
     }
 
-    public void setBody(Object body) {
+    public void setBody(JsonObject body) {
         this.body = body;
     }
 

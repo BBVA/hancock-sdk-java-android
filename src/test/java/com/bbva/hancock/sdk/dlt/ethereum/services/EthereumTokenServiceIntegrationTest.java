@@ -7,6 +7,7 @@ import com.bbva.hancock.sdk.dlt.ethereum.models.smartContracts.EthereumContractI
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.EthereumTokenInstance;
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.EthereumTokenRequest;
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.allowance.EthereumTokenAllowanceRequest;
+import com.bbva.hancock.sdk.dlt.ethereum.models.token.allowance.EthereumTokenAllowanceResponse;
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.approve.EthereumTokenApproveRequest;
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.balance.EthereumTokenBalance;
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.metadata.EthereumTokenMetadata;
@@ -212,10 +213,6 @@ public class EthereumTokenServiceIntegrationTest {
     @PrepareForTest({ Common.class})
     @Test public void testTokenAllowance() throws Exception {
 
-        TransactionConfig txConfig = new TransactionConfig.Builder()
-                .withPrivateKey("0x6c47653f66ac9b733f3b8bf09ed3d300520b4d9c78711ba90162744f5906b1f8")
-                .build();
-
         EthereumTokenAllowanceRequest txRequest = new EthereumTokenAllowanceRequest(
                 "0x6c0a14f7561898b9ddc0c57652a53b2c6665443e",
                 "0x6c0a14f7561898b9ddc0c57652a53b2c6665443e",
@@ -223,7 +220,18 @@ public class EthereumTokenServiceIntegrationTest {
                 "mockedAlias"
         );
 
-        EthereumTransactionResponse mockedTransactionResponse = new EthereumTransactionResponse(true);
+        Request.Builder requestBuilder = new Request.Builder();
+        requestBuilder.get();
+        requestBuilder.url("http://localhost");
+
+        Response.Builder responseBuilder = new Response.Builder();
+        responseBuilder.code(200);
+        responseBuilder.protocol(Protocol.HTTP_1_1);
+        responseBuilder.body(ResponseBody.create(MediaType.parse("application/json"), "{\"data\": 10000}"));
+        responseBuilder.request(requestBuilder.build());
+        responseBuilder.message("Smart Contract - Success");
+
+        Response mockedResponse = responseBuilder.build();
 
         mockStatic(Common.class);
         when(Common.class, "getResourceUrl", any(), any())
@@ -233,14 +241,12 @@ public class EthereumTokenServiceIntegrationTest {
         when(Common.class, "getRequest", any(), any())
                 .thenCallRealMethod();
         when(Common.class, "makeCall", any(Request.class))
-                .thenReturn(mockedResponse)
-                .thenReturn(mockedResponse2);
+                .thenReturn(mockedResponse);
 
-        EthereumTransactionResponse rawtx = spyTokenService.allowance(txRequest, txConfig);
+        EthereumTokenAllowanceResponse rawtx = spyTokenService.allowance(txRequest);
 
-        verify(spyTransactionService).send(any(EthereumTransaction.class), eq(txConfig));
-        assertTrue("transaction adapted successfully", rawtx instanceof EthereumTransactionResponse);
-        assertEquals(rawtx.getSuccess(), mockedTransactionResponse.getSuccess());
+        assertTrue("transaction adapted successfully", rawtx instanceof EthereumTokenAllowanceResponse);
+        assertEquals(rawtx.getData(), BigInteger.valueOf(10000));
 
     }
 
