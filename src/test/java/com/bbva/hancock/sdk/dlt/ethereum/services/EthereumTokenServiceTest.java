@@ -10,6 +10,7 @@ import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumWallet;
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.EthereumTokenInstance;
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.EthereumTokenRequest;
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.allowance.EthereumTokenAllowanceRequest;
+import com.bbva.hancock.sdk.dlt.ethereum.models.token.allowance.EthereumTokenAllowanceResponse;
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.approve.EthereumTokenApproveRequest;
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.balance.EthereumTokenBalance;
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.balance.EthereumTokenBalanceResponse;
@@ -30,6 +31,7 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.web3j.protocol.core.Ethereum;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -268,28 +270,35 @@ public class EthereumTokenServiceTest {
     @Test
     public void testTokenAllowance() throws Exception {
 
-        final TransactionConfig txConfig = new TransactionConfig.Builder()
-                .withPrivateKey("0x6c47653f66ac9b733f3b8bf09ed3d300520b4d9c78711ba90162744f5906b1f8")
-                .build();
+
+        final EthereumTokenAllowanceResponse responseModel = mock(EthereumTokenAllowanceResponse.class);
+        final HancockGenericResponse mockResult = new HancockGenericResponse(200, "success");
+
+        final okhttp3.Response responseMock = mock(okhttp3.Response.class);
+        final okhttp3.Request requestMock = mock(okhttp3.Request.class);
 
         final EthereumTokenService spy_var = PowerMockito.spy(mockedHancockEthereumClient);
 
+        when(responseModel.getData()).thenReturn(new BigInteger("1000"));
+        when(responseModel.getResult()).thenReturn(mockResult);
 
-        PowerMockito.doReturn(mock(EthereumTransaction.class))
-                .when(spy_var)
-                .adaptTransfer(any(EthereumTokenAllowanceRequest.class));
+        mockStatic(Common.class);
+        PowerMockito.when(Common.class, "getRequest", any(String.class), any(RequestBody.class))
+                .thenReturn(requestMock);
 
-        PowerMockito.doReturn(mockedEthereumTransactionResponse)
-                .when(spyTransactionService)
-                .send(any(EthereumTransaction.class), any(TransactionConfig.class));
+        PowerMockito.when(Common.class, "makeCall", any(okhttp3.Request.class))
+                .thenReturn(responseMock);
 
-        final EthereumTransactionResponse mockResult = spy_var.allowance(mockedEthereumTokenAllowanceRequest, txConfig);
+        PowerMockito.when(Common.class, "checkStatus", any(okhttp3.Response.class), eq(EthereumTokenAllowanceResponse.class))
+                .thenReturn(responseModel);
 
-        verify(spy_var).adaptTransfer(eq(mockedEthereumTokenAllowanceRequest));
-        verify(spyTransactionService).send(any(EthereumTransaction.class), eq(txConfig));
+        PowerMockito.when(Common.class, "getResourceUrl", any(HancockConfig.class), any(String.class))
+                .thenReturn("mockUrl");
 
-        assertEquals(mockResult, mockedEthereumTransactionResponse);
-        assertTrue("transaction send and signed successfully", mockResult instanceof EthereumTransactionResponse);
+        final EthereumTokenAllowanceResponse response =  spy_var.allowance(mockedEthereumTokenAllowanceRequest);
+
+        assertEquals(response.getResult(), mockResult);
+        assertEquals(response.getData(), BigInteger.valueOf(1000));
 
     }
 

@@ -7,6 +7,7 @@ import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransactionAdaptResponse
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.EthereumTokenInstance;
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.EthereumTokenRequest;
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.allowance.EthereumTokenAllowanceRequest;
+import com.bbva.hancock.sdk.dlt.ethereum.models.token.allowance.EthereumTokenAllowanceResponse;
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.approve.EthereumTokenApproveRequest;
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.balance.EthereumTokenBalance;
 import com.bbva.hancock.sdk.dlt.ethereum.models.token.balance.EthereumTokenBalanceResponse;
@@ -159,13 +160,18 @@ public class EthereumTokenService {
     /**
      * Returns the amount of tokens approved by the owner that can be transferred to the spender's account
      * @param request The data of the transaction (caller's address, token owner's address, token spender's address, amount of tokens (in weis) and the address/alias of the contract)
-     * @param txConfig Configuration of how the transaction will be send to the network
      * @return The result of the request
      * @throws Exception
      */
-    public EthereumTransactionResponse allowance(EthereumTokenAllowanceRequest request, TransactionConfig txConfig) throws Exception{
-        EthereumTransaction rawtx = this.adaptTransfer(request);
-        return this.transactionClient.send(rawtx, txConfig);
+    public EthereumTokenAllowanceResponse allowance(EthereumTokenAllowanceRequest request) throws Exception{
+        Gson gson = new Gson();
+        String json = gson.toJson(request.getBody());
+        RequestBody body = RequestBody.create(this.CONTENT_TYPE_JSON, json);
+        String url = this.getTransferUrl(request);
+        Request allowanceRequest = getRequest(url, body);
+
+        Response response = makeCall(allowanceRequest);
+        return checkStatus(response, EthereumTokenAllowanceResponse.class);
     }
 
     /**
