@@ -3,7 +3,6 @@ package com.bbva.hancock.sdk.dlt.ethereum.services;
 import com.bbva.hancock.sdk.Common;
 import com.bbva.hancock.sdk.config.HancockConfig;
 import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumRawTransaction;
-import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumWallet;
 import com.bbva.hancock.sdk.dlt.ethereum.models.wallet.GetBalanceResponse;
 import com.bbva.hancock.sdk.exception.HancockException;
 import okhttp3.*;
@@ -28,20 +27,16 @@ import static org.powermock.api.mockito.PowerMockito.when;
 
 @PowerMockIgnore({"javax.net.ssl.*"})
 @RunWith(PowerMockRunner.class)
+@PrepareForTest({Keys.class, Common.class})
 public class EthereumWalletServiceIntegrationTest {
 
     @Test
-    public void testCreateRawTransaction() throws Exception {
-
-        final HancockConfig config = new HancockConfig.Builder().build();
-        final EthereumWalletService classUnderTest = new EthereumWalletService(config);
-//        EthereumWallet wallet = classUnderTest.generateWallet();
+    public void testCreateRawTransaction() {
 
         final BigInteger nonce = BigInteger.valueOf(1);
         final BigInteger gasPrice = BigInteger.valueOf(111);
         final BigInteger gasLimit = BigInteger.valueOf(222);
         final BigInteger value = BigInteger.valueOf(333);
-//        String to = wallet.getAddress();
         final String to = "0x6c0a14F7561898B9ddc0C57652A53B2C6665443E";
         final String data = "whatever";
 
@@ -75,18 +70,6 @@ public class EthereumWalletServiceIntegrationTest {
 
     }
 
-//    @Test public void testGenerateWallet() throws Exception {
-//
-//        HancockConfig config = new HancockConfig.Builder().build();
-//        EthereumWalletService classUnderTest = new EthereumWalletService(config);
-//        EthereumWallet wallet = classUnderTest.generateWallet();
-//        assertNotNull("Wallet should have an address", wallet.getAddress());
-//        assertNotNull("Wallet should have an address", wallet.getPublicKey());
-//        assertNotNull("Wallet should have an address", wallet.getPrivateKey());
-//
-//    }
-
-    @PrepareForTest({Keys.class})
     @Test(expected = HancockException.class)
     public void testGenerateWalletFail() throws Exception {
 
@@ -96,11 +79,10 @@ public class EthereumWalletServiceIntegrationTest {
         final HancockConfig auxConfig = new HancockConfig.Builder().build();
 
         final EthereumWalletService classUnderTest = new EthereumWalletService(auxConfig);
-        final EthereumWallet wallet = classUnderTest.generateWallet();
+        classUnderTest.generateWallet();
 
     }
 
-    @PrepareForTest({Common.class})
     @Test
     public void testGetBalance() throws Exception {
 
@@ -144,7 +126,6 @@ public class EthereumWalletServiceIntegrationTest {
 
     }
 
-    @PrepareForTest({Common.class})
     @Test(expected = HancockException.class)
     public void testGetBalanceFail() throws Exception {
 
@@ -176,7 +157,7 @@ public class EthereumWalletServiceIntegrationTest {
         final EthereumWalletService spy_var = PowerMockito.spy(auxEthereumWalletService);
 
 
-        final BigInteger balance = spy_var.getBalance("0xde8e772f0350e992ddef81bf8f51d94a8ea9216d");
+        spy_var.getBalance("0xde8e772f0350e992ddef81bf8f51d94a8ea9216d");
 
     }
 
@@ -188,7 +169,7 @@ public class EthereumWalletServiceIntegrationTest {
         final EthereumWalletService auxEthereumWalletService = new EthereumWalletService(auxConfig);
         final EthereumWalletService spy_var = PowerMockito.spy(auxEthereumWalletService);
 
-        final BigInteger balance = spy_var.getBalance("");
+        spy_var.getBalance("");
 
     }
 

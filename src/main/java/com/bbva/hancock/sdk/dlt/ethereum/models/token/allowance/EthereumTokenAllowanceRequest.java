@@ -21,7 +21,7 @@ public class EthereumTokenAllowanceRequest extends EthereumTokenRequest implemen
         body.setTokenOwner(tokenOwner);
         ValidateParameters.checkForContent(spender, "spender");
         body.setSpender(spender);
-        this.setBody(body);
+        setBody(body);
     }
-    
+
 }

@@ -4,11 +4,12 @@ import java.io.Serializable;
 import java.math.BigInteger;
 
 public class EthereumTokenMetadata implements Serializable {
+
     private static final long serialVersionUID = -5132213981532037715L;
-    public String name;
-    public String symbol;
-    public Integer decimals;
-    public BigInteger totalSupply;
+    private String name;
+    private String symbol;
+    private Integer decimals;
+    private BigInteger totalSupply;
 
     public EthereumTokenMetadata() {
     }

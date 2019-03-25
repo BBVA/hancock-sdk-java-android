@@ -24,4 +24,5 @@ public class EthereumSendTransactionRequest implements Serializable {
     public void setTx(final EthereumTransaction tx) {
         this.tx = tx;
     }
+
 }

@@ -6,6 +6,7 @@ import java.io.Serializable;
 
 public class EthereumSendToProviderRequest implements Serializable {
 
+    private static final long serialVersionUID = -6030145258465765966L;
     private EthereumTransaction rawTx;
     private String provider;
     private String backUrl;
@@ -13,12 +14,12 @@ public class EthereumSendToProviderRequest implements Serializable {
     public EthereumSendToProviderRequest() {
     }
 
-    public EthereumSendToProviderRequest(EthereumTransaction rawTx, String provider) {
+    public EthereumSendToProviderRequest(final EthereumTransaction rawTx, final String provider) {
         this.rawTx = rawTx;
         this.provider = provider;
     }
 
-    public EthereumSendToProviderRequest(EthereumTransaction rawTx, String provider, String backUrl) {
+    public EthereumSendToProviderRequest(final EthereumTransaction rawTx, final String provider, final String backUrl) {
         this.rawTx = rawTx;
         this.provider = provider;
         this.backUrl = backUrl;
@@ -28,7 +29,7 @@ public class EthereumSendToProviderRequest implements Serializable {
         return rawTx;
     }
 
-    public void setRawTx(EthereumTransaction rawTx) {
+    public void setRawTx(final EthereumTransaction rawTx) {
         this.rawTx = rawTx;
     }
 
@@ -36,7 +37,7 @@ public class EthereumSendToProviderRequest implements Serializable {
         return provider;
     }
 
-    public void setProvider(String provider) {
+    public void setProvider(final String provider) {
         this.provider = provider;
     }
 
@@ -44,7 +45,7 @@ public class EthereumSendToProviderRequest implements Serializable {
         return backUrl;
     }
 
-    public void setBackUrl(String backUrl) {
+    public void setBackUrl(final String backUrl) {
         this.backUrl = backUrl;
     }
 

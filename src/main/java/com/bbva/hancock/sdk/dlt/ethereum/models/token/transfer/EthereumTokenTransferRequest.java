@@ -16,7 +16,7 @@ public class EthereumTokenTransferRequest extends EthereumTokenRequest implement
     public EthereumTokenTransferRequest(final String from, final String to, final String value, final String addressOrAlias) throws HancockException {
         super(addressOrAlias, "tokenTransfer");
         final EthereumTokenBody body = new EthereumTokenBody(from, to, value);
-        this.setBody(body);
+        setBody(body);
     }
 
 }

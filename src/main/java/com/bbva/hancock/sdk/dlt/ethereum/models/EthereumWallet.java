@@ -5,6 +5,7 @@ import java.io.Serializable;
 public class EthereumWallet implements Serializable {
 
     private static final long serialVersionUID = -3028994169964742049L;
+
     private String address;
     private String privateKey;
     private String publicKey;
@@ -19,9 +20,9 @@ public class EthereumWallet implements Serializable {
     }
 
     public EthereumWallet(final EthereumWallet copy) {
-        this.address = copy.getAddress();
-        this.privateKey = copy.getPrivateKey();
-        this.publicKey = copy.getPublicKey();
+        address = copy.getAddress();
+        privateKey = copy.getPrivateKey();
+        publicKey = copy.getPublicKey();
     }
 
     public void setAddress(final String address) {
@@ -37,15 +38,15 @@ public class EthereumWallet implements Serializable {
     }
 
     public String getAddress() {
-        return (this.address);
+        return address;
     }
 
     public String getPrivateKey() {
-        return (this.privateKey);
+        return privateKey;
     }
 
     public String getPublicKey() {
-        return (this.publicKey);
+        return publicKey;
     }
 
 

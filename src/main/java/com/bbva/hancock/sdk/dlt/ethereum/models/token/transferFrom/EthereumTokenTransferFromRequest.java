@@ -19,6 +19,7 @@ public class EthereumTokenTransferFromRequest extends EthereumTokenRequest imple
         final EthereumTokenBody body = new EthereumTokenBody(from, to, value);
         ValidateParameters.checkForContent(sender, "sender");
         body.setSender(sender);
-        this.setBody(body);
+        setBody(body);
     }
+
 }

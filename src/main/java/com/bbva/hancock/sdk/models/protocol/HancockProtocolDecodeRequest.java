@@ -6,6 +6,7 @@ import com.bbva.hancock.sdk.util.ValidateParameters;
 import java.io.Serializable;
 
 public class HancockProtocolDecodeRequest implements Serializable {
+
     private static final long serialVersionUID = -2194499566349749962L;
     private String code;
 
@@ -24,6 +25,5 @@ public class HancockProtocolDecodeRequest implements Serializable {
     public void setCode(final String code) {
         this.code = code;
     }
-
 
 }

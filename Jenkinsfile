@@ -27,23 +27,4 @@ javaPipeline{
           }
       }
 
-      //Build
-      // stage("Build"){
-      //   container("jdk"){
-      //     sh """
-      //       ./gradlew build
-      //     """
-      //   }
-      // }
-
-      
-      //PUBLISH?
-      // stage("Publish"){
-      //   container("jdk"){
-      //     sh """
-      //       ./gradlew publish
-      //     """
-      //   }
-      // }
-
 }

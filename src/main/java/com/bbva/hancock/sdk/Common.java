@@ -22,7 +22,7 @@ public final class Common {
             // HTTP status code between 200 and 299
             if (!response.isSuccessful()) {
                 final HancockException resultAux = gson.fromJson(responseBody.string(), HancockException.class);
-                LOGGER.error("Api error: " + resultAux.getInternalError());
+                LOGGER.error("Api error: {}", resultAux.getInternalError());
                 throw new HancockException(HancockTypeErrorEnum.ERROR_API, resultAux.getInternalError(), resultAux.getError(), resultAux.getMessage(), resultAux.getExtendedMessage());
             }
             return gson.fromJson(responseBody.string(), tClass);

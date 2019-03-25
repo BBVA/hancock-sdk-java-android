@@ -9,9 +9,8 @@ You have to configure your project build.gradle file in order to have access to 
 repositories {
     maven {
         url "s3://microservices-java-repository/maven/release"
-        credentials(AwsCredentials) {
-            accessKey "AKIAIM5BHCDAPR2HJ6GQ"
-            secretKey "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"
+        authentication {
+            awsIm(AwsImAuthentication)
         }
     }
 }
@@ -26,7 +25,7 @@ Once you have access to the repository:
 ```text/plain
 # build.gradle
 dependencies {
-	compile('bbva.ndb:hancock-sdk-client-android:1.0.0-alpha.27')
+	compile('bbva.ndb:hancock-sdk-client-android:1.0.0-alpha.34')
 }
 ```
 

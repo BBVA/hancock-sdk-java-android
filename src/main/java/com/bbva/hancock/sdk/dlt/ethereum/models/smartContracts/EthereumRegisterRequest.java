@@ -8,6 +8,7 @@ import java.util.ArrayList;
 public class EthereumRegisterRequest implements Serializable {
 
     private static final long serialVersionUID = -1815399594736850037L;
+
     private String address;
     private String alias;
     private ArrayList<AbiDefinition> abi;

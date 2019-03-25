@@ -37,4 +37,5 @@ public class EthereumTransactionResponse implements Serializable {
     public void setTxHash(final String txHash) {
         this.txHash = txHash;
     }
+
 }

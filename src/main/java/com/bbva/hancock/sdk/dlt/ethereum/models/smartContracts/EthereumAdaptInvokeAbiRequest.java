@@ -74,6 +74,5 @@ public class EthereumAdaptInvokeAbiRequest implements Serializable {
     public void setAbi(final ArrayList<AbiDefinition> abi) {
         this.abi = abi;
     }
-
-
+    
 }

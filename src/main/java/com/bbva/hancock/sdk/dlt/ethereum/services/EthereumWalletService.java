@@ -21,6 +21,7 @@ import java.math.BigInteger;
 import static com.bbva.hancock.sdk.Common.checkStatus;
 
 public class EthereumWalletService {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(EthereumWalletService.class);
     private final HancockConfig config;
 
@@ -64,7 +65,7 @@ public class EthereumWalletService {
 
         ValidateParameters.checkForContent(address, "address");
         ValidateParameters.checkAddress(address);
-        final String url = this.config.getAdapter().getHost() + ':' + this.config.getAdapter().getPort() + this.config.getAdapter().getBase() + this.config.getAdapter().getResources().get("balance").replaceAll("__ADDRESS__", address);
+        final String url = config.getAdapter().getHost() + ':' + config.getAdapter().getPort() + config.getAdapter().getBase() + config.getAdapter().getResources().get("balance").replaceAll("__ADDRESS__", address);
 
         final Request request = Common.getRequest(url);
 

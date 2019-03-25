@@ -19,7 +19,7 @@ public class EthereumTokenApproveRequest extends EthereumTokenRequest implements
         final EthereumTokenBody body = new EthereumTokenBody(from, value);
         ValidateParameters.checkForContent(spender, "spender");
         body.setSpender(spender);
-        this.setBody(body);
+        setBody(body);
     }
-    
+
 }

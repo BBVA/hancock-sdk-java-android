@@ -4,7 +4,6 @@ import org.java_websocket.client.WebSocketClient;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -18,15 +17,14 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-@PowerMockIgnore("javax.net.ssl.*")
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({WebSocketClient.class})
 public class HancockSocketTest {
 
     @Test
-    public void testHancockSocket()throws Exception {
+    public void testHancockSocket() throws Exception {
 
-        HancockSocket socketTest = new HancockSocket("http://localhost:3000");
+        final HancockSocket socketTest = new HancockSocket("http://localhost:3000");
 
         assertEquals(new URI("http://localhost:3000"), socketTest.getWs().getURI());
         assertEquals(0, socketTest.getCallbackFunctions().size());
@@ -34,34 +32,34 @@ public class HancockSocketTest {
     }
 
     @Test
-    public void testHancockSocketOn()throws Exception {
+    public void testHancockSocketOn() throws Exception {
 
-        Function func = o -> {
-            if(o instanceof Integer){
+        final Function func = o -> {
+            if (o instanceof Integer) {
                 return ((Integer) o).intValue() + 2;
             }
             return null;
         };
 
-        HancockSocket socketTest = new HancockSocket("http://localhost:3000");
+        final HancockSocket socketTest = new HancockSocket("http://localhost:3000");
         socketTest.on("open", func);
 
         final List<Function> fnList = socketTest.getCallbackFunctions().get("open");
         assertEquals(fnList.size(), 1);
 
-        Object response = fnList.get(0).apply(new Integer(2));
+        final Object response = fnList.get(0).apply(new Integer(2));
         assertEquals(response, 4);
         assertEquals(socketTest.getCallbackFunctions().size(), 1);
     }
 
     @Test
-    public void testHancockSocketWatchContracts()throws Exception {
+    public void testHancockSocketWatchContracts() throws Exception {
 
-        ArrayList<String> contracts = new ArrayList<>();
+        final ArrayList<String> contracts = new ArrayList<>();
         contracts.add("test_contract");
 
-        HancockSocket socketTest = new HancockSocket("http://localhost:3000");
-        HancockSocket socket_spy = spy(socketTest);
+        final HancockSocket socketTest = new HancockSocket("http://localhost:3000");
+        final HancockSocket socket_spy = spy(socketTest);
 
         PowerMockito.doNothing().when(socket_spy).sendMessage(any(String.class), any(ArrayList.class));
         socket_spy.watchContract(contracts);
@@ -70,13 +68,13 @@ public class HancockSocketTest {
     }
 
     @Test
-    public void testHancockSocketWatchTransfer()throws Exception {
+    public void testHancockSocketWatchTransfer() throws Exception {
 
-        ArrayList<String> address = new ArrayList<>();
+        final ArrayList<String> address = new ArrayList<>();
         address.add("0xde8e772f0350e992ddef81bf8f51d94a8ea9216d");
 
-        HancockSocket socketTest = new HancockSocket("http://localhost:3000");
-        HancockSocket socket_spy = spy(socketTest);
+        final HancockSocket socketTest = new HancockSocket("http://localhost:3000");
+        final HancockSocket socket_spy = spy(socketTest);
 
         PowerMockito.doNothing().when(socket_spy).sendMessage(any(String.class), any(ArrayList.class));
         socket_spy.watchTransfer(address);
@@ -85,13 +83,13 @@ public class HancockSocketTest {
     }
 
     @Test
-    public void testHancockSocketWatchTransaction()throws Exception {
+    public void testHancockSocketWatchTransaction() throws Exception {
 
-        ArrayList<String> address = new ArrayList<>();
+        final ArrayList<String> address = new ArrayList<>();
         address.add("0xde8e772f0350e992ddef81bf8f51d94a8ea9216d");
 
-        HancockSocket socketTest = new HancockSocket("http://localhost:3000");
-        HancockSocket socket_spy = spy(socketTest);
+        final HancockSocket socketTest = new HancockSocket("http://localhost:3000");
+        final HancockSocket socket_spy = spy(socketTest);
 
         PowerMockito.doNothing().when(socket_spy).sendMessage(any(String.class), any(ArrayList.class));
         socket_spy.watchTransaction(address);
@@ -100,12 +98,12 @@ public class HancockSocketTest {
     }
 
     @Test
-    public void testHancockSocketWatchContractsWithNoParams()throws Exception {
+    public void testHancockSocketWatchContractsWithNoParams() throws Exception {
 
-        ArrayList<String> contracts = new ArrayList<>();
+        final ArrayList<String> contracts = new ArrayList<>();
 
-        HancockSocket socketTest = new HancockSocket("http://localhost:3000");
-        HancockSocket socket_spy = spy(socketTest);
+        final HancockSocket socketTest = new HancockSocket("http://localhost:3000");
+        final HancockSocket socket_spy = spy(socketTest);
 
         PowerMockito.doNothing().when(socket_spy).sendMessage(any(String.class), any(ArrayList.class));
         socket_spy.watchContract(contracts);
@@ -114,12 +112,12 @@ public class HancockSocketTest {
     }
 
     @Test
-    public void testHancockSocketWatchTransferWithNoParams()throws Exception {
+    public void testHancockSocketWatchTransferWithNoParams() throws Exception {
 
-        ArrayList<String> address = new ArrayList<>();
+        final ArrayList<String> address = new ArrayList<>();
 
-        HancockSocket socketTest = new HancockSocket("http://localhost:3000");
-        HancockSocket socket_spy = spy(socketTest);
+        final HancockSocket socketTest = new HancockSocket("http://localhost:3000");
+        final HancockSocket socket_spy = spy(socketTest);
 
         PowerMockito.doNothing().when(socket_spy).sendMessage(any(String.class), any(ArrayList.class));
         socket_spy.watchTransfer(address);
@@ -128,12 +126,12 @@ public class HancockSocketTest {
     }
 
     @Test
-    public void testHancockSocketWatchTransactionWithNoParams()throws Exception {
+    public void testHancockSocketWatchTransactionWithNoParams() throws Exception {
 
-        ArrayList<String> address = new ArrayList<>();
+        final ArrayList<String> address = new ArrayList<>();
 
-        HancockSocket socketTest = new HancockSocket("http://localhost:3000");
-        HancockSocket socket_spy = spy(socketTest);
+        final HancockSocket socketTest = new HancockSocket("http://localhost:3000");
+        final HancockSocket socket_spy = spy(socketTest);
 
         PowerMockito.doNothing().when(socket_spy).sendMessage(any(String.class), any(ArrayList.class));
         socket_spy.watchTransaction(address);
@@ -142,13 +140,13 @@ public class HancockSocketTest {
     }
 
     @Test
-    public void testHancockSocketUnwatchContracts()throws Exception {
+    public void testHancockSocketUnwatchContracts() throws Exception {
 
-        ArrayList<String> contracts = new ArrayList<String>();
+        final ArrayList<String> contracts = new ArrayList<>();
         contracts.add("test_contract");
 
-        HancockSocket socketTest = new HancockSocket("http://localhost:3000");
-        HancockSocket socket_spy = spy(socketTest);
+        final HancockSocket socketTest = new HancockSocket("http://localhost:3000");
+        final HancockSocket socket_spy = spy(socketTest);
 
         PowerMockito.doNothing().when(socket_spy).sendMessage(any(String.class), any(ArrayList.class));
         socket_spy.unwatchContract(contracts);
@@ -157,13 +155,13 @@ public class HancockSocketTest {
     }
 
     @Test
-    public void testHancockSocketUnwatchTransfer()throws Exception {
+    public void testHancockSocketUnwatchTransfer() throws Exception {
 
-        ArrayList<String> address = new ArrayList<String>();
+        final ArrayList<String> address = new ArrayList<>();
         address.add("0xde8e772f0350e992ddef81bf8f51d94a8ea9216d");
 
-        HancockSocket socketTest = new HancockSocket("http://localhost:3000");
-        HancockSocket socket_spy = spy(socketTest);
+        final HancockSocket socketTest = new HancockSocket("http://localhost:3000");
+        final HancockSocket socket_spy = spy(socketTest);
 
         PowerMockito.doNothing().when(socket_spy).sendMessage(any(String.class), any(ArrayList.class));
         socket_spy.unwatchTransfer(address);
@@ -172,13 +170,13 @@ public class HancockSocketTest {
     }
 
     @Test
-    public void testHancockSocketUnwatchTransaction()throws Exception {
+    public void testHancockSocketUnwatchTransaction() throws Exception {
 
-        ArrayList<String> address = new ArrayList<String>();
+        final ArrayList<String> address = new ArrayList<>();
         address.add("0xde8e772f0350e992ddef81bf8f51d94a8ea9216d");
 
-        HancockSocket socketTest = new HancockSocket("http://localhost:3000");
-        HancockSocket socket_spy = spy(socketTest);
+        final HancockSocket socketTest = new HancockSocket("http://localhost:3000");
+        final HancockSocket socket_spy = spy(socketTest);
 
         PowerMockito.doNothing().when(socket_spy).sendMessage(any(String.class), any(ArrayList.class));
         socket_spy.unwatchTransaction(address);
@@ -187,12 +185,12 @@ public class HancockSocketTest {
     }
 
     @Test
-    public void testHancockSocketUnwatchContractsWithNoParams()throws Exception {
+    public void testHancockSocketUnwatchContractsWithNoParams() throws Exception {
 
-        ArrayList<String> contracts = new ArrayList<String>();
+        final ArrayList<String> contracts = new ArrayList<>();
 
-        HancockSocket socketTest = new HancockSocket("http://localhost:3000");
-        HancockSocket socket_spy = spy(socketTest);
+        final HancockSocket socketTest = new HancockSocket("http://localhost:3000");
+        final HancockSocket socket_spy = spy(socketTest);
 
         PowerMockito.doNothing().when(socket_spy).sendMessage(any(String.class), any(ArrayList.class));
         socket_spy.unwatchContract(contracts);
@@ -201,12 +199,12 @@ public class HancockSocketTest {
     }
 
     @Test
-    public void testHancockSocketUnwatchTransferWithNoParams()throws Exception {
+    public void testHancockSocketUnwatchTransferWithNoParams() throws Exception {
 
-        ArrayList<String> address = new ArrayList<String>();
+        final ArrayList<String> address = new ArrayList<>();
 
-        HancockSocket socketTest = new HancockSocket("http://localhost:3000");
-        HancockSocket socket_spy = spy(socketTest);
+        final HancockSocket socketTest = new HancockSocket("http://localhost:3000");
+        final HancockSocket socket_spy = spy(socketTest);
 
         PowerMockito.doNothing().when(socket_spy).sendMessage(any(String.class), any(ArrayList.class));
         socket_spy.unwatchTransfer(address);
@@ -215,12 +213,12 @@ public class HancockSocketTest {
     }
 
     @Test
-    public void testHancockSocketUnwatchTransactionWithNoParams()throws Exception {
+    public void testHancockSocketUnwatchTransactionWithNoParams() throws Exception {
 
-        ArrayList<String> address = new ArrayList<String>();
+        final ArrayList<String> address = new ArrayList<>();
 
-        HancockSocket socketTest = new HancockSocket("http://localhost:3000");
-        HancockSocket socket_spy = spy(socketTest);
+        final HancockSocket socketTest = new HancockSocket("http://localhost:3000");
+        final HancockSocket socket_spy = spy(socketTest);
 
         PowerMockito.doNothing().when(socket_spy).sendMessage(any(String.class), any(ArrayList.class));
         socket_spy.unwatchTransaction(address);

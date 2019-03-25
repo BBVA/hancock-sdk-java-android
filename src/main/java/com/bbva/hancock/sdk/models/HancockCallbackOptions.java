@@ -32,4 +32,5 @@ public class HancockCallbackOptions implements Serializable {
     public void setRequestId(final String requestId) {
         this.requestId = requestId;
     }
+
 }
