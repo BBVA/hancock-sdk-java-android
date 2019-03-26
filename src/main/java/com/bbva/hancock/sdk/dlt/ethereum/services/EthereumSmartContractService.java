@@ -1,6 +1,7 @@
 package com.bbva.hancock.sdk.dlt.ethereum.services;
 
 import com.bbva.hancock.sdk.HancockSocket;
+import com.bbva.hancock.sdk.HancockSocketOld;
 import com.bbva.hancock.sdk.config.HancockConfig;
 import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransactionAdaptResponse;
 import com.bbva.hancock.sdk.dlt.ethereum.models.smartContracts.*;
@@ -21,6 +22,7 @@ import org.web3j.protocol.core.methods.response.AbiDefinition;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 
 import static com.bbva.hancock.sdk.Common.*;
@@ -190,10 +192,10 @@ public class EthereumSmartContractService {
      * Create a websocket subscription to watch transactions of type "contracts" in the network
      *
      * @param contracts An array of address or alias that will be added to the watch list
-     * @return A HancockSocket object which can add new subscriptions and listen incoming message
+     * @return A HancockSocketOld object which can add new subscriptions and listen incoming message
      * @throws HancockException
      */
-    public HancockSocket subscribe(final ArrayList<String> contracts) throws HancockException {
+    public HancockSocket subscribe(final List<String> contracts) throws HancockException {
         return this.subscribe(contracts, "", null);
     }
 
@@ -202,10 +204,10 @@ public class EthereumSmartContractService {
      *
      * @param contracts An array of address or alias that will be added to the watch list
      * @param consumer  A consumer plugin previously configured in hancock that will handle each received event
-     * @return A HancockSocket object which can add new subscriptions and listen incoming message
+     * @return A HancockSocketOld object which can add new subscriptions and listen incoming message
      * @throws HancockException
      */
-    public HancockSocket subscribe(final ArrayList<String> contracts, final String consumer) throws HancockException {
+    public HancockSocket subscribe(final List<String> contracts, final String consumer) throws HancockException {
         return this.subscribe(contracts, consumer, null);
     }
 
@@ -214,10 +216,10 @@ public class EthereumSmartContractService {
      *
      * @param contracts An array of address or alias that will be added to the watch list
      * @param callback  A function to be called when the sockets has the connection ready. Has the socket as a param
-     * @return A HancockSocket object which can add new subscriptions and listen incoming message
+     * @return A HancockSocketOld object which can add new subscriptions and listen incoming message
      * @throws HancockException
      */
-    public HancockSocket subscribe(final ArrayList<String> contracts, final Function callback) throws HancockException {
+    public HancockSocket subscribe(final List<String> contracts, final Function callback) throws HancockException {
         return this.subscribe(contracts, "", callback);
     }
 
@@ -227,10 +229,10 @@ public class EthereumSmartContractService {
      * @param contracts An array of address or alias that will be added to the watch list
      * @param consumer  A consumer plugin previously configured in hancock that will handle each received event
      * @param callback  A function to be called when the sockets has the connection ready. Has the socket as a param
-     * @return A HancockSocket object which can add new subscriptions and listen incoming message
+     * @return A HancockSocketOld object which can add new subscriptions and listen incoming message
      * @throws HancockException
      */
-    public HancockSocket subscribe(final ArrayList<String> contracts, final String consumer, final Function callback) throws HancockException {
+    public HancockSocket subscribe(final List<String> contracts, final String consumer, final Function callback) throws HancockException {
         final String url = this.config.getBroker().getHost() + ':'
                 + this.config.getBroker().getPort()
                 + this.config.getBroker().getBase()

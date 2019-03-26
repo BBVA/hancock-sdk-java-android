@@ -30,7 +30,7 @@ import org.web3j.protocol.http.HttpService;
 import org.web3j.utils.Numeric;
 
 import java.net.URISyntaxException;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 
@@ -57,15 +57,16 @@ public class EthereumTransactionService {
     public EthereumTransactionResponse send(final EthereumTransaction rawtx, final TransactionConfig txConfig) throws Exception {
 
         if (txConfig.getPrivateKey() != null) {
-            final String signedTransaction = this.signTransaction(new EthereumRawTransaction(rawtx), txConfig.getPrivateKey());
-            if (txConfig.getSendLocally())
-                return this.sendSignedTransactionLocally(signedTransaction);
-            return this.sendSignedTransaction(signedTransaction, txConfig);
+            final String signedTransaction = signTransaction(new EthereumRawTransaction(rawtx), txConfig.getPrivateKey());
+            if (txConfig.getSendLocally()) {
+                return sendSignedTransactionLocally(signedTransaction);
+            }
+            return sendSignedTransaction(signedTransaction, txConfig);
         } else if (txConfig.getProvider() != null) {
-            return this.sendToSignProvider(rawtx, txConfig);
+            return sendToSignProvider(rawtx, txConfig);
         }
 
-        return this.sendRawTransaction(rawtx);
+        return sendRawTransaction(rawtx);
     }
 
     /**
@@ -103,7 +104,7 @@ public class EthereumTransactionService {
         final String prefix = "\u0019Ethereum Signed Message:\n" + message.length();
         final String msg = prefix + message;
 
-        return this.signMessage(msg, privateKey);
+        return signMessage(msg, privateKey);
 
     }
 
@@ -131,7 +132,7 @@ public class EthereumTransactionService {
      * @throws HancockException
      */
     public EthereumTransactionResponse sendRawTransaction(final EthereumTransaction rawTx) throws HancockException {
-        final String url = this.config.getWallet().getHost() + ':' + this.config.getWallet().getPort() + this.config.getWallet().getBase() + this.config.getWallet().getResources().get("sendTx");
+        final String url = config.getWallet().getHost() + ':' + config.getWallet().getPort() + config.getWallet().getBase() + config.getWallet().getResources().get("sendTx");
         final EthereumSendTransactionRequest sendBody = new EthereumSendTransactionRequest(rawTx);
         final Gson gson = new Gson();
         final String json = gson.toJson(sendBody);
@@ -152,7 +153,7 @@ public class EthereumTransactionService {
      * @throws HancockException
      */
     public EthereumTransactionResponse sendToSignProvider(final EthereumTransaction rawTx, final TransactionConfig txConfig) throws HancockException {
-        final String url = this.config.getWallet().getHost() + ':' + this.config.getWallet().getPort() + this.config.getWallet().getBase() + this.config.getWallet().getResources().get("signTx");
+        final String url = config.getWallet().getHost() + ':' + config.getWallet().getPort() + config.getWallet().getBase() + config.getWallet().getResources().get("signTx");
         final EthereumSendToProviderRequest sendBody = new EthereumSendToProviderRequest(rawTx, txConfig.getProvider());
         String requestId = "";
         if (txConfig.getCallbackOptions() != null) {
@@ -183,7 +184,7 @@ public class EthereumTransactionService {
      */
     public EthereumTransactionResponse sendSignedTransaction(final String signedTransaction, final TransactionConfig txConfig) throws Exception {
 
-        final String url = this.config.getWallet().getHost() + ':' + this.config.getWallet().getPort() + this.config.getWallet().getBase() + this.config.getWallet().getResources().get("sendSignedTx");
+        final String url = config.getWallet().getHost() + ':' + config.getWallet().getPort() + config.getWallet().getBase() + config.getWallet().getResources().get("sendSignedTx");
         final EthereumSignedTransactionRequest signedTxBody = new EthereumSignedTransactionRequest(signedTransaction);
         final Gson gson = new Gson();
         final String json = gson.toJson(signedTxBody);
@@ -216,9 +217,9 @@ public class EthereumTransactionService {
      */
     public EthereumTransactionResponse sendSignedTransactionLocally(final String signedTransaction) throws InterruptedException, ExecutionException {
 
-        final String port = this.config.getNode().getPort() >= 0 ? ":" + String.valueOf(this.config.getNode().getPort()) : "";
+        final String port = config.getNode().getPort() >= 0 ? ":" + String.valueOf(config.getNode().getPort()) : "";
 
-        final Web3j web3j = Web3jFactory.build(new HttpService(this.config.getNode().getHost() + port));
+        final Web3j web3j = Web3jFactory.build(new HttpService(config.getNode().getHost() + port));
 
 
         final EthSendTransaction ethSendTransaction = web3j.ethSendRawTransaction(signedTransaction).sendAsync().get();
@@ -245,11 +246,11 @@ public class EthereumTransactionService {
      * Create a websocket subscription to watch transactions of type "transactions" in the network
      *
      * @param addresses An array of address that will be added to the watch list
-     * @return A HancockSocket object which can add new subscriptions and listen incoming message
+     * @return A HancockSocketOld object which can add new subscriptions and listen incoming message
      * @throws HancockException
      */
-    public HancockSocket subscribe(final ArrayList<String> addresses) throws HancockException {
-        return this.subscribe(addresses, "", null);
+    public HancockSocket subscribe(final List<String> addresses) throws HancockException {
+        return subscribe(addresses, "", null);
     }
 
     /**
@@ -257,11 +258,11 @@ public class EthereumTransactionService {
      *
      * @param addresses An array of address that will be added to the watch list
      * @param consumer  A consumer plugin previously configured in hancock that will handle each received event
-     * @return A HancockSocket object which can add new subscriptions and listen incoming message
+     * @return A HancockSocketOld object which can add new subscriptions and listen incoming message
      * @throws HancockException
      */
-    public HancockSocket subscribe(final ArrayList<String> addresses, final String consumer) throws HancockException {
-        return this.subscribe(addresses, consumer, null);
+    public HancockSocket subscribe(final List<String> addresses, final String consumer) throws HancockException {
+        return subscribe(addresses, consumer, null);
     }
 
     /**
@@ -269,11 +270,11 @@ public class EthereumTransactionService {
      *
      * @param addresses An array of address that will be added to the watch list
      * @param callback  A function to be called when the sockets has the connection ready. Has the socket as a param
-     * @return A HancockSocket object which can add new subscriptions and listen incoming message
+     * @return A HancockSocketOld object which can add new subscriptions and listen incoming message
      * @throws HancockException
      */
-    public HancockSocket subscribe(final ArrayList<String> addresses, final Function callback) throws HancockException {
-        return this.subscribe(addresses, "", callback);
+    public HancockSocket subscribe(final List<String> addresses, final Function callback) throws HancockException {
+        return subscribe(addresses, "", callback);
     }
 
     /**
@@ -282,14 +283,14 @@ public class EthereumTransactionService {
      * @param addresses An array of address that will be added to the watch list
      * @param consumer  A consumer plugin previously configured in hancock that will handle each received event
      * @param callback  A function to be called when the sockets has the connection ready. Has the socket as a param
-     * @return A HancockSocket object which can add new subscriptions and listen incoming message
+     * @return A HancockSocketOld object which can add new subscriptions and listen incoming message
      * @throws HancockException
      */
-    public HancockSocket subscribe(final ArrayList<String> addresses, final String consumer, final Function callback) throws HancockException {
-        final String url = this.config.getBroker().getHost() + ':'
-                + this.config.getBroker().getPort()
-                + this.config.getBroker().getBase()
-                + this.config.getBroker().getResources().get("events")
+    public HancockSocket subscribe(final List<String> addresses, final String consumer, final Function callback) throws HancockException {
+        final String url = config.getBroker().getHost() + ':'
+                + config.getBroker().getPort()
+                + config.getBroker().getBase()
+                + config.getBroker().getResources().get("events")
                 .replaceAll("__ADDRESS__", "")
                 .replaceAll("__SENDER__", "")
                 .replaceAll("__CONSUMER__", consumer);
@@ -297,7 +298,7 @@ public class EthereumTransactionService {
             final HancockSocket socket = new HancockSocket(url);
             socket.on("ready", o -> {
                 socket.watchTransaction(addresses);
-                if (callback != null){
+                if (callback != null) {
                     callback.apply(socket);
                 }
                 return null;

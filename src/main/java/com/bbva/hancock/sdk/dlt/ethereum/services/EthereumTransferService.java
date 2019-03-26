@@ -1,6 +1,7 @@
 package com.bbva.hancock.sdk.dlt.ethereum.services;
 
 import com.bbva.hancock.sdk.HancockSocket;
+import com.bbva.hancock.sdk.HancockSocketOld;
 import com.bbva.hancock.sdk.config.HancockConfig;
 import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransaction;
 import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransactionAdaptResponse;
@@ -20,6 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 
 import static com.bbva.hancock.sdk.Common.*;
@@ -54,10 +56,10 @@ public class EthereumTransferService {
      * Create a websocket subscription to watch transactions of type "transfer" in the network
      *
      * @param addresses An array of address that will be added to the watch list
-     * @return A HancockSocket object which can add new subscriptions and listen incoming message
+     * @return A HancockSocketOld object which can add new subscriptions and listen incoming message
      * @throws HancockException
      */
-    public HancockSocket subscribe(final ArrayList<String> addresses) throws HancockException {
+    public HancockSocket subscribe(final List<String> addresses) throws HancockException {
         return this.subscribe(addresses, "", null);
     }
 
@@ -66,10 +68,10 @@ public class EthereumTransferService {
      *
      * @param addresses An array of address that will be added to the watch list
      * @param consumer  A consumer plugin previously configured in hancock that will handle each received event
-     * @return A HancockSocket object which can add new subscriptions and listen incoming message
+     * @return A HancockSocketOld object which can add new subscriptions and listen incoming message
      * @throws HancockException
      */
-    public HancockSocket subscribe(final ArrayList<String> addresses, final String consumer) throws HancockException {
+    public HancockSocket subscribe(final List<String> addresses, final String consumer) throws HancockException {
         return this.subscribe(addresses, consumer, null);
     }
 
@@ -78,10 +80,10 @@ public class EthereumTransferService {
      *
      * @param addresses An array of address that will be added to the watch list
      * @param callback  A function to be called when the sockets has the connection ready. Has the socket as a param
-     * @return A HancockSocket object which can add new subscriptions and listen incoming message
+     * @return A HancockSocketOld object which can add new subscriptions and listen incoming message
      * @throws HancockException
      */
-    public HancockSocket subscribe(final ArrayList<String> addresses, final Function callback) throws HancockException {
+    public HancockSocket subscribe(final List<String> addresses, final Function callback) throws HancockException {
         return this.subscribe(addresses, "", callback);
     }
 
@@ -91,10 +93,10 @@ public class EthereumTransferService {
      * @param addresses An array of address that will be added to the watch list
      * @param consumer  A consumer plugin previously configured in hancock that will handle each received event
      * @param callback  A function to be called when the sockets has the connection ready. Has the socket as a param
-     * @return A HancockSocket object which can add new subscriptions and listen incoming message
+     * @return A HancockSocketOld object which can add new subscriptions and listen incoming message
      * @throws HancockException
      */
-    public HancockSocket subscribe(final ArrayList<String> addresses, final String consumer, final Function callback) throws HancockException {
+    public HancockSocket subscribe(final List<String> addresses, final String consumer, final Function callback) throws HancockException {
         final String url = this.config.getBroker().getHost() + ':'
                 + this.config.getBroker().getPort()
                 + this.config.getBroker().getBase()
