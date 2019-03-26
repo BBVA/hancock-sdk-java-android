@@ -10,7 +10,7 @@ public final class ValidateParameters {
     private static final String message = " is empty";
 
     public static void checkForContent(final String param, final String var) throws HancockException {
-        if (param.isEmpty() || param == null) {
+        if (param == null || param.isEmpty()) {
             throw new HancockException(HancockTypeErrorEnum.ERROR_INTERNAL, "50005", 500, HancockErrorEnum.ERROR_PARAMETER.getMessage(), var + message);
         }
     }

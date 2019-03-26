@@ -7,10 +7,9 @@ import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransferRequest;
 import com.bbva.hancock.sdk.dlt.ethereum.models.transaction.EthereumTransactionResponse;
 import com.bbva.hancock.sdk.models.TransactionConfig;
 import okhttp3.*;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -21,7 +20,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.*;
 
-@PowerMockIgnore({"javax.net.ssl.*"})
+@PrepareForTest({Common.class})
 @RunWith(PowerMockRunner.class)
 public class EthereumTransferServiceIntegrationTest {
 
@@ -37,8 +36,8 @@ public class EthereumTransferServiceIntegrationTest {
     public static Request.Builder requestBuilder;
     public static HancockConfig mockedConfig;
 
-    @BeforeClass
-    public static void setUp() {
+    @Before
+    public void setUp() {
 
         nonce = "0x1";
         gasPrice = "0x4";
@@ -65,7 +64,7 @@ public class EthereumTransferServiceIntegrationTest {
         mockedConfig = new HancockConfig.Builder().build();
     }
 
-    @PrepareForTest({Common.class})
+
     @Test
     public void testAdaptTransfer() throws Exception {
 
@@ -95,7 +94,6 @@ public class EthereumTransferServiceIntegrationTest {
 
     }
 
-    @PrepareForTest({Common.class})
     @Test
     public void testSend() throws Exception {
 

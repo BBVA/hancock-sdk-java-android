@@ -26,12 +26,14 @@ import java.util.function.Function;
 import static com.bbva.hancock.sdk.Common.*;
 
 public class EthereumSmartContractService {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(EthereumSmartContractService.class);
     private static final MediaType CONTENT_TYPE_JSON = MediaType.parse("application/json; charset=utf-8");
 
     private final EthereumTransactionService transactionClient;
 
     private final HancockConfig config;
+    private final static Gson gson = new Gson();
 
     public EthereumSmartContractService(final HancockConfig config, final EthereumTransactionService transactionClient) {
         this.config = config;
@@ -60,8 +62,8 @@ public class EthereumSmartContractService {
         ValidateParameters.checkForContent(from, "From");
         ValidateParameters.checkAddress(from);
 
-        final EthereumTransactionAdaptResponse invokeResponse = this.adaptInvoke(contractAddressOrAlias, method, params, from);
-        return this.transactionClient.send(invokeResponse.getData(), options);
+        final EthereumTransactionAdaptResponse invokeResponse = adaptInvoke(contractAddressOrAlias, method, params, from);
+        return transactionClient.send(invokeResponse.getData(), options);
     }
 
     /**
@@ -88,9 +90,10 @@ public class EthereumSmartContractService {
         ValidateParameters.checkAddress(from);
 
         final String action = "send";
-        final Response response = this.adaptInvokeAbi(contractAddressOrAlias, method, params, from, action, abi);
+        final Response response = adaptInvokeAbi(contractAddressOrAlias, method, params, from, action, abi);
         final EthereumTransactionAdaptResponse responseModel = checkStatus(response, EthereumTransactionAdaptResponse.class);
-        return this.transactionClient.send(responseModel.getData(), options);
+
+        return transactionClient.send(responseModel.getData(), options);
     }
 
     /**
@@ -110,21 +113,18 @@ public class EthereumSmartContractService {
         ValidateParameters.checkForContent(from, "From");
         ValidateParameters.checkAddress(from);
 
-        final String url = this.config.getAdapter().getHost() + ':'
-                + this.config.getAdapter().getPort()
-                + this.config.getAdapter().getBase()
-                + this.config.getAdapter().getResources().get("invoke").replaceAll("__ADDRESS_OR_ALIAS__", contractAddressOrAlias);
+        final String url = generateUri(config.getAdapter().getHost(), config.getAdapter().getPort(), config.getAdapter().getBase(),
+                config.getAdapter().getResources().get("invoke").replaceAll("__ADDRESS_OR_ALIAS__", contractAddressOrAlias));
 
         final EthereumAdaptInvokeRequest callBody = new EthereumAdaptInvokeRequest(method, from, params, "call");
-        final Gson gson = new Gson();
         final String json = gson.toJson(callBody);
-        final RequestBody body = RequestBody.create(this.CONTENT_TYPE_JSON, json);
+        final RequestBody body = RequestBody.create(CONTENT_TYPE_JSON, json);
 
         final Request request = getRequest(url, body);
 
         final Response response = makeCall(request);
-        final EthereumCallResponse responseModel = checkStatus(response, EthereumCallResponse.class);
-        return responseModel;
+        return checkStatus(response, EthereumCallResponse.class);
+
     }
 
     /**
@@ -146,9 +146,9 @@ public class EthereumSmartContractService {
         ValidateParameters.checkAddress(from);
 
         final String action = "call";
-        final Response response = this.adaptInvokeAbi(contractAddressOrAlias, method, params, from, action, abi);
-        final EthereumCallResponse responseModel = checkStatus(response, EthereumCallResponse.class);
-        return responseModel;
+        final Response response = adaptInvokeAbi(contractAddressOrAlias, method, params, from, action, abi);
+        return checkStatus(response, EthereumCallResponse.class);
+
     }
 
     //TODO register: how to pass the abi??
@@ -168,22 +168,19 @@ public class EthereumSmartContractService {
         ValidateParameters.checkForContent(address, "Address");
         ValidateParameters.checkAddress(address);
 
-        final String url = this.config.getAdapter().getHost() + ':'
-                + this.config.getAdapter().getPort()
-                + this.config.getAdapter().getBase()
-                + this.config.getAdapter().getResources().get("register");
+        final String url = generateUri(config.getAdapter().getHost(), config.getAdapter().getPort(), config.getAdapter().getBase(),
+                config.getAdapter().getResources().get("register"));
 
         final EthereumRegisterRequest registerBody = new EthereumRegisterRequest(address, alias, abi);
 
-        final Gson gson = new Gson();
         final String json = gson.toJson(registerBody);
-        final RequestBody body = RequestBody.create(this.CONTENT_TYPE_JSON, json);
+        final RequestBody body = RequestBody.create(CONTENT_TYPE_JSON, json);
 
         final Request request = getRequest(url, body);
 
         final Response response = makeCall(request);
-        final EthereumRegisterResponse responseModel = checkStatus(response, EthereumRegisterResponse.class);
-        return responseModel;
+        return checkStatus(response, EthereumRegisterResponse.class);
+
     }
 
     /**
@@ -194,7 +191,7 @@ public class EthereumSmartContractService {
      * @throws HancockException
      */
     public HancockSocket subscribe(final ArrayList<String> contracts) throws HancockException {
-        return this.subscribe(contracts, "", null);
+        return subscribe(contracts, "", null);
     }
 
     /**
@@ -206,7 +203,7 @@ public class EthereumSmartContractService {
      * @throws HancockException
      */
     public HancockSocket subscribe(final ArrayList<String> contracts, final String consumer) throws HancockException {
-        return this.subscribe(contracts, consumer, null);
+        return subscribe(contracts, consumer, null);
     }
 
     /**
@@ -218,7 +215,7 @@ public class EthereumSmartContractService {
      * @throws HancockException
      */
     public HancockSocket subscribe(final ArrayList<String> contracts, final Function callback) throws HancockException {
-        return this.subscribe(contracts, "", callback);
+        return subscribe(contracts, "", callback);
     }
 
     /**
@@ -231,18 +228,18 @@ public class EthereumSmartContractService {
      * @throws HancockException
      */
     public HancockSocket subscribe(final ArrayList<String> contracts, final String consumer, final Function callback) throws HancockException {
-        final String url = this.config.getBroker().getHost() + ':'
-                + this.config.getBroker().getPort()
-                + this.config.getBroker().getBase()
-                + this.config.getBroker().getResources().get("events")
-                .replaceAll("__ADDRESS__", "")
-                .replaceAll("__SENDER__", "")
-                .replaceAll("__CONSUMER__", consumer);
+
+        final String url = generateUri(config.getBroker().getHost(), config.getBroker().getPort(), config.getBroker().getBase(),
+                config.getBroker().getResources().get("events")
+                        .replaceAll("__ADDRESS__", "")
+                        .replaceAll("__SENDER__", "")
+                        .replaceAll("__CONSUMER__", consumer));
+
         try {
             final HancockSocket socket = new HancockSocket(url);
             socket.on("ready", o -> {
                 socket.watchContract(contracts);
-                if (callback != null){
+                if (callback != null) {
                     callback.apply(socket);
                 }
                 return null;
@@ -256,40 +253,44 @@ public class EthereumSmartContractService {
 
     protected EthereumTransactionAdaptResponse adaptInvoke(final String contractAddressOrAlias, final String method, final ArrayList<String> params, final String from) throws HancockException {
 
-        final String url = this.config.getAdapter().getHost() + ':'
-                + this.config.getAdapter().getPort()
-                + this.config.getAdapter().getBase()
-                + this.config.getAdapter().getResources().get("invoke").replaceAll("__ADDRESS_OR_ALIAS__", contractAddressOrAlias);
+        final String url = generateUri(config.getAdapter().getHost(), config.getAdapter().getPort(), config.getAdapter().getBase(),
+                config.getAdapter().getResources().get("invoke").replaceAll("__ADDRESS_OR_ALIAS__", contractAddressOrAlias));
 
         final EthereumAdaptInvokeRequest invokebody = new EthereumAdaptInvokeRequest(method, from, params, "send");
 
-        final Gson gson = new Gson();
         final String json = gson.toJson(invokebody);
-        final RequestBody body = RequestBody.create(this.CONTENT_TYPE_JSON, json);
+        final RequestBody body = RequestBody.create(CONTENT_TYPE_JSON, json);
 
         final Request request = getRequest(url, body);
 
         final Response response = makeCall(request);
-        final EthereumTransactionAdaptResponse responseModel = checkStatus(response, EthereumTransactionAdaptResponse.class);
-        return responseModel;
+        return checkStatus(response, EthereumTransactionAdaptResponse.class);
+
     }
 
     protected Response adaptInvokeAbi(final String to, final String method, final ArrayList<String> params, final String from, final String action, final ArrayList<AbiDefinition> abi) throws HancockException {
 
-        final String url = this.config.getAdapter().getHost() + ':'
-                + this.config.getAdapter().getPort()
-                + this.config.getAdapter().getBase()
-                + this.config.getAdapter().getResources().get("invokeAbi");
+        final String url = generateUri(config.getAdapter().getHost(), config.getAdapter().getPort(), config.getAdapter().getBase(),
+                config.getAdapter().getResources().get("invokeAbi"));
 
         final EthereumAdaptInvokeAbiRequest invokeabibody = new EthereumAdaptInvokeAbiRequest(method, from, params, action, to, abi);
 
-        final Gson gson = new Gson();
         final String json = gson.toJson(invokeabibody);
-        final RequestBody body = RequestBody.create(this.CONTENT_TYPE_JSON, json);
+        final RequestBody body = RequestBody.create(CONTENT_TYPE_JSON, json);
 
         final Request request = getRequest(url, body);
 
-        final Response response = makeCall(request);
-        return response;
+        return makeCall(request);
+
     }
+
+    private String generateUri(final String host, final int port, final String base, final String path) {
+        final StringBuilder url = new StringBuilder(host);
+        url.append(":");
+        url.append(port);
+        url.append(base);
+        url.append(path);
+        return url.toString();
+    }
+
 }

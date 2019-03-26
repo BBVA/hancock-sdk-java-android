@@ -32,15 +32,16 @@ public class HancockSocketMessage implements Serializable {
         return matchedAddress;
     }
 
-    public void setKind(String kind) {
+    public void setKind(final String kind) {
         this.kind = kind;
     }
 
-    public void setBody(JsonObject body) {
+    public void setBody(final JsonObject body) {
         this.body = body;
     }
 
-    public void setMatchedAddress(String matchedAddress) {
+    public void setMatchedAddress(final String matchedAddress) {
         this.matchedAddress = matchedAddress;
     }
+
 }

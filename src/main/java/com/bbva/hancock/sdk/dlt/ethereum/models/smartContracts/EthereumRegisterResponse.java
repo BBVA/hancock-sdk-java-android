@@ -24,4 +24,5 @@ public class EthereumRegisterResponse implements Serializable {
     public void setResult(final HancockGenericResponse result) {
         this.result = result;
     }
+
 }

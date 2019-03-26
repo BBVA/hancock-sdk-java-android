@@ -17,8 +17,8 @@ public class HancockConfigNode implements Serializable {
     }
 
     public HancockConfigNode(final HancockConfigNode node) {
-        this.host = node.getHost();
-        this.port = node.getPort();
+        host = node.getHost();
+        port = node.getPort();
     }
 
     public String getHost() {
@@ -36,4 +36,5 @@ public class HancockConfigNode implements Serializable {
     public void setPort(final int port) {
         this.port = port;
     }
+
 }

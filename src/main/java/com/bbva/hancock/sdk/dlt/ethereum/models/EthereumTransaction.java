@@ -5,6 +5,7 @@ import java.io.Serializable;
 public class EthereumTransaction implements Serializable {
 
     private static final long serialVersionUID = 7659625467339800148L;
+
     private String from;
     private String to;
     private String value;
@@ -31,7 +32,7 @@ public class EthereumTransaction implements Serializable {
         this.to = to;
         this.value = value;
         this.nonce = nonce;
-        this.data = "";
+        data = "";
         this.gas = gas;
         this.gasPrice = gasPrice;
     }

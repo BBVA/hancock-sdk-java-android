@@ -5,6 +5,7 @@ import java.io.Serializable;
 public class EthereumContractInstance implements Serializable {
 
     private static final long serialVersionUID = -2413455745795731104L;
+
     private String abiName;
     private String alias;
     private String address;
@@ -41,5 +42,5 @@ public class EthereumContractInstance implements Serializable {
     public void setAddress(final String address) {
         this.address = address;
     }
-    
+
 }

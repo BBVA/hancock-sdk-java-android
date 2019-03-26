@@ -6,9 +6,10 @@ import com.bbva.hancock.sdk.util.ValidateParameters;
 import java.io.Serializable;
 
 public class EthereumTokenRegisterRequest implements Serializable {
+
     private static final long serialVersionUID = 6405850257253978124L;
-    public String alias;
-    public String address;
+    private String alias;
+    private String address;
 
     public EthereumTokenRegisterRequest() {
     }
@@ -25,7 +26,7 @@ public class EthereumTokenRegisterRequest implements Serializable {
         return alias;
     }
 
-    public void setAlias(String alias) {
+    public void setAlias(final String alias) {
         this.alias = alias;
     }
 
@@ -33,7 +34,7 @@ public class EthereumTokenRegisterRequest implements Serializable {
         return address;
     }
 
-    public void setAddress(String address) {
+    public void setAddress(final String address) {
         this.address = address;
     }
 }

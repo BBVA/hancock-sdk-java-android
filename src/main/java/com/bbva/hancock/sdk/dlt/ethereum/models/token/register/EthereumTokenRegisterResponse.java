@@ -5,6 +5,7 @@ import com.bbva.hancock.sdk.models.HancockGenericResponse;
 import java.io.Serializable;
 
 public class EthereumTokenRegisterResponse implements Serializable {
+
     private static final long serialVersionUID = 4981013697079975273L;
     private HancockGenericResponse result;
 

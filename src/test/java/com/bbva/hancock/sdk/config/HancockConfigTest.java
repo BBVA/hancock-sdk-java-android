@@ -1,9 +1,9 @@
 package com.bbva.hancock.sdk.config;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -12,8 +12,8 @@ import static org.junit.Assert.assertTrue;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
-@PowerMockIgnore("javax.net.ssl.*")
 @RunWith(PowerMockRunner.class)
+@PrepareForTest({HancockConfig.Builder.class})
 public class HancockConfigTest {
 
     @Test
@@ -39,9 +39,8 @@ public class HancockConfigTest {
         assertEquals(config.getNode().getPort(), 3003);
     }
 
-    @PrepareForTest({HancockConfig.Builder.class})
     @Test
-    public void testConfigWithoutParams() throws Exception {
+    public void testConfigWithoutParams() {
 
         final HancockConfig.Builder builder = new HancockConfig.Builder();
         mockStatic(HancockConfig.Builder.class);
@@ -58,5 +57,27 @@ public class HancockConfigTest {
         assertEquals(config.getEnv(), "local");
         assertEquals(config.getNode().getHost(), "http://localhost");
         assertEquals(config.getNode().getPort(), 8545);
+    }
+
+    @Test
+    public void testConfigBeans() {
+        HancockConfigService service = new HancockConfigService();
+        Assert.assertNotNull(service);
+        service = new HancockConfigService("host", "base", 80, null);
+        Assert.assertEquals(service.getHost(), "host");
+        Assert.assertEquals(service.getPort(), 80);
+        Assert.assertEquals(service.getBase(), "base");
+    }
+
+    @Test
+    public void testConfigBeans2() {
+
+        final HancockConfigNode config = new HancockConfigNode("host", 80);
+        Assert.assertEquals(config.getHost(), "host");
+        Assert.assertEquals(config.getPort(), 80);
+
+        final HancockConfigNode newConfig = new HancockConfigNode(config);
+        Assert.assertEquals(newConfig.getHost(), "host");
+        Assert.assertEquals(newConfig.getPort(), 80);
     }
 }

@@ -8,6 +8,7 @@ import java.math.BigInteger;
 public class EthereumTokenInstance extends EthereumContractInstance implements Serializable {
 
     private static final long serialVersionUID = 15681663557180477L;
+
     private String name;
     private String symbol;
     private Integer decimals;
@@ -40,19 +41,19 @@ public class EthereumTokenInstance extends EthereumContractInstance implements S
         return totalSupply;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
-    public void setSymbol(String symbol) {
+    public void setSymbol(final String symbol) {
         this.symbol = symbol;
     }
 
-    public void setDecimals(Integer decimals) {
+    public void setDecimals(final Integer decimals) {
         this.decimals = decimals;
     }
 
-    public void setTotalSupply(BigInteger totalSupply) {
+    public void setTotalSupply(final BigInteger totalSupply) {
         this.totalSupply = totalSupply;
     }
 }

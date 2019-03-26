@@ -5,9 +5,10 @@ import com.bbva.hancock.sdk.models.HancockGenericResponse;
 import java.io.Serializable;
 
 public class EthereumTokenBalanceResponse implements Serializable {
+
     private static final long serialVersionUID = 8602610907944650010L;
     private HancockGenericResponse result;
-    public EthereumTokenBalance data;
+    private EthereumTokenBalance data;
 
     public EthereumTokenBalanceResponse() {
 
@@ -22,7 +23,7 @@ public class EthereumTokenBalanceResponse implements Serializable {
     }
 
     public EthereumTokenBalance getTokenBalance() {
-        return this.data;
+        return data;
     }
 
     public EthereumTokenBalance getData() {

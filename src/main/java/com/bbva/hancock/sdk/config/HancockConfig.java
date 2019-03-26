@@ -70,7 +70,7 @@ public class HancockConfig implements Serializable {
          * Builder for HancockConfig
          */
         public Builder() {
-            this.fromConfigFile();
+            fromConfigFile();
         }
 
         /**
@@ -93,12 +93,12 @@ public class HancockConfig implements Serializable {
          */
         public Builder withNode(final String host, final int port) {
 
-            if (this.node == null) {
-                this.node = new HancockConfigNode();
+            if (node == null) {
+                node = new HancockConfigNode();
             }
 
-            this.node.setHost(host);
-            this.node.setPort(port);
+            node.setHost(host);
+            node.setPort(port);
 
             return this;
         }
@@ -113,13 +113,13 @@ public class HancockConfig implements Serializable {
          */
         public Builder withAdapter(final String host, final String base, final int port) {
 
-            if (this.adapter == null) {
-                this.adapter = new HancockConfigService();
+            if (adapter == null) {
+                adapter = new HancockConfigService();
             }
 
-            this.adapter.setHost(host);
-            this.adapter.setBase(base);
-            this.adapter.setPort(port);
+            adapter.setHost(host);
+            adapter.setBase(base);
+            adapter.setPort(port);
 
             return this;
         }
@@ -134,13 +134,13 @@ public class HancockConfig implements Serializable {
          */
         public Builder withWallet(final String host, final String base, final int port) {
 
-            if (this.wallet == null) {
-                this.wallet = new HancockConfigService();
+            if (wallet == null) {
+                wallet = new HancockConfigService();
             }
 
-            this.wallet.setHost(host);
-            this.wallet.setBase(base);
-            this.wallet.setPort(port);
+            wallet.setHost(host);
+            wallet.setBase(base);
+            wallet.setPort(port);
 
             return this;
         }
@@ -155,13 +155,13 @@ public class HancockConfig implements Serializable {
          */
         public Builder withBroker(final String host, final String base, final int port) {
 
-            if (this.broker == null) {
-                this.broker = new HancockConfigService();
+            if (broker == null) {
+                broker = new HancockConfigService();
             }
 
-            this.broker.setHost(host);
-            this.broker.setBase(base);
-            this.broker.setPort(port);
+            broker.setHost(host);
+            broker.setBase(base);
+            broker.setPort(port);
 
             return this;
         }
@@ -170,22 +170,22 @@ public class HancockConfig implements Serializable {
 
             final HancockConfig config = new HancockConfig();
 
-            config.setEnv(this.env);
+            config.setEnv(env);
 
-            if (this.node != null) {
-                config.setNode(this.node);
+            if (node != null) {
+                config.setNode(node);
             }
 
-            if (this.adapter != null) {
-                config.setAdapter(this.adapter);
+            if (adapter != null) {
+                config.setAdapter(adapter);
             }
 
-            if (this.wallet != null) {
-                config.setWallet(this.wallet);
+            if (wallet != null) {
+                config.setWallet(wallet);
             }
 
-            if (this.broker != null) {
-                config.setBroker(this.broker);
+            if (broker != null) {
+                config.setBroker(broker);
             }
 
             return config;
@@ -193,17 +193,17 @@ public class HancockConfig implements Serializable {
 
 
         protected Builder withAdapter(final String host, final String base, final int port, final Map<String, String> resources) {
-            this.adapter = new HancockConfigService(host, base, port, resources);
+            adapter = new HancockConfigService(host, base, port, resources);
             return this;
         }
 
         protected Builder withWallet(final String host, final String base, final int port, final Map<String, String> resources) {
-            this.wallet = new HancockConfigService(host, base, port, resources);
+            wallet = new HancockConfigService(host, base, port, resources);
             return this;
         }
 
         protected Builder withBroker(final String host, final String base, final int port, final Map<String, String> resources) {
-            this.broker = new HancockConfigService(host, base, port, resources);
+            broker = new HancockConfigService(host, base, port, resources);
             return this;
         }
 
@@ -220,15 +220,14 @@ public class HancockConfig implements Serializable {
             final Map<String, Object> wallet = (Map<String, Object>) object.get("wallet");
             final Map<String, Object> broker = (Map<String, Object>) object.get("broker");
 
-            this.withEnv(env);
-            this.withAdapter((String) adapter.get("host"), (String) adapter.get("base"), (int) adapter.get("port"), (Map<String, String>) adapter.get("resources"));
-            this.withWallet((String) wallet.get("host"), (String) wallet.get("base"), (int) wallet.get("port"), (Map<String, String>) wallet.get("resources"));
-            this.withBroker((String) broker.get("host"), (String) broker.get("base"), (int) broker.get("port"), (Map<String, String>) broker.get("resources"));
-            this.withNode((String) node.get("host"), (int) node.get("port"));
+            withEnv(env);
+            withAdapter((String) adapter.get("host"), (String) adapter.get("base"), (int) adapter.get("port"), (Map<String, String>) adapter.get("resources"));
+            withWallet((String) wallet.get("host"), (String) wallet.get("base"), (int) wallet.get("port"), (Map<String, String>) wallet.get("resources"));
+            withBroker((String) broker.get("host"), (String) broker.get("base"), (int) broker.get("port"), (Map<String, String>) broker.get("resources"));
+            withNode((String) node.get("host"), (int) node.get("port"));
             return this;
 
         }
-
 
     }
 }

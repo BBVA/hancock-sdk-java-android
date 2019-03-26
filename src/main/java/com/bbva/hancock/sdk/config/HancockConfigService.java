@@ -23,10 +23,10 @@ public class HancockConfigService implements Serializable {
     }
 
     public HancockConfigService(final HancockConfigService service) {
-        this.host = service.getHost();
-        this.base = service.getBase();
-        this.port = service.getPort();
-        this.resources = new HashMap<String, String>(service.getResources());
+        host = service.getHost();
+        base = service.getBase();
+        port = service.getPort();
+        resources = new HashMap(service.getResources());
     }
 
     public String getHost() {

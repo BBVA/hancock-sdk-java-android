@@ -139,4 +139,5 @@ public class HancockProtocolDecodeResponse implements Serializable {
     public void setData(final HancockProtocolDecodeResponseData data) {
         this.data = data;
     }
+
 }

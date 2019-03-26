@@ -7,6 +7,7 @@ import java.io.Serializable;
 public class EthereumCallResponse implements Serializable {
 
     private static final long serialVersionUID = -1879043266148806288L;
+    
     private Object data;
     private HancockGenericResponse result;
 
