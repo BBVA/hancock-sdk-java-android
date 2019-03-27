@@ -258,8 +258,8 @@ public class EthereumSmartContractService {
      * @return A HancockSocket object which can add new subscriptions and listen incoming message
      * @throws HancockException
      */
-    public HancockSocket subscribeToTransaction(final List<String> contracts) throws HancockException {
-        return subscribeToTransaction(contracts, "", null);
+    public HancockSocket subscribeToTransactions(final List<String> contracts) throws HancockException {
+        return subscribeToTransactions(contracts, "", null);
     }
 
     /**
@@ -270,8 +270,8 @@ public class EthereumSmartContractService {
      * @return A HancockSocket object which can add new subscriptions and listen incoming message
      * @throws HancockException
      */
-    public HancockSocket subscribeToTransaction(final List<String> contracts, final String consumer) throws HancockException {
-        return subscribeToTransaction(contracts, consumer, null);
+    public HancockSocket subscribeToTransactions(final List<String> contracts, final String consumer) throws HancockException {
+        return subscribeToTransactions(contracts, consumer, null);
     }
 
     /**
@@ -282,8 +282,8 @@ public class EthereumSmartContractService {
      * @return A HancockSocket object which can add new subscriptions and listen incoming message
      * @throws HancockException
      */
-    public HancockSocket subscribeToTransaction(final List<String> contracts, final Function callback) throws HancockException {
-        return subscribeToTransaction(contracts, "", callback);
+    public HancockSocket subscribeToTransactions(final List<String> contracts, final Function callback) throws HancockException {
+        return subscribeToTransactions(contracts, "", callback);
     }
 
     /**
@@ -295,7 +295,7 @@ public class EthereumSmartContractService {
      * @return A HancockSocket object which can add new subscriptions and listen incoming message
      * @throws HancockException
      */
-    public HancockSocket subscribeToTransaction(final List<String> contracts, final String consumer, final Function callback) throws HancockException {
+    public HancockSocket subscribeToTransactions(final List<String> contracts, final String consumer, final Function callback) throws HancockException {
         final String url = generateUri(config.getBroker().getHost(), config.getBroker().getPort(), config.getBroker().getBase(),
                 config.getBroker().getResources().get("events")
                         .replaceAll("__ADDRESS__", "")
