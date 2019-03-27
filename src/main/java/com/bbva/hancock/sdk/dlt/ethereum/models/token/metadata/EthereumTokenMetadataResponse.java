@@ -5,6 +5,7 @@ import com.bbva.hancock.sdk.models.HancockGenericResponse;
 import java.io.Serializable;
 
 public class EthereumTokenMetadataResponse implements Serializable {
+
     private static final long serialVersionUID = -3782067033479737624L;
     private HancockGenericResponse result;
     public EthereumTokenMetadata data;
@@ -22,7 +23,7 @@ public class EthereumTokenMetadataResponse implements Serializable {
     }
 
     public EthereumTokenMetadata getTokenMetadata() {
-        return this.data;
+        return data;
     }
 
     public EthereumTokenMetadata getData() {

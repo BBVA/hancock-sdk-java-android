@@ -8,6 +8,7 @@ import java.math.BigInteger;
 public final class EthereumRawTransaction implements Serializable {
 
     private static final long serialVersionUID = -6501902289201200387L;
+
     private String from;
     private String to;
     private BigInteger nonce;
@@ -27,7 +28,7 @@ public final class EthereumRawTransaction implements Serializable {
         this.value = value;
         this.data = data;
         this.gasPrice = gasPrice;
-        this.gasLimit = gas;
+        gasLimit = gas;
     }
 
     public EthereumRawTransaction(final String to, final BigInteger nonce, final BigInteger value, final String data, final BigInteger gasPrice, final BigInteger gasLimit) {
@@ -44,17 +45,17 @@ public final class EthereumRawTransaction implements Serializable {
         this.nonce = nonce;
         this.value = value;
         this.gasPrice = gasPrice;
-        this.gasLimit = gas;
+        gasLimit = gas;
     }
 
     public EthereumRawTransaction(final EthereumTransaction tx) {
-        this.from = tx.getFrom();
-        this.to = tx.getTo();
-        this.nonce = tx.getNonce() != null ? new BigInteger(tx.getNonce().substring(2), 16) : BigInteger.ZERO;
-        this.value = tx.getValue() != null ? new BigInteger(tx.getValue().substring(2), 16) : BigInteger.ZERO;
-        this.data = tx.getData();
-        this.gasPrice = tx.getGasPrice() != null ? new BigInteger(tx.getGasPrice().substring(2), 16) : BigInteger.ZERO;
-        this.gasLimit = tx.getGas() != null ? new BigInteger(tx.getGas().substring(2), 16) : BigInteger.ZERO;
+        from = tx.getFrom();
+        to = tx.getTo();
+        nonce = tx.getNonce() != null ? new BigInteger(tx.getNonce().substring(2), 16) : BigInteger.ZERO;
+        value = tx.getValue() != null ? new BigInteger(tx.getValue().substring(2), 16) : BigInteger.ZERO;
+        data = tx.getData();
+        gasPrice = tx.getGasPrice() != null ? new BigInteger(tx.getGasPrice().substring(2), 16) : BigInteger.ZERO;
+        gasLimit = tx.getGas() != null ? new BigInteger(tx.getGas().substring(2), 16) : BigInteger.ZERO;
     }
 
     public String getFrom() {
@@ -115,12 +116,12 @@ public final class EthereumRawTransaction implements Serializable {
 
     public RawTransaction getWeb3Instance() {
         return RawTransaction.createTransaction(
-                this.getNonce(),
-                this.getGasPrice(),
-                this.getGasLimit(),
-                this.getTo(),
-                this.getValue(),
-                this.getData()
+                getNonce(),
+                getGasPrice(),
+                getGasLimit(),
+                getTo(),
+                getValue(),
+                getData()
         );
     }
 

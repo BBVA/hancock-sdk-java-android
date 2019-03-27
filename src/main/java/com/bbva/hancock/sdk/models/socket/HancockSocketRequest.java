@@ -33,4 +33,5 @@ public class HancockSocketRequest implements Serializable {
     public void setBody(final ArrayList<String> body) {
         this.body = body;
     }
+
 }

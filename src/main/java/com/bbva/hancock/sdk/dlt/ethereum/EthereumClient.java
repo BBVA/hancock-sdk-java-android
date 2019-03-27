@@ -6,25 +6,26 @@ import com.bbva.hancock.sdk.services.ProtocolService;
 
 public class EthereumClient {
 
-    private ProtocolService protocolService;
-    private EthereumWalletService walletService;
-    private EthereumTransferService transferService;
-    private EthereumTokenService tokenService;
-    private EthereumSmartContractService smartContractService;
-    private EthereumTransactionService transactionService;
+    private final ProtocolService protocolService;
+    private final EthereumWalletService walletService;
+    private final EthereumTransferService transferService;
+    private final EthereumTokenService tokenService;
+    private final EthereumSmartContractService smartContractService;
+    private final EthereumTransactionService transactionService;
 
     /**
      * Main interface to interact with Hancock's ethereum interface
+     *
      * @param config Configuration of Hancock (Adapter, Broker, WalletHub, DLT Node)
      */
-    public EthereumClient(HancockConfig config) {
+    public EthereumClient(final HancockConfig config) {
 
-        this.protocolService = new ProtocolService(config);
-        this.walletService = new EthereumWalletService(config);
-        this.transactionService = new EthereumTransactionService(config);
-        this.transferService = new EthereumTransferService(config, this.transactionService);
-        this.tokenService = new EthereumTokenService(config, this.transactionService);
-        this.smartContractService = new EthereumSmartContractService(config, this.transactionService);
+        protocolService = new ProtocolService(config);
+        walletService = new EthereumWalletService(config);
+        transactionService = new EthereumTransactionService(config);
+        transferService = new EthereumTransferService(config, transactionService);
+        tokenService = new EthereumTokenService(config, transactionService);
+        smartContractService = new EthereumSmartContractService(config, transactionService);
 
     }
 

@@ -20,4 +20,5 @@ public enum HancockTypeErrorEnum {
     public void setType(final String type) {
         this.type = type;
     }
+
 }

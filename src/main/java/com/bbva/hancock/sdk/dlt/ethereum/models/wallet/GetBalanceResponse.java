@@ -4,8 +4,8 @@ import java.io.Serializable;
 
 class GetBalanceResponseResult implements Serializable {
     private static final long serialVersionUID = 5731921709163217716L;
-    public int code;
-    public String description;
+    private int code;
+    private String description;
 
     public GetBalanceResponseResult() {
     }
@@ -29,7 +29,7 @@ class GetBalanceResponseResult implements Serializable {
 
 class GetBalanceResponseData implements Serializable {
     private static final long serialVersionUID = 3983747032686948886L;
-    public String balance;
+    private String balance;
 
     public GetBalanceResponseData() {
     }
@@ -45,14 +45,14 @@ class GetBalanceResponseData implements Serializable {
 
 public class GetBalanceResponse implements Serializable {
     private static final long serialVersionUID = 4224256941003532491L;
-    public GetBalanceResponseResult result;
-    public GetBalanceResponseData data;
+    private GetBalanceResponseResult result;
+    private GetBalanceResponseData data;
 
     public GetBalanceResponse() {
     }
 
     public String getBalance() {
-        return this.data.balance;
+        return data.getBalance();
     }
 
     public GetBalanceResponseResult getResult() {
@@ -70,4 +70,5 @@ public class GetBalanceResponse implements Serializable {
     public void setData(final GetBalanceResponseData data) {
         this.data = data;
     }
+
 }

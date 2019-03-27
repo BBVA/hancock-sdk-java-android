@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.math.BigInteger;
 
 class HancockProtocolEncodeBody implements Serializable {
+
     private static final long serialVersionUID = 3868153081827902016L;
     public String value;
     public String data;
@@ -61,7 +62,7 @@ public class HancockProtocolEncodeRequest implements Serializable {
 
     public HancockProtocolEncodeRequest(final HancockProtocolAction action, final BigInteger value, final String to, final String data, final HancockProtocolDlt dlt) throws HancockException {
         this.action = action;
-        this.body = new HancockProtocolEncodeBody(value, to, data);
+        body = new HancockProtocolEncodeBody(value, to, data);
         this.dlt = dlt;
     }
 

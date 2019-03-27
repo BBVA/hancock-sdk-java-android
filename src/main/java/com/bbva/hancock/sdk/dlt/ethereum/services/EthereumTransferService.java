@@ -1,7 +1,6 @@
 package com.bbva.hancock.sdk.dlt.ethereum.services;
 
 import com.bbva.hancock.sdk.HancockSocket;
-import com.bbva.hancock.sdk.HancockSocketOld;
 import com.bbva.hancock.sdk.config.HancockConfig;
 import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransaction;
 import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransactionAdaptResponse;
@@ -20,13 +19,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
 import static com.bbva.hancock.sdk.Common.*;
 
 public class EthereumTransferService {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(EthereumTransferService.class);
     private static final MediaType CONTENT_TYPE_JSON = MediaType.parse("application/json; charset=utf-8");
 
@@ -48,8 +47,8 @@ public class EthereumTransferService {
      * @throws Exception
      */
     public EthereumTransactionResponse send(final EthereumTransferRequest tx, final TransactionConfig txConfig) throws Exception {
-        final EthereumTransaction rawtx = this.adaptTransfer(tx);
-        return this.transactionClient.send(rawtx, txConfig);
+        final EthereumTransaction rawtx = adaptTransfer(tx);
+        return transactionClient.send(rawtx, txConfig);
     }
 
     /**
@@ -60,7 +59,7 @@ public class EthereumTransferService {
      * @throws HancockException
      */
     public HancockSocket subscribe(final List<String> addresses) throws HancockException {
-        return this.subscribe(addresses, "", null);
+        return subscribe(addresses, "", null);
     }
 
     /**
@@ -72,7 +71,7 @@ public class EthereumTransferService {
      * @throws HancockException
      */
     public HancockSocket subscribe(final List<String> addresses, final String consumer) throws HancockException {
-        return this.subscribe(addresses, consumer, null);
+        return subscribe(addresses, consumer, null);
     }
 
     /**
@@ -84,7 +83,7 @@ public class EthereumTransferService {
      * @throws HancockException
      */
     public HancockSocket subscribe(final List<String> addresses, final Function callback) throws HancockException {
-        return this.subscribe(addresses, "", callback);
+        return subscribe(addresses, "", callback);
     }
 
     /**
@@ -97,10 +96,11 @@ public class EthereumTransferService {
      * @throws HancockException
      */
     public HancockSocket subscribe(final List<String> addresses, final String consumer, final Function callback) throws HancockException {
-        final String url = this.config.getBroker().getHost() + ':'
-                + this.config.getBroker().getPort()
-                + this.config.getBroker().getBase()
-                + this.config.getBroker().getResources().get("events")
+        final String url = config.getBroker().getHost() + ':'
+                + config.getBroker().getPort()
+                + config.getBroker().getBase()
+                + config.getBroker().getResources().get("events")
+
                 .replaceAll("__ADDRESS__", "")
                 .replaceAll("__SENDER__", "")
                 .replaceAll("__CONSUMER__", consumer);
@@ -108,7 +108,7 @@ public class EthereumTransferService {
             final HancockSocket socket = new HancockSocket(url);
             socket.on("ready", o -> {
                 socket.watchTransfer(addresses);
-                if (callback != null){
+                if (callback != null) {
                     callback.apply(socket);
                 }
                 return null;
@@ -128,7 +128,7 @@ public class EthereumTransferService {
      * @throws Exception
      */
     public EthereumTransaction adaptTransfer(final EthereumTransferRequest txRequest) throws Exception {
-        final String url = getResourceUrl(this.config, "transfer");
+        final String url = getResourceUrl(config, "transfer");
         final Gson gson = new Gson();
         final String json = gson.toJson(txRequest);
         final RequestBody body = RequestBody.create(CONTENT_TYPE_JSON, json);
@@ -136,8 +136,9 @@ public class EthereumTransferService {
 
         final Response response = makeCall(request);
         final EthereumTransactionAdaptResponse rawTx = checkStatus(response, EthereumTransactionAdaptResponse.class);
-        if (rawTx.getData().getData() == null)
+        if (rawTx.getData().getData() == null) {
             rawTx.getData().setData("");
+        }
         return rawTx.getData();
     }
 }

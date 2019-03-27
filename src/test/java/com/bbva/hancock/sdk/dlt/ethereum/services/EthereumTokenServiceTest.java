@@ -24,14 +24,12 @@ import com.bbva.hancock.sdk.models.HancockGenericResponse;
 import com.bbva.hancock.sdk.models.TransactionConfig;
 import com.bbva.hancock.sdk.util.ValidateParameters;
 import okhttp3.RequestBody;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.web3j.protocol.core.Ethereum;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -43,8 +41,7 @@ import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.when;
 import static org.powermock.api.mockito.PowerMockito.*;
 
-@PowerMockIgnore("javax.net.ssl.*")
-//@RunWith(MockitoJUnitRunner.class)
+@PrepareForTest({ValidateParameters.class, Common.class})
 @RunWith(PowerMockRunner.class)
 public class EthereumTokenServiceTest {
 
@@ -61,8 +58,8 @@ public class EthereumTokenServiceTest {
     public static EthereumTransactionResponse mockedEthereumTransactionResponse;
     public static EthereumTransactionService spyTransactionService;
 
-    @BeforeClass
-    public static void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
 
         mockedConfig = new HancockConfig.Builder()
                 .withEnv("custom")
@@ -99,7 +96,6 @@ public class EthereumTokenServiceTest {
 
     }
 
-    @PrepareForTest({ValidateParameters.class, Common.class})
     @Test
     public void testGetTokenBalance() throws Exception {
         PowerMockito.mockStatic(ValidateParameters.class);
@@ -133,7 +129,6 @@ public class EthereumTokenServiceTest {
 
     }
 
-    @PrepareForTest({ValidateParameters.class, Common.class})
     @Test
     public void testGetTokenMetadata() throws Exception {
 
@@ -175,7 +170,6 @@ public class EthereumTokenServiceTest {
         assertEquals(metadata.getTotalSupply(), BigInteger.valueOf(10000));
     }
 
-    @PrepareForTest({Common.class})
     @Test
     public void testGetAllTokens() throws Exception {
 
@@ -209,7 +203,6 @@ public class EthereumTokenServiceTest {
 
     }
 
-    @PrepareForTest({ValidateParameters.class, Common.class})
     @Test
     public void testTokenTransfer() throws Exception {
 
@@ -238,7 +231,6 @@ public class EthereumTokenServiceTest {
 
     }
 
-    @PrepareForTest({ValidateParameters.class, Common.class})
     @Test
     public void testTokenTransferFrom() throws Exception {
 
@@ -266,7 +258,6 @@ public class EthereumTokenServiceTest {
 
     }
 
-    @PrepareForTest({ValidateParameters.class, Common.class})
     @Test
     public void testTokenAllowance() throws Exception {
 
@@ -295,14 +286,13 @@ public class EthereumTokenServiceTest {
         PowerMockito.when(Common.class, "getResourceUrl", any(HancockConfig.class), any(String.class))
                 .thenReturn("mockUrl");
 
-        final EthereumTokenAllowanceResponse response =  spy_var.allowance(mockedEthereumTokenAllowanceRequest);
+        final EthereumTokenAllowanceResponse response = spy_var.allowance(mockedEthereumTokenAllowanceRequest);
 
         assertEquals(response.getResult(), mockResult);
         assertEquals(response.getData(), BigInteger.valueOf(1000));
 
     }
 
-    @PrepareForTest({ValidateParameters.class, Common.class})
     @Test
     public void testTokenApprove() throws Exception {
 
@@ -330,7 +320,6 @@ public class EthereumTokenServiceTest {
 
     }
 
-    @PrepareForTest({ValidateParameters.class, Common.class})
     @Test
     public void testTokenRegister() throws Exception {
 
@@ -364,54 +353,6 @@ public class EthereumTokenServiceTest {
 
     }
 
-//    @PrepareForTest({ ValidateParameters.class, Common.class})
-//    @Test public void testAdaptTransfer() throws Exception {
-//
-//        String nonce = "1";
-//        String gasPrice = "111";
-//        String gasLimit = "222";
-//        String value = "333";
-//        String to = mockedWallet.getAddress();
-//        String data = "0xwhatever";
-//
-//        EthereumTransaction responseModel = mock(EthereumTransaction.class);
-//        okhttp3.Request requestMock= mock(okhttp3.Request.class);
-//        okhttp3.Response responseMock= mock(okhttp3.Response.class);
-//        EthereumTokenService spy_token_var = PowerMockito.spy(mockedHancockEthereumClient);
-//
-//        mockStatic(Common.class);
-//        PowerMockito.when(Common.class, "getRequest", any(String.class), any(RequestBody.class))
-//                .thenReturn(requestMock);
-//
-//        PowerMockito.when(Common.class, "getResourceUrl", any(HancockConfig.class), any(String.class))
-//                .thenReturn("mockUrl");
-//
-//        PowerMockito.when(Common.class, "makeCall", any(okhttp3.Request.class))
-//                .thenReturn(responseMock);
-//
-//        PowerMockito.when(Common.class, "checkStatus", any(okhttp3.Response.class), eq(EthereumTransaction.class))
-//                .thenReturn(responseModel);
-//
-//        PowerMockito.when(responseModel.getNonce()).thenReturn(nonce);
-//        PowerMockito.when(responseModel.getGasPrice()).thenReturn(gasPrice);
-//        PowerMockito.when(responseModel.getGas()).thenReturn(gasLimit);
-//        PowerMockito.when(responseModel.getTo()).thenReturn(to);
-//        PowerMockito.when(responseModel.getValue()).thenReturn(value);
-//        PowerMockito.when(responseModel.getData()).thenReturn(data);
-//        PowerMockito.whenNew(EthereumTransaction.class).withAnyArguments().thenReturn(mockedEthereumRawTransaction);
-//        PowerMockito.doReturn("mockedUrl").when(spy_token_var).getTransferUrl(any(EthereumTokenRequest.class));
-//
-//        EthereumTransaction transfer = spy_token_var.adaptTransfer(mockedEthereumTokenRequest);
-//
-//        assertTrue("Wallet should have a Balance", transfer instanceof EthereumTransaction);
-//        assertEquals(transfer.getGasPrice(), mockedEthereumRawTransaction.getGasPrice());
-//        assertEquals(transfer.getTo(), mockedEthereumRawTransaction.getTo());
-//        assertEquals(transfer.getValue(), mockedEthereumRawTransaction.getValue());
-//        assertEquals(transfer.getNonce(), mockedEthereumRawTransaction.getNonce());
-//
-//    }
-
-    @PrepareForTest({ValidateParameters.class, Common.class})
     @Test
     public void testGetTransferUrl() throws Exception {
 

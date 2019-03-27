@@ -9,6 +9,7 @@ import java.util.ArrayList;
 public class EthereumSmartContractRetrieveResponse implements Serializable {
 
     private static final long serialVersionUID = -5252822729384368836L;
+
     private ArrayList<EthereumTokenInstance> data;
     private HancockGenericResponse result;
 

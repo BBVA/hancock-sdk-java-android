@@ -7,6 +7,7 @@ import java.io.Serializable;
 public class EthereumTokenBody extends EthereumBody implements Serializable {
 
     private static final long serialVersionUID = 8190822402396330128L;
+
     private String spender;
     private String tokenOwner;
     private String sender;

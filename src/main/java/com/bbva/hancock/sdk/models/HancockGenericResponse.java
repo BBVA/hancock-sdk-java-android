@@ -32,4 +32,5 @@ public class HancockGenericResponse implements Serializable {
     public void setDescription(final String description) {
         this.description = description;
     }
+
 }

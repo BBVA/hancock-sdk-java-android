@@ -5,6 +5,7 @@ import java.io.Serializable;
 public class EthereumBody implements Serializable {
 
     private static final long serialVersionUID = -4442436200964932879L;
+
     private String from;
     private String to;
     private String value;

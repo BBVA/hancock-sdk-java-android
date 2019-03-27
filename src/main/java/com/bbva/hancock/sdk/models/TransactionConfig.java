@@ -24,7 +24,7 @@ public class TransactionConfig implements Serializable {
     }
 
     public boolean getSendLocally() {
-        return this.sendLocally;
+        return sendLocally;
     }
 
     public void setNode(final String node) {
@@ -87,31 +87,30 @@ public class TransactionConfig implements Serializable {
         }
 
         public Builder withCallbackOptions(final String backUrl, final String requestId) {
-            this.callbackOptions = new HancockCallbackOptions(backUrl, requestId);
+            callbackOptions = new HancockCallbackOptions(backUrl, requestId);
             return this;
         }
 
         public TransactionConfig build() {
             final TransactionConfig config = new TransactionConfig();
 
-            if (this.privateKey != null) {
-                config.setPrivateKey(this.privateKey);
-            } else if (this.provider != null) {
-                config.setProvider(this.provider);
+            if (privateKey != null) {
+                config.setPrivateKey(privateKey);
+            } else if (provider != null) {
+                config.setProvider(provider);
             }
 
-            if (this.callbackOptions != null) {
-                config.setCallbackOptions(this.callbackOptions);
+            if (callbackOptions != null) {
+                config.setCallbackOptions(callbackOptions);
             }
 
-            if (this.sendLocally && this.node != null) {
-                config.setNode(this.node);
+            if (sendLocally && node != null) {
+                config.setNode(node);
             }
 
-            config.setSendLocally(this.sendLocally);
+            config.setSendLocally(sendLocally);
 
             return config;
         }
     }
-
 }

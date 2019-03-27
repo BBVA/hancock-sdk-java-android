@@ -2,7 +2,7 @@ package com.bbva.hancock.sdk.exception;
 
 public class HancockException extends Exception {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 7009082313661428202L;
 
     private final Integer error;
     private final String internalError;
@@ -32,15 +32,15 @@ public class HancockException extends Exception {
     }
 
     public Integer getError() {
-        return this.error;
+        return error;
     }
 
     public String getInternalError() {
-        return this.internalError;
+        return internalError;
     }
 
     public String getExtendedMessage() {
-        return this.extendedMessage;
+        return extendedMessage;
     }
 
 }

@@ -17,4 +17,5 @@ public class EthereumSignedTransactionRequest implements Serializable {
     public String getTx() {
         return tx;
     }
+
 }

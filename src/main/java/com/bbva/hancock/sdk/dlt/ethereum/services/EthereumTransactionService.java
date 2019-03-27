@@ -37,6 +37,7 @@ import java.util.function.Function;
 import static com.bbva.hancock.sdk.Common.*;
 
 public class EthereumTransactionService {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(EthereumTransactionService.class);
     private static final MediaType CONTENT_TYPE_JSON = MediaType.parse("application/json; charset=utf-8");
 
@@ -231,8 +232,6 @@ public class EthereumTransactionService {
         if (transactionHash != null && !transactionHash.isEmpty()) {
             success = true;
         } else {
-            success = false;
-            System.out.println("web3j error: " + ethSendTransaction.getResult());
             throw new ExecutionException(ethSendTransaction.getError().getMessage(), null);
         }
 

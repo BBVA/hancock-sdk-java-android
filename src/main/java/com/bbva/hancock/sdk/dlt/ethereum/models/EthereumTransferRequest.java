@@ -8,6 +8,7 @@ import java.io.Serializable;
 public class EthereumTransferRequest implements Serializable {
 
     private static final long serialVersionUID = 6336492127679552080L;
+
     private String from;
     private String to;
     private String value;
