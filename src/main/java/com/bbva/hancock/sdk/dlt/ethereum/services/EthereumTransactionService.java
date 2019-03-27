@@ -245,7 +245,7 @@ public class EthereumTransactionService {
      * Create a websocket subscription to watch transactions of type "transactions" in the network
      *
      * @param addresses An array of address that will be added to the watch list
-     * @return A HancockSocketOld object which can add new subscriptions and listen incoming message
+     * @return A HancockSocket object which can add new subscriptions and listen incoming message
      * @throws HancockException
      */
     public HancockSocket subscribe(final List<String> addresses) throws HancockException {
@@ -257,7 +257,7 @@ public class EthereumTransactionService {
      *
      * @param addresses An array of address that will be added to the watch list
      * @param consumer  A consumer plugin previously configured in hancock that will handle each received event
-     * @return A HancockSocketOld object which can add new subscriptions and listen incoming message
+     * @return A HancockSocket object which can add new subscriptions and listen incoming message
      * @throws HancockException
      */
     public HancockSocket subscribe(final List<String> addresses, final String consumer) throws HancockException {
@@ -269,7 +269,7 @@ public class EthereumTransactionService {
      *
      * @param addresses An array of address that will be added to the watch list
      * @param callback  A function to be called when the sockets has the connection ready. Has the socket as a param
-     * @return A HancockSocketOld object which can add new subscriptions and listen incoming message
+     * @return A HancockSocket object which can add new subscriptions and listen incoming message
      * @throws HancockException
      */
     public HancockSocket subscribe(final List<String> addresses, final Function callback) throws HancockException {
@@ -282,7 +282,7 @@ public class EthereumTransactionService {
      * @param addresses An array of address that will be added to the watch list
      * @param consumer  A consumer plugin previously configured in hancock that will handle each received event
      * @param callback  A function to be called when the sockets has the connection ready. Has the socket as a param
-     * @return A HancockSocketOld object which can add new subscriptions and listen incoming message
+     * @return A HancockSocket object which can add new subscriptions and listen incoming message
      * @throws HancockException
      */
     public HancockSocket subscribe(final List<String> addresses, final String consumer, final Function callback) throws HancockException {
