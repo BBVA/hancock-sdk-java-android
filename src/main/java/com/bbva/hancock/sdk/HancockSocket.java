@@ -18,7 +18,7 @@ public class HancockSocket {
 
     private final WebSocketClient ws;
     private final List<Function<Exception, Void>> errorFunctions;
-    private final Map<String, List<Function>> callbackFunctions;
+    private Map<String, List<Function>> callbackFunctions;
     private final Map<String, List<Function<HancockSocketTransactionEvent, Void>>> transactionFunctions;
     private final Map<String, List<Function<HancockSocketContractEvent, Void>>> contractsFunctions;
 
@@ -162,83 +162,6 @@ public class HancockSocket {
 
         functionList.add(function);
         mapFunctions.put(event, functionList);
-    }
-
-    /**
-     * Remove a function from the handlers list of an specific event
-     *
-     * @param event    The event which is listened
-     * @param function The function to be removed
-     */
-    public void off(final String event, final Function function) {
-
-        final List<Function> functionList = callbackFunctions.get(event);
-
-        if (functionList != null) {
-            for (final Function fn : functionList) {
-                if (fn.equals(function)) {
-                    functionList.remove(fn);
-                }
-            }
-        }
-    }
-
-    /**
-     * Remove a function from the handlers list of an specific event
-     *
-     * @param event    The event which is listened
-     * @param function The function to be removed
-     */
-    public void offTransaction(final String event, final Function<HancockSocketTransactionEvent, Void> function) {
-
-        offEvent(event, function, transactionFunctions);
-
-    }
-
-    /**
-     * Remove a function from the handlers list of an specific event
-     *
-     * @param event    The event which is listened
-     * @param function The function to be removed
-     */
-    public void offContract(final String event, final Function<HancockSocketContractEvent, Void> function) {
-
-        offEvent(event, function, contractsFunctions);
-    }
-
-    /**
-     * Remove a function from the handlers list of an specific event
-     *
-     * @param event    The event which is listened
-     * @param function The function to be removed
-     */
-    private <T extends HancockSocketMessage> void offEvent(final String event, final Function<T, Void> function, final Map<String, List<Function<T, Void>>> mapFunctions) {
-
-        final List<Function<T, Void>> functionList = mapFunctions.get(event);
-
-        if (functionList != null) {
-            for (final Function fn : functionList) {
-                if (fn.equals(function)) {
-                    functionList.remove(fn);
-                }
-            }
-        }
-    }
-
-    /**
-     * Remove a function from the handlers list of error events
-     *
-     * @param function The function to be removed
-     */
-    public void offError(final Function<Exception, Void> function) {
-
-        if (errorFunctions != null) {
-            for (final Function fn : errorFunctions) {
-                if (fn.equals(function)) {
-                    errorFunctions.remove(fn);
-                }
-            }
-        }
     }
 
     /**

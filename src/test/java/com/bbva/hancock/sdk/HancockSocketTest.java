@@ -74,16 +74,6 @@ public class HancockSocketTest {
     }
 
     @Test
-    public void testHancockSocketWatchContracts() {
-
-        contracts.add("test_contract");
-
-        socket_spy.watchContract(contracts);
-
-        verify(socket_spy, times(1)).sendMessage(eq(HancockSocketMessageRequestKind.WATCHSMARTCONTRACT.getKind()), eq(contracts));
-    }
-
-    @Test
     public void testHancockSocketWatchTransfer() {
 
         address.add("0xde8e772f0350e992ddef81bf8f51d94a8ea9216d");
@@ -124,14 +114,6 @@ public class HancockSocketTest {
     }
 
     @Test
-    public void testHancockSocketWatchContractsWithNoParams() {
-
-        socket_spy.watchContract(address);
-
-        verify(socket_spy, times(0)).sendMessage(any(String.class), any(ArrayList.class));
-    }
-
-    @Test
     public void testHancockSocketWatchTransferWithNoParams() {
 
         socket_spy.watchTransfer(address);
@@ -161,16 +143,6 @@ public class HancockSocketTest {
         socket_spy.watchContractEvent(address);
 
         verify(socket_spy, times(0)).sendMessage(any(String.class), any(ArrayList.class));
-    }
-
-    @Test
-    public void testHancockSocketUnwatchContracts() {
-
-        contracts.add("test_contract");
-
-        socket_spy.unwatchContract(contracts);
-
-        verify(socket_spy, times(1)).sendMessage(eq(HancockSocketMessageRequestKind.UNWATCHSMARTCONTRACT.getKind()), eq(contracts));
     }
 
     @Test
@@ -211,14 +183,6 @@ public class HancockSocketTest {
         socket_spy.unwatchContractEvent(contracts);
 
         verify(socket_spy, times(1)).sendMessage(eq(HancockSocketMessageRequestKind.UNWATCHSMARTCONTRACTEVENT.getKind()), eq(contracts));
-    }
-
-    @Test
-    public void testHancockSocketUnwatchContractsWithNoParams() {
-
-        socket_spy.unwatchContract(address);
-
-        verify(socket_spy, times(0)).sendMessage(any(String.class), any(ArrayList.class));
     }
 
     @Test
@@ -287,4 +251,5 @@ public class HancockSocketTest {
         assertEquals(socketTest.getContractsFunctions().size(), 1);
         assertEquals(socketTest.getContractsFunctions().get("testEvent").get(0), func);
     }
+
 }
