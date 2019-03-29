@@ -1,5 +1,6 @@
 package com.bbva.hancock.sdk;
 
+import com.bbva.hancock.sdk.exception.HancockException;
 import com.bbva.hancock.sdk.models.socket.HancockSocketContractEvent;
 import com.bbva.hancock.sdk.models.socket.HancockSocketMessageRequestKind;
 import com.bbva.hancock.sdk.models.socket.HancockSocketTransactionEvent;
@@ -12,7 +13,6 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -32,7 +32,7 @@ public class HancockSocketTest {
     private HancockSocket socket_spy;
 
     @Before
-    public void setUp() throws URISyntaxException {
+    public void setUp() throws HancockException {
 
         contracts = new ArrayList<>();
         address = new ArrayList<>();

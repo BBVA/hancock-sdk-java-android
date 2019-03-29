@@ -1,5 +1,8 @@
 package com.bbva.hancock.sdk;
 
+import com.bbva.hancock.sdk.exception.HancockErrorEnum;
+import com.bbva.hancock.sdk.exception.HancockException;
+import com.bbva.hancock.sdk.exception.HancockTypeErrorEnum;
 import com.bbva.hancock.sdk.models.socket.*;
 import com.google.gson.Gson;
 import org.java_websocket.client.WebSocketClient;
@@ -22,9 +25,15 @@ public class HancockSocket {
     private final Map<String, List<Function<HancockSocketTransactionEvent, Void>>> transactionFunctions;
     private final Map<String, List<Function<HancockSocketContractEvent, Void>>> contractsFunctions;
 
-    public HancockSocket(final String url) throws URISyntaxException {
+    public HancockSocket(final String url) throws HancockException {
 
-        final URI wsUri = new URI(url);
+        URI wsUri;
+
+        try {
+            wsUri = new URI(url);
+        } catch (URISyntaxException e) {
+            throw new HancockException(HancockTypeErrorEnum.ERROR_INTERNAL, "50003", 500, HancockErrorEnum.ERROR_SOCKET.getMessage(), HancockErrorEnum.ERROR_SOCKET.getMessage(), e);
+        }
 
         errorFunctions = new ArrayList<>();
         transactionFunctions = new HashMap<>();

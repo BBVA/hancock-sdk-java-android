@@ -6,9 +6,7 @@ import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransaction;
 import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransactionAdaptResponse;
 import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransferRequest;
 import com.bbva.hancock.sdk.dlt.ethereum.models.transaction.EthereumTransactionResponse;
-import com.bbva.hancock.sdk.exception.HancockErrorEnum;
 import com.bbva.hancock.sdk.exception.HancockException;
-import com.bbva.hancock.sdk.exception.HancockTypeErrorEnum;
 import com.bbva.hancock.sdk.models.TransactionConfig;
 import com.google.gson.Gson;
 import okhttp3.MediaType;
@@ -18,7 +16,6 @@ import okhttp3.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.function.Function;
 
@@ -114,9 +111,9 @@ public class EthereumTransferService {
                 return null;
             });
             return socket;
-        } catch (final URISyntaxException e) {
+        } catch (final HancockException e) {
             LOGGER.error(e.getMessage());
-            throw new HancockException(HancockTypeErrorEnum.ERROR_INTERNAL, "50003", 500, HancockErrorEnum.ERROR_SOCKET.getMessage(), HancockErrorEnum.ERROR_SOCKET.getMessage(), e);
+            throw e;
         }
     }
 

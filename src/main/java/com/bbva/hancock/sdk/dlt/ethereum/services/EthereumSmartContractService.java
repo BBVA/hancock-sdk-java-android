@@ -19,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.web3j.protocol.core.methods.response.AbiDefinition;
 
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -245,9 +244,9 @@ public class EthereumSmartContractService {
                 return null;
             });
             return socket;
-        } catch (final URISyntaxException e) {
+        } catch (final HancockException e) {
             LOGGER.error(e.getMessage());
-            throw new HancockException(HancockTypeErrorEnum.ERROR_INTERNAL, "50003", 500, HancockErrorEnum.ERROR_SOCKET.getMessage(), HancockErrorEnum.ERROR_SOCKET.getMessage(), e);
+            throw e;
         }
     }
 
@@ -312,9 +311,9 @@ public class EthereumSmartContractService {
                 return null;
             });
             return socket;
-        } catch (final URISyntaxException e) {
+        } catch (final HancockException e) {
             LOGGER.error(e.getMessage());
-            throw new HancockException(HancockTypeErrorEnum.ERROR_INTERNAL, "50003", 500, HancockErrorEnum.ERROR_SOCKET.getMessage(), HancockErrorEnum.ERROR_SOCKET.getMessage(), e);
+            throw e;
         }
     }
 
