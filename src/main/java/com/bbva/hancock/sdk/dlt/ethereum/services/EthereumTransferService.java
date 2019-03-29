@@ -6,9 +6,7 @@ import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransaction;
 import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransactionAdaptResponse;
 import com.bbva.hancock.sdk.dlt.ethereum.models.EthereumTransferRequest;
 import com.bbva.hancock.sdk.dlt.ethereum.models.transaction.EthereumTransactionResponse;
-import com.bbva.hancock.sdk.exception.HancockErrorEnum;
 import com.bbva.hancock.sdk.exception.HancockException;
-import com.bbva.hancock.sdk.exception.HancockTypeErrorEnum;
 import com.bbva.hancock.sdk.models.TransactionConfig;
 import com.google.gson.Gson;
 import okhttp3.MediaType;
@@ -18,8 +16,7 @@ import okhttp3.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.URISyntaxException;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 
 import static com.bbva.hancock.sdk.Common.*;
@@ -58,7 +55,7 @@ public class EthereumTransferService {
      * @return A HancockSocket object which can add new subscriptions and listen incoming message
      * @throws HancockException
      */
-    public HancockSocket subscribe(final ArrayList<String> addresses) throws HancockException {
+    public HancockSocket subscribe(final List<String> addresses) throws HancockException {
         return subscribe(addresses, "", null);
     }
 
@@ -70,7 +67,7 @@ public class EthereumTransferService {
      * @return A HancockSocket object which can add new subscriptions and listen incoming message
      * @throws HancockException
      */
-    public HancockSocket subscribe(final ArrayList<String> addresses, final String consumer) throws HancockException {
+    public HancockSocket subscribe(final List<String> addresses, final String consumer) throws HancockException {
         return subscribe(addresses, consumer, null);
     }
 
@@ -82,7 +79,7 @@ public class EthereumTransferService {
      * @return A HancockSocket object which can add new subscriptions and listen incoming message
      * @throws HancockException
      */
-    public HancockSocket subscribe(final ArrayList<String> addresses, final Function callback) throws HancockException {
+    public HancockSocket subscribe(final List<String> addresses, final Function callback) throws HancockException {
         return subscribe(addresses, "", callback);
     }
 
@@ -95,11 +92,12 @@ public class EthereumTransferService {
      * @return A HancockSocket object which can add new subscriptions and listen incoming message
      * @throws HancockException
      */
-    public HancockSocket subscribe(final ArrayList<String> addresses, final String consumer, final Function callback) throws HancockException {
+    public HancockSocket subscribe(final List<String> addresses, final String consumer, final Function callback) throws HancockException {
         final String url = config.getBroker().getHost() + ':'
                 + config.getBroker().getPort()
                 + config.getBroker().getBase()
                 + config.getBroker().getResources().get("events")
+
                 .replaceAll("__ADDRESS__", "")
                 .replaceAll("__SENDER__", "")
                 .replaceAll("__CONSUMER__", consumer);
@@ -113,9 +111,9 @@ public class EthereumTransferService {
                 return null;
             });
             return socket;
-        } catch (final URISyntaxException e) {
+        } catch (final HancockException e) {
             LOGGER.error(e.getMessage());
-            throw new HancockException(HancockTypeErrorEnum.ERROR_INTERNAL, "50003", 500, HancockErrorEnum.ERROR_SOCKET.getMessage(), HancockErrorEnum.ERROR_SOCKET.getMessage(), e);
+            throw e;
         }
     }
 

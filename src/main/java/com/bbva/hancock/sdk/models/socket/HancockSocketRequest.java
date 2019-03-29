@@ -1,18 +1,19 @@
-package com.bbva.hancock.sdk.models;
+package com.bbva.hancock.sdk.models.socket;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 public class HancockSocketRequest implements Serializable {
 
     private static final long serialVersionUID = 2632420954727518115L;
     private String kind;
-    private ArrayList<String> body;
+    private List<String> body;
 
     public HancockSocketRequest() {
     }
 
-    public HancockSocketRequest(final String kind, final ArrayList<String> body) {
+    public HancockSocketRequest(final String kind, final List<String> body) {
         this.kind = kind;
         this.body = body;
     }
@@ -25,7 +26,7 @@ public class HancockSocketRequest implements Serializable {
         this.kind = kind;
     }
 
-    public ArrayList<String> getBody() {
+    public List<String> getBody() {
         return body;
     }
 

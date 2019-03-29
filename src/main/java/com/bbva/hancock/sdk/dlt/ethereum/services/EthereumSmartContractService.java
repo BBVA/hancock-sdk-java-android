@@ -19,8 +19,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.web3j.protocol.core.methods.response.AbiDefinition;
 
-import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 
 import static com.bbva.hancock.sdk.Common.*;
@@ -184,42 +184,42 @@ public class EthereumSmartContractService {
     }
 
     /**
-     * Create a websocket subscription to watch transactions of type "contracts" in the network
+     * Create a websocket subscription to watch transactions of type "contract-event" in the network
      *
      * @param contracts An array of address or alias that will be added to the watch list
      * @return A HancockSocket object which can add new subscriptions and listen incoming message
      * @throws HancockException
      */
-    public HancockSocket subscribe(final ArrayList<String> contracts) throws HancockException {
-        return subscribe(contracts, "", null);
+    public HancockSocket subscribeToEvents(final List<String> contracts) throws HancockException {
+        return subscribeToEvents(contracts, "", null);
     }
 
     /**
-     * Create a websocket subscription to watch transactions of type "contracts" in the network
+     * Create a websocket subscription to watch transactions of type "contract-event" in the network
      *
      * @param contracts An array of address or alias that will be added to the watch list
      * @param consumer  A consumer plugin previously configured in hancock that will handle each received event
      * @return A HancockSocket object which can add new subscriptions and listen incoming message
      * @throws HancockException
      */
-    public HancockSocket subscribe(final ArrayList<String> contracts, final String consumer) throws HancockException {
-        return subscribe(contracts, consumer, null);
+    public HancockSocket subscribeToEvents(final List<String> contracts, final String consumer) throws HancockException {
+        return subscribeToEvents(contracts, consumer, null);
     }
 
     /**
-     * Create a websocket subscription to watch transactions of type "contracts" in the network
+     * Create a websocket subscription to watch transactions of type "contract-event" in the network
      *
      * @param contracts An array of address or alias that will be added to the watch list
      * @param callback  A function to be called when the sockets has the connection ready. Has the socket as a param
      * @return A HancockSocket object which can add new subscriptions and listen incoming message
      * @throws HancockException
      */
-    public HancockSocket subscribe(final ArrayList<String> contracts, final Function callback) throws HancockException {
-        return subscribe(contracts, "", callback);
+    public HancockSocket subscribeToEvents(final List<String> contracts, final Function callback) throws HancockException {
+        return subscribeToEvents(contracts, "", callback);
     }
 
     /**
-     * Create a websocket subscription to watch transactions of type "contracts" in the network
+     * Create a websocket subscription to watch transactions of type "contract-event" in the network
      *
      * @param contracts An array of address or alias that will be added to the watch list
      * @param consumer  A consumer plugin previously configured in hancock that will handle each received event
@@ -227,8 +227,7 @@ public class EthereumSmartContractService {
      * @return A HancockSocket object which can add new subscriptions and listen incoming message
      * @throws HancockException
      */
-    public HancockSocket subscribe(final ArrayList<String> contracts, final String consumer, final Function callback) throws HancockException {
-
+    public HancockSocket subscribeToEvents(final List<String> contracts, final String consumer, final Function callback) throws HancockException {
         final String url = generateUri(config.getBroker().getHost(), config.getBroker().getPort(), config.getBroker().getBase(),
                 config.getBroker().getResources().get("events")
                         .replaceAll("__ADDRESS__", "")
@@ -238,16 +237,83 @@ public class EthereumSmartContractService {
         try {
             final HancockSocket socket = new HancockSocket(url);
             socket.on("ready", o -> {
-                socket.watchContract(contracts);
+                socket.watchContractEvent(contracts);
                 if (callback != null) {
                     callback.apply(socket);
                 }
                 return null;
             });
             return socket;
-        } catch (final URISyntaxException e) {
+        } catch (final HancockException e) {
             LOGGER.error(e.getMessage());
-            throw new HancockException(HancockTypeErrorEnum.ERROR_INTERNAL, "50003", 500, HancockErrorEnum.ERROR_SOCKET.getMessage(), HancockErrorEnum.ERROR_SOCKET.getMessage(), e);
+            throw e;
+        }
+    }
+
+    /**
+     * Create a websocket subscription to watch transactions of type "contract-transaction" in the network
+     *
+     * @param contracts An array of address or alias that will be added to the watch list
+     * @return A HancockSocket object which can add new subscriptions and listen incoming message
+     * @throws HancockException
+     */
+    public HancockSocket subscribeToTransactions(final List<String> contracts) throws HancockException {
+        return subscribeToTransactions(contracts, "", null);
+    }
+
+    /**
+     * Create a websocket subscription to watch transactions of type "contract-transaction" in the network
+     *
+     * @param contracts An array of address or alias that will be added to the watch list
+     * @param consumer  A consumer plugin previously configured in hancock that will handle each received event
+     * @return A HancockSocket object which can add new subscriptions and listen incoming message
+     * @throws HancockException
+     */
+    public HancockSocket subscribeToTransactions(final List<String> contracts, final String consumer) throws HancockException {
+        return subscribeToTransactions(contracts, consumer, null);
+    }
+
+    /**
+     * Create a websocket subscription to watch transactions of type "contract-transaction" in the network
+     *
+     * @param contracts An array of address or alias that will be added to the watch list
+     * @param callback  A function to be called when the sockets has the connection ready. Has the socket as a param
+     * @return A HancockSocket object which can add new subscriptions and listen incoming message
+     * @throws HancockException
+     */
+    public HancockSocket subscribeToTransactions(final List<String> contracts, final Function callback) throws HancockException {
+        return subscribeToTransactions(contracts, "", callback);
+    }
+
+    /**
+     * Create a websocket subscription to watch transactions of type "contract-transaction" in the network
+     *
+     * @param contracts An array of address or alias that will be added to the watch list
+     * @param consumer  A consumer plugin previously configured in hancock that will handle each received event
+     * @param callback  A function to be called when the sockets has the connection ready. Has the socket as a param
+     * @return A HancockSocket object which can add new subscriptions and listen incoming message
+     * @throws HancockException
+     */
+    public HancockSocket subscribeToTransactions(final List<String> contracts, final String consumer, final Function callback) throws HancockException {
+        final String url = generateUri(config.getBroker().getHost(), config.getBroker().getPort(), config.getBroker().getBase(),
+                config.getBroker().getResources().get("events")
+                        .replaceAll("__ADDRESS__", "")
+                        .replaceAll("__SENDER__", "")
+                        .replaceAll("__CONSUMER__", consumer));
+
+        try {
+            final HancockSocket socket = new HancockSocket(url);
+            socket.on("ready", o -> {
+                socket.watchContractTransaction(contracts);
+                if (callback != null) {
+                    callback.apply(socket);
+                }
+                return null;
+            });
+            return socket;
+        } catch (final HancockException e) {
+            LOGGER.error(e.getMessage());
+            throw e;
         }
     }
 

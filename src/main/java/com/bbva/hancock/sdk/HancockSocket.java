@@ -1,7 +1,9 @@
 package com.bbva.hancock.sdk;
 
-import com.bbva.hancock.sdk.models.HancockSocketMessage;
-import com.bbva.hancock.sdk.models.HancockSocketRequest;
+import com.bbva.hancock.sdk.exception.HancockErrorEnum;
+import com.bbva.hancock.sdk.exception.HancockException;
+import com.bbva.hancock.sdk.exception.HancockTypeErrorEnum;
+import com.bbva.hancock.sdk.models.socket.*;
 import com.google.gson.Gson;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
@@ -18,24 +20,49 @@ import java.util.function.Function;
 public class HancockSocket {
 
     private final WebSocketClient ws;
-    private final Map<String, List<Function>> callbackFunctions;
+    private final List<Function<Exception, Void>> errorFunctions;
+    private Map<String, List<Function>> callbackFunctions;
+    private final Map<String, List<Function<HancockSocketTransactionEvent, Void>>> transactionFunctions;
+    private final Map<String, List<Function<HancockSocketContractEvent, Void>>> contractsFunctions;
 
-    public HancockSocket(final String url) throws URISyntaxException {
+    public HancockSocket(final String url) throws HancockException {
 
-        final URI wsUri = new URI(url);
+        URI wsUri;
 
+        try {
+            wsUri = new URI(url);
+        } catch (URISyntaxException e) {
+            throw new HancockException(HancockTypeErrorEnum.ERROR_INTERNAL, "50003", 500, HancockErrorEnum.ERROR_SOCKET.getMessage(), HancockErrorEnum.ERROR_SOCKET.getMessage(), e);
+        }
+
+        errorFunctions = new ArrayList<>();
+        transactionFunctions = new HashMap<>();
+        contractsFunctions = new HashMap<>();
         callbackFunctions = new HashMap<>();
         ws = new WebSocketClient(wsUri) {
             @Override
             public void onOpen(final ServerHandshake handshakedata) {
-                executeFunction("open", handshakedata);
+                executeFunction("ready", handshakedata);
             }
 
             @Override
             public void onMessage(final String message) {
                 final Gson gson = new Gson();
                 final HancockSocketMessage hsm = gson.fromJson(message, HancockSocketMessage.class);
-                executeFunction(hsm.getKind(), hsm);
+                switch (HancockSocketMessageResponseKind.valueOf(hsm.getKind())) {
+                    case TRANSFER:
+                    case TRANSACTION:
+                    case SMARTCONTRACTTRANSACTION:
+                        final HancockSocketTransactionEvent transactionEvent = gson.fromJson(message, HancockSocketTransactionEvent.class);
+                        executeEventFunction(transactionEvent, transactionFunctions);
+                        break;
+                    case SMARTCONTRACTEVENT:
+                        final HancockSocketContractEvent contractEvent = gson.fromJson(message, HancockSocketContractEvent.class);
+                        executeEventFunction(contractEvent, contractsFunctions);
+                        break;
+                    default:
+                        executeFunction(hsm.getKind(), hsm);
+                }
             }
 
             @Override
@@ -45,7 +72,13 @@ public class HancockSocket {
 
             @Override
             public void onError(final Exception ex) {
-                executeFunction("error", ex);
+                executeErrorFunction(ex);
+            }
+
+            protected void executeErrorFunction(final Exception obj) {
+                for (final Function function : errorFunctions) {
+                    function.apply(obj);
+                }
             }
 
             protected void executeFunction(final String event, final Object obj) {
@@ -53,13 +86,21 @@ public class HancockSocket {
                 final List<Function> functionList = callbackFunctions.get(event);
 
                 if (functionList != null) {
-
                     for (final Function function : functionList) {
                         function.apply(obj);
                     }
-
                 }
+            }
 
+            protected <T extends HancockSocketMessage> void executeEventFunction(final T obj, final Map<String, List<Function<T, Void>>> mapFunctions) {
+
+                final List<Function<T, Void>> functionList = mapFunctions.get(obj.getKind());
+
+                if (functionList != null) {
+                    for (final Function function : functionList) {
+                        function.apply(obj);
+                    }
+                }
             }
         };
 
@@ -77,9 +118,7 @@ public class HancockSocket {
         List<Function> functionList = callbackFunctions.get(event);
 
         if (functionList == null) {
-
             functionList = new ArrayList<>();
-
         }
 
         functionList.add(function);
@@ -88,29 +127,50 @@ public class HancockSocket {
     }
 
     /**
-     * Remove a function from the handlers list of an specific event
+     * Add a new function to be called when a exception is received from the socket
      *
-     * @param event    The event which is listened
-     * @param function The function to be removed
+     * @param function The function to be called
      */
-    public void off(final String event, final Function function) {
+    public void onError(final Function<Exception, Void> function) {
 
-        final List<Function> functionList = callbackFunctions.get(event);
+        errorFunctions.add(function);
 
-        if (functionList != null) {
+    }
 
-            for (final Function fn : functionList) {
+    /**
+     * Add a new function to be called when a message is received from the socket for a specific event of transaction
+     *
+     * @param event    The event which is listened (transfer, transaction or contract-transaction)
+     * @param function The function to be called
+     */
+    public void onTransaction(final String event, final Function<HancockSocketTransactionEvent, Void> function) {
 
-                if (fn.equals(function)) {
+        onEvent(event, function, transactionFunctions);
 
-                    functionList.remove(fn);
+    }
 
-                }
+    /**
+     * Add a new function to be called when a message is received from the socket for a specific event of contract events
+     *
+     * @param event    The event which is listened (contract-event)
+     * @param function The function to be called
+     */
+    public void onContractEvent(final String event, final Function<HancockSocketContractEvent, Void> function) {
 
-            }
+        onEvent(event, function, contractsFunctions);
 
+    }
+
+    private <T extends HancockSocketMessage> void onEvent(final String event, final Function<T, Void> function, final Map<String, List<Function<T, Void>>> mapFunctions) {
+
+        List<Function<T, Void>> functionList = mapFunctions.get(event);
+
+        if (functionList == null) {
+            functionList = new ArrayList<>();
         }
 
+        functionList.add(function);
+        mapFunctions.put(event, functionList);
     }
 
     /**
@@ -130,6 +190,9 @@ public class HancockSocket {
     public void removeAllListeners() {
 
         callbackFunctions.clear();
+        transactionFunctions.clear();
+        contractsFunctions.clear();
+        errorFunctions.clear();
 
     }
 
@@ -138,9 +201,9 @@ public class HancockSocket {
      *
      * @param addresses New Addresses to be listened
      */
-    public void watchTransfer(final ArrayList<String> addresses) {
+    public void watchTransfer(final List<String> addresses) {
         if (!addresses.isEmpty()) {
-            sendMessage("watch-transfers", addresses);
+            sendMessage(HancockSocketMessageRequestKind.WATCHTRANSFER.getKind(), addresses);
         }
     }
 
@@ -149,20 +212,31 @@ public class HancockSocket {
      *
      * @param addresses New Addresses to be listened
      */
-    public void watchTransaction(final ArrayList<String> addresses) {
+    public void watchTransaction(final List<String> addresses) {
         if (!addresses.isEmpty()) {
-            sendMessage("watch-transactions", addresses);
+            sendMessage(HancockSocketMessageRequestKind.WATCHTRANSACTION.getKind(), addresses);
         }
     }
 
     /**
-     * Add new addresses or alias to be listened for event of type "contracts".
+     * Add new addresses or alias to be listened for event of type "contract-transaction".
      *
      * @param contracts New address or alias to be listened
      */
-    public void watchContract(final ArrayList<String> contracts) {
+    public void watchContractTransaction(final List<String> contracts) {
         if (!contracts.isEmpty()) {
-            sendMessage("watch-contracts", contracts);
+            sendMessage(HancockSocketMessageRequestKind.WATCHSMARTCONTRACTTRANSACTION.getKind(), contracts);
+        }
+    }
+
+    /**
+     * Add new addresses or alias to be listened for event of type "contract-event".
+     *
+     * @param contracts New address or alias to be listened
+     */
+    public void watchContractEvent(final List<String> contracts) {
+        if (!contracts.isEmpty()) {
+            sendMessage(HancockSocketMessageRequestKind.WATCHSMARTCONTRACTEVENT.getKind(), contracts);
         }
     }
 
@@ -171,9 +245,9 @@ public class HancockSocket {
      *
      * @param addresses Addresses to stop listening
      */
-    public void unwatchTransfer(final ArrayList<String> addresses) {
+    public void unwatchTransfer(final List<String> addresses) {
         if (!addresses.isEmpty()) {
-            sendMessage("unwatch-transfers", addresses);
+            sendMessage(HancockSocketMessageRequestKind.UNWATCHTRANSFER.getKind(), addresses);
         }
     }
 
@@ -182,9 +256,9 @@ public class HancockSocket {
      *
      * @param addresses Addresses to stop listening
      */
-    public void unwatchTransaction(final ArrayList<String> addresses) {
+    public void unwatchTransaction(final List<String> addresses) {
         if (!addresses.isEmpty()) {
-            sendMessage("unwatch-transactions", addresses);
+            sendMessage(HancockSocketMessageRequestKind.UNWATCHTRANSACTION.getKind(), addresses);
         }
     }
 
@@ -193,9 +267,20 @@ public class HancockSocket {
      *
      * @param contracts Contracts to stop listening
      */
-    public void unwatchContract(final ArrayList<String> contracts) {
+    public void unwatchContractTransaction(final List<String> contracts) {
         if (!contracts.isEmpty()) {
-            sendMessage("unwatch-contracts", contracts);
+            sendMessage(HancockSocketMessageRequestKind.UNWATCHSMARTCONTRACTTRANSACTION.getKind(), contracts);
+        }
+    }
+
+    /**
+     * Stop listening the contracts for event of type "contracts".
+     *
+     * @param contracts Contracts to stop listening
+     */
+    public void unwatchContractEvent(final List<String> contracts) {
+        if (!contracts.isEmpty()) {
+            sendMessage(HancockSocketMessageRequestKind.UNWATCHSMARTCONTRACTEVENT.getKind(), contracts);
         }
     }
 
@@ -207,7 +292,19 @@ public class HancockSocket {
         return callbackFunctions;
     }
 
-    protected void sendMessage(final String kind, final ArrayList<String> body) {
+    public Map<String, List<Function<HancockSocketTransactionEvent, Void>>> getTransactionFunctions() {
+        return transactionFunctions;
+    }
+
+    public Map<String, List<Function<HancockSocketContractEvent, Void>>> getContractsFunctions() {
+        return contractsFunctions;
+    }
+
+    public List<Function<Exception, Void>> getErrorFunctions() {
+        return errorFunctions;
+    }
+
+    protected void sendMessage(final String kind, final List<String> body) {
         final HancockSocketRequest message = new HancockSocketRequest(kind, body);
         if (ws.isOpen()) {
             final Gson gson = new Gson();
