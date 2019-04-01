@@ -12,6 +12,7 @@ public class HancockSocketContractBody {
     private String transactionId;
     private String smartContractAddress;
     private String eventName;
+    private HancockCurrency fee;
     private JsonObject returnValues;
     private Long timeStamp;
 
