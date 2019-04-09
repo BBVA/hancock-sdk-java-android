@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+import static com.bbva.hancock.sdk.models.socket.HancockSocketMessageResponseKind.*;
+
 
 public class HancockSocket {
 
@@ -49,7 +51,7 @@ public class HancockSocket {
             public void onMessage(final String message) {
                 final Gson gson = new Gson();
                 final HancockSocketMessage hsm = gson.fromJson(message, HancockSocketMessage.class);
-                switch (HancockSocketMessageResponseKind.valueOf(hsm.getKind())) {
+                switch (hsm.getKind()) {
                     case TRANSFER:
                     case TRANSACTION:
                     case SMARTCONTRACTTRANSACTION:
