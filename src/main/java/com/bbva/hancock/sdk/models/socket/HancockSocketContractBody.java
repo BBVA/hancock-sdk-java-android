@@ -14,6 +14,6 @@ public class HancockSocketContractBody {
     private String eventName;
     private HancockCurrency fee;
     private JsonObject returnValues;
-    private Long timeStamp;
+    private Long timestamp;
 
 }
