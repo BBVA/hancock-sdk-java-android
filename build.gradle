@@ -6,12 +6,19 @@
  * user guide available at https://docs.gradle.org/4.6/userguide/java_library_plugin.html
  */
 
-
 plugins {
-    // Apply the java-library plugin to add support for Java Library
+    id 'maven'
     id 'java-library'
     id 'maven-publish'
+    id 'signing'
 }
+
+apply from: './jacoco.gradle'
+
+group "com.bbva.ndb"
+version = '1.0.0-alpha.35'
+
+def lombokVersion = '1.18.4'
 
 dependencies {
 
@@ -30,7 +37,10 @@ dependencies {
     // implementation 'com.typesafe:config:1.3.2'
     implementation 'com.github.bmoliveira:snake-yaml:v1.18-android'
 
-    compileOnly('org.projectlombok:lombok:1.18.4')
+    compileOnly("org.projectlombok:lombok:${lombokVersion}")
+    testCompileOnly("org.projectlombok:lombok:${lombokVersion}")
+    annotationProcessor("org.projectlombok:lombok:${lombokVersion}")
+    testAnnotationProcessor("org.projectlombok:lombok:${lombokVersion}")
 
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'
@@ -45,16 +55,58 @@ dependencies {
     implementation "org.java-websocket:Java-WebSocket:1.3.9"
 }
 
+task javadocJar(type: Jar) {
+    from javadoc
+    classifier = 'javadoc'
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
+
+artifacts {
+    archives javadocJar, sourcesJar
+}
+
+//tasks.withType(PublishToMavenRepository) {
+//    onlyIf {
+//        (repository == publishing.repositories.external &&
+//            publication == publishing.publications.external) ||
+//        (repository == publishing.repositories.internal &&
+//            publication == publishing.publications.internal)
+//    }
+//}
+//
+//tasks.withType(PublishToMavenLocal) {
+//    onlyIf {
+//        publication == publishing.publications.internal
+//    }
+//}
+//
+//task publishToExternalRepository {
+//    group = 'publishing'
+//    description = 'Publishes all Maven publications to the external Maven repository.'
+//    dependsOn tasks.withType(PublishToMavenRepository).matching {
+//        it.repository == publishing.repositories.external
+//    }
+//}
+//
+//task publishToInternalRepository {
+//    group = 'publishing'
+//    description = 'Publishes all Maven publications to the internal Maven repository.'
+//    dependsOn tasks.withType(PublishToMavenRepository).matching {
+//        it.repository == publishing.repositories.internal
+//    }
+//}
+
 clean {
     delete 'tests'
     delete 'build'
     delete 'out'
 }
 
-// In this section you declare where to find the dependencies of your project
 repositories {
-    // Use jcenter for resolving your dependencies.
-    // You can declare any Maven/Ivy/file repository here.
     jcenter()
     mavenCentral()
     maven { url "https://jitpack.io" }
@@ -66,9 +118,6 @@ publishing {
             from components.java
         }
     }
-}
-
-publishing {
     repositories {
         maven {
             url "s3://microservices-java-repository/maven/release"
@@ -79,7 +128,111 @@ publishing {
     }
 }
 
-version = '1.0.0-alpha.35'
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            pom.project {
+                name = 'Hancock SDK Java Android'
+                description = 'Hancock users can make use of Hancock SDKs to orchestrate the requests and events to and from Hancock components required to perform application level operations.'
+                packaging = 'jar'
+                url = 'https://github.com/BBVA/hancock-sdk-java-android'
+
+                scm {
+                    connection = 'scm:git:ssh://git@github.com:BBVA/hancock-sdk-java-android.git'
+                    developerConnection = 'scm:git:ssh://git@github.com:BBVA/hancock-sdk-java-android.git'
+                    url = 'https://github.com/BBVA/hancock-sdk-java-android'
+                }
+
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id = 'hancock-group'
+                        name = 'BBVA NDB - R&D'
+                        email = 'bbva-ndb-hancock.group@bbva.com'
+                    }
+                }
+            }
+        }
+    }
+}
+
+//publishing {
+//    publications {
+//        internal(MavenPublication) {
+//            from components.java
+//            artifact sourcesJar
+//            artifact javadocJar
+//        }
+//        external(MavenPublication) {
+//            // optionally artifactId can be defined here
+//            from components.java
+//            artifact sourcesJar
+//            artifact javadocJar
+//            pom {
+//                name = 'Hancock SDK Java Android'
+//                description = 'Hancock users can make use of Hancock SDKs to orchestrate the requests and events to and from Hancock components required to perform application level operations.'
+//                packaging = 'jar'
+//                url = 'https://github.com/BBVA/hancock-sdk-java-android'
+//
+//                scm {
+//                    connection = 'scm:git:ssh://git@github.com:BBVA/hancock-sdk-java-android.git'
+//                    developerConnection = 'scm:git:ssh://git@github.com:BBVA/hancock-sdk-java-android.git'
+//                    url = 'https://github.com/BBVA/hancock-sdk-java-android'
+//                }
+//
+//                licenses {
+//                    license {
+//                        name = 'The Apache License, Version 2.0'
+//                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+//                    }
+//                }
+//
+//                developers {
+//                    developer {
+//                        id = 'hancock-group'
+//                        name = 'BBVA NDB - R&D'
+//                        email = 'bbva-ndb-hancock.group@bbva.com'
+//                    }
+//                }
+//            }
+//        }
+//    }
+//    repositories {
+//        maven {
+//            name = 'external'
+//            def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+//            def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
+//            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+//            credentials {
+//                username = ossrhUsername
+//                password = ossrhPassword
+//            }
+//        }
+//        maven {
+//            name = 'internal'
+//            url = internalRepositoryURL
+//            authentication {
+//                awsIm(AwsImAuthentication)
+//            }
+//        }
+//    }
+//}
 
 jar {
     manifest {
@@ -87,5 +240,9 @@ jar {
                 'Implementation-Version': project.version)
     }
 }
-apply from: './jacoco.gradle'
-group "bbva.ndb"
+
+signing {
+    sign configurations.archives
+//    sign publishing.publications.external
+}
+
