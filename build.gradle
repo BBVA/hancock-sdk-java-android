@@ -16,7 +16,7 @@ plugins {
 apply from: './jacoco.gradle'
 
 group "com.bbva.ndb"
-version = '1.0.0-alpha.35'
+version = '1.0.0-alpha.36'
 
 def lombokVersion = '1.18.4'
 
