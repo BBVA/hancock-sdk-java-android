@@ -12,6 +12,7 @@ import com.bbva.hancock.sdk.exception.HancockErrorEnum;
 import com.bbva.hancock.sdk.exception.HancockException;
 import com.bbva.hancock.sdk.exception.HancockTypeErrorEnum;
 import com.bbva.hancock.sdk.models.TransactionConfig;
+import com.bbva.hancock.sdk.models.socket.HancockSocketTransactionBody;
 import com.bbva.hancock.sdk.models.socket.HancockSocketTransactionEvent;
 import com.bbva.hancock.sdk.util.ValidateParameters;
 import com.google.gson.Gson;
@@ -32,7 +33,7 @@ import java.util.concurrent.Future;
 import java.util.function.Function;
 
 import static com.bbva.hancock.sdk.Common.*;
-import static com.bbva.hancock.sdk.models.socket.HancockSocketMessageResponseKind.SMARTCONTRACTTRANSACTION;
+import static com.bbva.hancock.sdk.models.socket.HancockSocketMessageResponseKind.SMARTCONTRACTDEPLOYMENT;
 
 public class EthereumSmartContractService {
 
@@ -316,6 +317,38 @@ public class EthereumSmartContractService {
         }
     }
 
+    /**
+     * Create a websocket subscription to watch transactions of type "contract-transaction" in the network
+     *
+     * @param contracts An array of address or alias that will be added to the watch list
+     * @param consumer  A consumer plugin previously configured in hancock that will handle each received event
+     * @param callback  A function to be called when the sockets has the connection ready. Has the socket as a param
+     * @return A HancockSocket object which can add new subscriptions and listen incoming message
+     * @throws HancockException
+     */
+    public HancockSocket subscribeToContractsDeployments(final List<String> contracts, final String consumer, final Function callback) throws HancockException {
+        final String url = generateUri(config.getBroker().getHost(), config.getBroker().getPort(), config.getBroker().getBase(),
+                config.getBroker().getResources().get("events")
+                        .replaceAll("__ADDRESS__", "")
+                        .replaceAll("__SENDER__", "")
+                        .replaceAll("__CONSUMER__", consumer));
+
+        try {
+            final HancockSocket socket = new HancockSocket(url);
+            socket.on("ready", o -> {
+                socket.watchContractDeployments(contracts);
+                if (callback != null) {
+                    callback.apply(socket);
+                }
+                return null;
+            });
+            return socket;
+        } catch (final HancockException e) {
+            LOGGER.error(e.getMessage());
+            throw e;
+        }
+    }
+
     protected EthereumTransactionAdaptResponse adaptInvoke(final String contractAddressOrAlias, final String method, final ArrayList<String> params, final String from) throws HancockException {
 
         final String url = generateUri(config.getAdapter().getHost(), config.getAdapter().getPort(), config.getAdapter().getBase(),
@@ -354,7 +387,7 @@ public class EthereumSmartContractService {
     }
 
 
-    private HancockSocketTransactionEvent deploySocketResponse;
+    private HancockSocketTransactionBody deploySocketResponse;
     private String transactionHash;
 
     /**
@@ -368,15 +401,14 @@ public class EthereumSmartContractService {
      * @return The result of the request
      * @throws HancockException
      */
-    public Future<HancockSocketTransactionEvent> deploy(final String from, final String urlBase, final String constructorName, final List<String> constructorParams, final TransactionConfig options) throws Exception {
+    public Future<HancockSocketTransactionBody> deploy(final String from, final String urlBase, final String constructorName, final List<String> constructorParams, final TransactionConfig options) throws Exception {
         deploySocketResponse = null;
         transactionHash = null;
-
         final ExecutorService executor = Executors.newSingleThreadExecutor();
 
         return executor.submit(() -> {
             //1. Open broker connection to receive messages
-            subscribeToTransactions(Collections.singletonList(from), msg -> checkDeployEvents((HancockSocket) msg));
+            final HancockSocket socket = subscribeToContractsDeployments(Collections.singletonList(from), "", msg -> checkDeployEvents((HancockSocket) msg));
 
             //2. Call to adapter deploy
             final String url = generateUri(config.getAdapter().getHost(), config.getAdapter().getPort(), config.getAdapter().getBase(),
@@ -396,19 +428,22 @@ public class EthereumSmartContractService {
             do {
                 Thread.sleep(300);
             } while (deploySocketResponse == null);
+
+            socket.removeAllListeners();
+            socket.getWs().close();
             return deploySocketResponse;
         });
 
     }
 
     private boolean checkDeployEvents(final HancockSocket socket) {
-        socket.onTransaction(SMARTCONTRACTTRANSACTION, msg -> processEvent(msg));
+        socket.onTransaction(SMARTCONTRACTDEPLOYMENT, msg -> processEvent(msg));
         return true;
     }
 
     private Void processEvent(final HancockSocketTransactionEvent event) {
         if (event.getBody().getTransactionId().equals(transactionHash)) {
-            deploySocketResponse = event;
+            deploySocketResponse = event.getBody();
             deploySocketResponse.notifyAll();
         }
 

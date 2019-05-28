@@ -8,6 +8,7 @@ public enum HancockSocketMessageRequestKind {
     WATCHSMARTCONTRACT("watch-contracts"),
     WATCHSMARTCONTRACTTRANSACTION("watch-contracts-transactions"),
     WATCHSMARTCONTRACTEVENT("watch-contracts-events"),
+    WATCHSMARTCONTRACDEPLOYMENTS("watch-contracts-deployments"),
     UNWATCHTRANSFER("unwatch-transfers"),
     UNWATCHTRANSACTION("unwatch-transactions"),
     UNWATCHSMARTCONTRACT("unwatch-contracts"),
