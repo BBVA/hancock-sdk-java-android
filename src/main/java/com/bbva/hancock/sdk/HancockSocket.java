@@ -23,17 +23,17 @@ public class HancockSocket {
 
     private final WebSocketClient ws;
     private final List<Function<Exception, Void>> errorFunctions;
-    private Map<String, List<Function>> callbackFunctions;
+    private final Map<String, List<Function>> callbackFunctions;
     private final Map<String, List<Function<HancockSocketTransactionEvent, Void>>> transactionFunctions;
     private final Map<String, List<Function<HancockSocketContractEvent, Void>>> contractsFunctions;
 
     public HancockSocket(final String url) throws HancockException {
 
-        URI wsUri;
+        final URI wsUri;
 
         try {
             wsUri = new URI(url);
-        } catch (URISyntaxException e) {
+        } catch (final URISyntaxException e) {
             throw new HancockException(HancockTypeErrorEnum.ERROR_INTERNAL, "50003", 500, HancockErrorEnum.ERROR_SOCKET.getMessage(), HancockErrorEnum.ERROR_SOCKET.getMessage(), e);
         }
 
@@ -55,6 +55,7 @@ public class HancockSocket {
                     case TRANSFER:
                     case TRANSACTION:
                     case SMARTCONTRACTTRANSACTION:
+                    case SMARTCONTRACTDEPLOYMENT:
                         final HancockSocketTransactionEvent transactionEvent = gson.fromJson(message, HancockSocketTransactionEvent.class);
                         executeEventFunction(transactionEvent, transactionFunctions);
                         break;
@@ -228,6 +229,17 @@ public class HancockSocket {
     public void watchContractTransaction(final List<String> contracts) {
         if (!contracts.isEmpty()) {
             sendMessage(HancockSocketMessageRequestKind.WATCHSMARTCONTRACTTRANSACTION.getKind(), contracts);
+        }
+    }
+
+    /**
+     * Add new addresses or alias to be listened for event of type "contract-transaction".
+     *
+     * @param contracts New address or alias to be listened
+     */
+    public void watchContractDeployments(final List<String> contracts) {
+        if (!contracts.isEmpty()) {
+            sendMessage(HancockSocketMessageRequestKind.WATCHSMARTCONTRACDEPLOYMENTS.getKind(), contracts);
         }
     }
 

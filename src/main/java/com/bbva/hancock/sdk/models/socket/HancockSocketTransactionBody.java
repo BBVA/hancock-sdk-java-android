@@ -14,6 +14,7 @@ public class HancockSocketTransactionBody {
     private HancockCurrency value;
     private String data;
     private HancockCurrency fee;
+    private String newContractAddress;
     private Long timestamp;
 
 }
