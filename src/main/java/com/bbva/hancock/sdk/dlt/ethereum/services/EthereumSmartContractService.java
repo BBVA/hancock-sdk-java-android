@@ -24,9 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.web3j.protocol.core.methods.response.AbiDefinition;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -387,8 +385,8 @@ public class EthereumSmartContractService {
     }
 
 
-    private HancockSocketTransactionBody deploySocketResponse;
-    private String transactionHash;
+    private final Map<String, HancockSocketTransactionBody> deploySocketResponse = new HashMap<>();
+    private final Map<String, String> keyTransactions = new HashMap<>();
 
     /**
      * Deploy a new smart contract instance
@@ -402,13 +400,13 @@ public class EthereumSmartContractService {
      * @throws HancockException
      */
     public Future<HancockSocketTransactionBody> deploy(final String from, final String urlBase, final String constructorName, final List<String> constructorParams, final TransactionConfig options) throws Exception {
-        deploySocketResponse = null;
-        transactionHash = null;
+
+        final String key = String.valueOf(new Date().getTime());
         final ExecutorService executor = Executors.newSingleThreadExecutor();
 
         return executor.submit(() -> {
             //1. Open broker connection to receive messages
-            final HancockSocket socket = subscribeToContractsDeployments(Collections.singletonList(from), "", msg -> checkDeployEvents((HancockSocket) msg));
+            final HancockSocket socket = subscribeToContractsDeployments(Collections.singletonList(from), "", msg -> checkDeployEvents((HancockSocket) msg, key));
 
             //2. Call to adapter deploy
             final String url = generateUri(config.getAdapter().getHost(), config.getAdapter().getPort(), config.getAdapter().getBase(),
@@ -422,29 +420,31 @@ public class EthereumSmartContractService {
 
             //3. Sign and send
             final EthereumDeploySendResponse deployResponse = send(ethereumResponse.getData(), options);
-            transactionHash = deployResponse.getTransactionHash();
-
+            keyTransactions.put(key, deployResponse.getTransactionHash());
             //4. Wait response en return
             do {
                 Thread.sleep(300);
-            } while (deploySocketResponse == null);
+            } while (!deploySocketResponse.containsKey(deployResponse.getTransactionHash()));
 
             socket.removeAllListeners();
             socket.getWs().close();
-            return deploySocketResponse;
+            final HancockSocketTransactionBody hancockSocketTransactionBody = deploySocketResponse.get(deployResponse.getTransactionHash());
+            deploySocketResponse.remove(deployResponse.getTransactionHash());
+            return hancockSocketTransactionBody;
         });
 
     }
 
-    private boolean checkDeployEvents(final HancockSocket socket) {
-        socket.onTransaction(SMARTCONTRACTDEPLOYMENT, msg -> processEvent(msg));
+    private boolean checkDeployEvents(final HancockSocket socket, final String transactionHash) {
+        socket.onTransaction(SMARTCONTRACTDEPLOYMENT, msg -> processEvent(msg, transactionHash));
         return true;
     }
 
-    private Void processEvent(final HancockSocketTransactionEvent event) {
+    private Void processEvent(final HancockSocketTransactionEvent event, final String key) {
+        final String transactionHash = keyTransactions.get(key);
         if (event.getBody().getTransactionId().equals(transactionHash)) {
-            deploySocketResponse = event.getBody();
-            deploySocketResponse.notifyAll();
+            deploySocketResponse.put(transactionHash, event.getBody());
+            keyTransactions.remove(key);
         }
 
         return null;
