@@ -1,0 +1,39 @@
+env: "local"
+adapter:
+  host: http://localhost
+  port: 3000
+  base: ''
+  resources:
+    invoke: '/ethereum/smartcontracts/invoke/__ADDRESS_OR_ALIAS__'
+    invokeAbi: '/ethereum/smartcontracts/invoke/abi'
+    register: '/ethereum/smartcontracts/register'
+    deploy: '/ethereum/smartcontracts/deploy'
+    balance: '/ethereum/balance/__ADDRESS__'
+    transfer: '/ethereum/transfers'
+    tokenTransfer: '/ethereum/token/__ADDRESS_OR_ALIAS__/transfer'
+    tokenTransferFrom: '/ethereum/token/__ADDRESS_OR_ALIAS__/transferFrom'
+    tokenBalance: '/ethereum/token/__ADDRESS_OR_ALIAS__/balanceOf/__ADDRESS__'
+    tokenMetadata: '/ethereum/token/__ADDRESS_OR_ALIAS__/metadata'
+    tokenAllowance: '/ethereum/token/__ADDRESS_OR_ALIAS__/allowance'
+    tokenApprove: '/ethereum/token/__ADDRESS_OR_ALIAS__/approve'
+    tokenRegister: '/ethereum/token/register'
+    tokenFindAll: '/ethereum/token'
+    decode: '/protocol/decode'
+    encode: '/protocol/encode'
+wallet:
+  host: http://localhost
+  port: 3000
+  base: ''
+  resources:
+    signTx: '/ethereum/sign-tx'
+    sendTx: '/ethereum/send-tx'
+    sendSignedTx: '/ethereum/send-signed-tx'
+broker:
+  host: ws://localhost
+  port: 3000
+  base: ''
+  resources:
+    events: '/ethereum/subscribe?address=__ADDRESS__&sender=__SENDER__&consumer=__CONSUMER__'
+node:
+  host: http://localhost
+  port: 8545
