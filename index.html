@@ -1,0 +1,38 @@
+<h1>Hancock SDK client (for java/android)</h1>
+<h2>Using this package</h2>
+<p>This package is distributed from <a href="https://mvnrepository.com/artifact/com.bbva.ndb/hancock-sdk-java-android">Maven repository</a>.</p>
+<h3>Installation</h3>
+<p>Gradle</p>
+<p><code>text/plain
+# build.gradle
+dependencies {
+	compile(&#39;com.bbva.ndb:hancock-sdk-java-android:1.0.0-alpha.49&#39;)
+}
+</code></p>
+<p>Maven</p>
+<p><code>text/plain
+# pom.xml
+&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;com.bbva.ndb&lt;/groupId&gt;
+        &lt;artifactId&gt;hancock-sdk-java-android&lt;/artifactId&gt;
+        &lt;version&gt;1.0.0-alpha.49&lt;/version&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;
+</code></p>
+<h3>Using all together</h3>
+<p>The main client is the [[EthereumClient]] class. You have to instantiate it passing an [[HancockConfig]] configuration object to indicate the client which hancock service it has to use.</p>
+<p>Configuration object example:</p>
+<p>```text/plain import com.bbva.hancock.sdk.dlt.ethereum.EthereumClient; import com.bbva.hancock.sdk.config.HancockConfig;</p>
+<p>HancockConfig config = new HancockConfig.Builder()  .withAdapter("https://hancock-url.es", "/dlt-adapter", 443)  .withBroker("ws://hancock-url", "", 80)  .withWallet("https://hancock-url.es", "/wallet-hub", 443)  .withEnv("pro")  .build();</p>
+<p>EthereumClient client = new EthereumClient(config); ```</p>
+<h3>Introduction and examples</h3>
+<p>[[EthereumClient]] provides interfaces to interact with the blockchain allowing common operation like transfers, balance consulting or smart contract interactions. Take a look at the diferent sections of the <a href="https://docs.kickstartteam.es/blockchainhub/kst-hancock-sdk-java-android/docs/index.html">docs</a> to see examples of use:</p>
+<ul>
+  <li>[[EthereumWalletService]]</li>
+  <li>[[EthereumTransferService]]</li>
+  <li>[[EthereumTransactionService]]</li>
+  <li>[[EthereumSmartContractService]]</li>
+  <li>[[EthereumTokenService]]</li>
+  <li>[[ProtocolService]]</li>
+</ul>

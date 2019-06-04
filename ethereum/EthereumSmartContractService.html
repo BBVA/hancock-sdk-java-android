@@ -1,0 +1,60 @@
+<h2>HancockEthereumSmartContractService</h2>
+<h3>Introduction</h3>
+<p>We can use this interface to manage operations related with Ethereum smart contracts over blockchain</p>
+<h3>Smart contract deployment</h3>
+<p>```javascript  TransactionConfig txconfig = new TransactionConfig.Builder()  .withPrivateKey("0xd06026d5b8664036bdec0a924b8c7360566e678a2291e9440156365b040a7b83")  .build();</p>
+<p>List<String> params = new ArrayList&lt;&gt;();  params.add("1000");  params.add("HancockTest1");  params.add("18");  params.add("HT1");</p>
+<p>final Future<HancockSocketTransactionBody> response = ethereumSmartContractService  .deploy("0x6c0a14f7561898b9ddc0c57652a53b2c6665443e", "https://s3-eu-west-1.amazonaws.com/ethereum/eip20/EIP20", "EIP20", params, txConfig);</p>
+<p>System.out.println(response.get());</p>
+<p>```</p>
+<p>Console output:</p>
+<p><code>bash
+{
+  blockHash: &#39;0x4c5dae42c9ea1b90912b6f7128a9d1213d14f70ca12b06f417b4d519b8cfe543&#39;;
+  blockNumber: 4460598;
+  transactionId: &#39;0x241dbc176195e58c7505812e7c9a04bd83c5dd59b0684e39911f88bedce5c6bf&#39;;
+  from: &#39;0x8a37b79e54d69e833d79cac3647c877ef72830e1&#39;;
+  to: null;
+  value: IHancockSocketCurrency;
+  data: &#39;&#39;;
+  fee: IHancockSocketCurrency;
+  newContractAddress: &#39;0x54a298ee9fccbf0ad8e55bc641d3086b81a48c41&#39;;
+  timestamp: 1559038793;
+}
+</code></p>
+<h3>Smart contract invoke</h3>
+<p>```bash TransactionConfig txconfig = new TransactionConfig.Builder()  .withPrivateKey("0xd06026d5b8664036bdec0a924b8c7360566e678a2291e9440156365b040a7b83")  .build();</p>
+<p>ArrayList<String> params = new ArrayList(); params.add("0x6c0a14f7561898b9ddc0c57652a53b2c6665443e");</p>
+<p>EthereumTransactionResponse invokeResponse = ethereumSmartContractService.invoke(  "token-contract-alias",  "balanceOf",  params,  "0x6c0a14f7561898b9ddc0c57652a53b2c6665443e",  txconfig );</p>
+<p>System.out.println("success: " + invokeResponse.getSuccess());</p>
+<p>```</p>
+<p>Console output:</p>
+<p><code>bash
+success: true
+</code></p>
+<h3>Smart contract register</h3>
+<p>```bash TransactionConfig txconfig = new TransactionConfig.Builder()  .withPrivateKey("0xd06026d5b8664036bdec0a924b8c7360566e678a2291e9440156365b040a7b83")  .build();</p>
+<p>ArrayList<String> abiDefinitions = new ArrayList(); params.add(new AbiDefinition());</p>
+<p>EthereumRegisterResponse invokeResponse = ethereumSmartContractService.register( "MyAlias", "0x6c0a14f7561898b9ddc0c57652a53b2c6665443e", abiDefinitions) System.out.println("success: " + invokeResponse.getSuccess());</p>
+<p>```</p>
+<p>Console output:</p>
+<p><code>bash
+success: true
+</code></p>
+<h3>Subscribe to smart contract events</h3>
+<p>```bash ArrayList<String> contracts = new ArrayList&lt;&gt;(); contracts.add("0x547aaccaef70a7aef5a44fa173f46e9ea07bdce7");</p>
+<p>HancockSocket socket = ethereumSmartContractService.subscribeToEvents(contracts);</p>
+<p>Function logsFunc = o -&gt; {  System.out.println(o);  return null; };</p>
+<p>socket.on("contract-event", logsFunc);</p>
+<p>```</p>
+<h3>Subscribe to smart contract deployment</h3>
+<p>```bash ArrayList<String> contracts = new ArrayList&lt;&gt;(); contracts.add("0x547aaccaef70a7aef5a44fa173f46e9ea07bdce7");</p>
+<p>Function readyFunc = o -&gt; {  System.out.println(o);  return null; }; HancockSocket socket = ethereumSmartContractService.subscribeToContractsDeployments(contracts, "consumer", readyFunc);</p>
+<p>Function logsFunc = o -&gt; {  System.out.println(o);  return null; };</p>
+<p>socket.on("contract-deployment", logsFunc);</p>
+<p>```</p>
+<h3>Subscribe to smart contract transactions</h3>
+<p>```bash ArrayList<String> contracts = new ArrayList&lt;&gt;(); contracts.add("0x547aaccaef70a7aef5a44fa173f46e9ea07bdce7");</p>
+<p>HancockSocket socket = ethereumSmartContractService.subscribeToTransactions(contracts);</p>
+<p>Function logsFunc = o -&gt; {  System.out.println(o);  return null; };</p>
+<p>socket.on("transaction", logsFunc); ```</p>
