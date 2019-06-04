@@ -1,32 +1,28 @@
 # Hancock SDK client (for java/android)
 
-## Before use this package
-This package is distributed under our private [Maven repository](s3://microservices-java-repository/maven/release).
-You have to configure your project build.gradle file in order to have access to it:
-
-```text/plain
-# build.gradle
-repositories {
-    maven {
-        url "s3://microservices-java-repository/maven/release"
-        authentication {
-            awsIm(AwsImAuthentication)
-        }
-    }
-}
-```
-
 ## Using this package
+This package is distributed from [Maven repository](https://mvnrepository.com/artifact/com.bbva.ndb/hancock-sdk-java-android).
 
 ### Installation
 
-Once you have access to the repository:
-
+Gradle
 ```text/plain
 # build.gradle
 dependencies {
-	compile('bbva.ndb:hancock-sdk-client-android:1.0.0-alpha.34')
+	compile('com.bbva.ndb:hancock-sdk-java-android:1.0.0-alpha.49')
 }
+```
+
+Maven
+```text/plain
+# pom.xml
+<dependencies>
+    <dependency>
+        <groupId>com.bbva.ndb</groupId>
+        <artifactId>hancock-sdk-java-android</artifactId>
+        <version>1.0.0-alpha.49</version>
+    </dependency>
+</dependencies>
 ```
 
 ### Using all together
