@@ -4,49 +4,49 @@
     xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd"
     xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-        <loc>http://localhost:8080</loc>
+        <loc>https://bbva.github.io/hancock-sdk-java-android/orchid</loc>
         <lastmod>2019-06-05</lastmod>
         <priority>0.0</priority>
         
     </url>
     <url>
-        <loc>http://localhost:8080/ProtocolService</loc>
+        <loc>https://bbva.github.io/hancock-sdk-java-android/orchid/ProtocolService</loc>
         <lastmod>2019-06-05</lastmod>
         <priority>0.0</priority>
         
     </url>
     <url>
-        <loc>http://localhost:8080/ethereum</loc>
+        <loc>https://bbva.github.io/hancock-sdk-java-android/orchid/ethereum</loc>
         <lastmod>2019-06-05</lastmod>
         <priority>0.0</priority>
         
     </url>
     <url>
-        <loc>http://localhost:8080/ethereum/EthereumSmartContractService</loc>
+        <loc>https://bbva.github.io/hancock-sdk-java-android/orchid/ethereum/EthereumSmartContractService</loc>
         <lastmod>2019-06-05</lastmod>
         <priority>0.0</priority>
         
     </url>
     <url>
-        <loc>http://localhost:8080/ethereum/EthereumTokenService</loc>
+        <loc>https://bbva.github.io/hancock-sdk-java-android/orchid/ethereum/EthereumTokenService</loc>
         <lastmod>2019-06-05</lastmod>
         <priority>0.0</priority>
         
     </url>
     <url>
-        <loc>http://localhost:8080/ethereum/EthereumTransactionService</loc>
+        <loc>https://bbva.github.io/hancock-sdk-java-android/orchid/ethereum/EthereumTransactionService</loc>
         <lastmod>2019-06-05</lastmod>
         <priority>0.0</priority>
         
     </url>
     <url>
-        <loc>http://localhost:8080/ethereum/EthereumTransferService</loc>
+        <loc>https://bbva.github.io/hancock-sdk-java-android/orchid/ethereum/EthereumTransferService</loc>
         <lastmod>2019-06-05</lastmod>
         <priority>0.0</priority>
         
     </url>
     <url>
-        <loc>http://localhost:8080/ethereum/EthereumWalletService</loc>
+        <loc>https://bbva.github.io/hancock-sdk-java-android/orchid/ethereum/EthereumWalletService</loc>
         <lastmod>2019-06-05</lastmod>
         <priority>0.0</priority>
         

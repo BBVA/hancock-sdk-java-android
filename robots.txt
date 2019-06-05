@@ -4,5 +4,5 @@ Disallow: /
 
 
 
-Sitemap: http://localhost:8080/sitemap.xml
+Sitemap: https://bbva.github.io/hancock-sdk-java-android/orchid/sitemap.xml
 
