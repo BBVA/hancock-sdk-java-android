@@ -4,11 +4,11 @@
     xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/siteindex.xsd"
     xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <sitemap>
-        <loc>https://bbva.github.io/hancock-sdk-java-android/orchid/sitemap-home.xml</loc>
+        <loc>https://bbva.github.io/hancock-sdk-java-android/sitemap-home.xml</loc>
         <lastmod>2019-06-05</lastmod>
     </sitemap>
     <sitemap>
-        <loc>https://bbva.github.io/hancock-sdk-java-android/orchid/sitemap-pages.xml</loc>
+        <loc>https://bbva.github.io/hancock-sdk-java-android/sitemap-pages.xml</loc>
         <lastmod>2019-06-05</lastmod>
     </sitemap>
     
