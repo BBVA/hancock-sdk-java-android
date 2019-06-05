@@ -16,7 +16,7 @@
 
 
 
-<title>Hancock</title>
+<title>Wallet Service</title>
 
 
 <meta name="description" content="">
@@ -44,16 +44,16 @@
 <!-- Class: com.eden.orchid.pages.pages.StaticPage -->
 <!-- Layout: index -->
 <!-- Resolved Layout: templates/layouts/index.peb -->
-<!-- Page Template: staticPage, page -->
+<!-- Page Template: staticPage-ethereum, staticPage, page -->
 <!-- Resolved Page Template:  -->
 
 <!-- RESOURCE -->
 <!-- Class: com.eden.orchid.api.resources.resource.FileResource -->
-<!-- Source Filename: pages/index.md -->
+<!-- Source Filename: pages/ethereum/EthereumWalletService.md -->
 
 <!-- COMPLETE PAGE CONFIGURATION -->
 <script>
-    window.allData = {"reference":{"path":"","baseUrl":"http://localhost:8080","fileName":"","extension":"html","usePrettyUrl":true,"link":"http://localhost:8080"},"description":"","title":"Hancock"};
+    window.allData = {"reference":{"path":"ethereum","baseUrl":"http://localhost:8080","fileName":"EthereumWalletService","extension":"html","usePrettyUrl":true,"link":"http://localhost:8080/ethereum/EthereumWalletService"},"description":"","title":"Wallet Service"};
 </script>
 
 <!-- end:debug info -->
@@ -100,7 +100,7 @@
 
     <div class="bs-docs-masthead" id="jumbotron">
         <div class="container">
-            <h1 class="home-title">Hancock</h1>
+            <h1 class="home-title">Wallet Service</h1>
         </div>
     </div>
 
@@ -112,7 +112,15 @@
     <ul class="breadcrumb">
     
     
-        <li class="breadcrumb-item active" aria-current="page">Hancock</li>
+        <li class="breadcrumb-item"><a href="http://localhost:8080">Hancock</a></li>
+    
+    
+    
+        <li class="breadcrumb-item"><a href="http://localhost:8080/ethereum">Ethereum</a></li>
+    
+    
+    
+        <li class="breadcrumb-item active" aria-current="page">Wallet Service</li>
     
     
     </ul>
@@ -128,60 +136,31 @@
             
                 
                     
-                        <h1 id="hancock-for-javaandroid">Hancock (for java/android)</h1>
-<h2 id="using-this-package">Using this package</h2>
-<p>This package is distributed from <a href="https://mvnrepository.com/artifact/com.bbva.ndb/hancock-sdk-java-android">Maven repository</a>.</p>
-<h3 id="installation">Installation</h3>
-<p>Gradle</p>
-<pre><code class="language-text/plain"># build.gradle
-dependencies {
-	compile('com.bbva.ndb:hancock-sdk-java-android:1.0.0-alpha.49')
-}
-</code></pre>
-<p>Maven</p>
-<pre><code class="language-text/plain"># pom.xml
-&lt;dependencies&gt;
-    &lt;dependency&gt;
-        &lt;groupId&gt;com.bbva.ndb&lt;/groupId&gt;
-        &lt;artifactId&gt;hancock-sdk-java-android&lt;/artifactId&gt;
-        &lt;version&gt;1.0.0-alpha.49&lt;/version&gt;
-    &lt;/dependency&gt;
-&lt;/dependencies&gt;
-</code></pre>
-<h3 id="configuring-a-client">Configuring a client</h3>
-<p>The main client is the [[EthereumClient]] class. You have to instantiate it passing an [[HancockConfig]] configuration object
-to indicate the client which hancock service it has to use.</p>
-<p>Configuration object example:</p>
-<pre><code class="language-text/plain">import com.bbva.hancock.sdk.dlt.ethereum.EthereumClient;
-import com.bbva.hancock.sdk.config.HancockConfig;
+                        <h2 id="ethereumwalletservice"><a href="">EthereumWalletService</a></h2>
+<h3 id="introduction">Introduction</h3>
+<p>We can use this interface to do operations related with blockchain wallets</p>
+<h3 id="generate-new-wallet">Generate new wallet</h3>
+<pre><code class="language-bash">EthereumWallet wallet = client.getWalletService().generateWallet();
 
-HancockConfig config = new HancockConfig.Builder()
-    .withAdapter(&quot;https://hancock-url.es&quot;, &quot;/dlt-adapter&quot;, 443)
-    .withBroker(&quot;ws://hancock-url&quot;, &quot;&quot;, 80)
-    .withWallet(&quot;https://hancock-url.es&quot;, &quot;/wallet-hub&quot;, 443)
-    .withEnv(&quot;pro&quot;)
-    .build();
-    
-EthereumClient client = new EthereumClient(config);
+System.out.println(&quot;Address -&gt; &quot; + wallet.getAddress());
+System.out.println(&quot;PrivateKey -&gt; &quot; + wallet.getPrivateKey());
+System.out.println(&quot;PublicKey -&gt; &quot; + wallet.getPublicKey());
 </code></pre>
-<h3 id="introduction-and-examples">Introduction and examples</h3>
-<p>EthereumClient provides interfaces to interact with the blockchain
-allowing common operation like transfers, balance consulting or smart contract interactions.
-Take a look at the examples:</p>
-<ul>
-<li><a href="http://localhost:8080/ethereum">Ethereum</a>
-<ul>
-<li><a href="http://localhost:8080/ethereum/EthereumWalletService">EthereumWalletService</a></li>
-<li><a href="http://localhost:8080/ethereum/EthereumTransferService">EthereumTransferService</a></li>
-<li><a href="http://localhost:8080/ethereum/EthereumTransactionService">EthereumTransactionService</a></li>
-<li><a href="http://localhost:8080/ethereum/EthereumSmartContractService">EthereumSmartContractService</a></li>
-<li><a href="http://localhost:8080/ethereum/EthereumTokenService">EthereumTokenService</a></li>
-</ul>
-</li>
-<li><a href="http://localhost:8080/ProtocolService">ProtocolService</a></li>
-</ul>
-<h3 id="javadoc">Javadoc</h3>
-<p>You can find API definitions <a href="https://bbva.github.io/hancock-sdk-java-android/api">here</a>.</p>
+<p>Output:</p>
+<pre><code class="language-bash">Address -&gt; 0x1319e2f5f0f54f3f41e111ccc1b70d9903277c9d
+PrivateKey -&gt; 0xa93e62b7689acd797e9b486597041c6616175577d52b7beb098877e98b4916f9
+PublicKey -&gt; 0xa84a6cb46ad29c898062b9b9ee570cff30fa3dc29e05c20500d6efeb5905969f7800a143832a1e868ecccf843f9e1cc9f0000dffde78f3432ca5fc412cfa5305
+</code></pre>
+<h3 id="consult-wallet-balance">Consult wallet balance</h3>
+<pre><code class="language-bash">BigInteger balance = client.getWalletService()
+    .getBalance(&quot;0x6c0a14f7561898b9ddc0c57652a53b2c6665443e&quot;);
+
+System.out.println(&quot;Balance -&gt; &quot; + balance);
+</code></pre>
+<p>Output:</p>
+<pre><code class="language-bash"># Balance is given in weis
+Balance -&gt; 99996219999999999991
+</code></pre>
 
                     
                 

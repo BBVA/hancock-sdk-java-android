@@ -16,7 +16,7 @@
 
 
 
-<title>Hancock</title>
+<title>Protocol Service</title>
 
 
 <meta name="description" content="">
@@ -49,11 +49,11 @@
 
 <!-- RESOURCE -->
 <!-- Class: com.eden.orchid.api.resources.resource.FileResource -->
-<!-- Source Filename: pages/index.md -->
+<!-- Source Filename: pages/ProtocolService.md___jb_tmp___ -->
 
 <!-- COMPLETE PAGE CONFIGURATION -->
 <script>
-    window.allData = {"reference":{"path":"","baseUrl":"http://localhost:8080","fileName":"","extension":"html","usePrettyUrl":true,"link":"http://localhost:8080"},"description":"","title":"Hancock"};
+    window.allData = {"reference":{"path":"","baseUrl":"http://localhost:8080","fileName":"ProtocolService","extension":"md___jb_tmp___","usePrettyUrl":true,"link":"http://localhost:8080/ProtocolService"},"description":"","title":"Protocol Service"};
 </script>
 
 <!-- end:debug info -->
@@ -100,7 +100,7 @@
 
     <div class="bs-docs-masthead" id="jumbotron">
         <div class="container">
-            <h1 class="home-title">Hancock</h1>
+            <h1 class="home-title">Protocol Service</h1>
         </div>
     </div>
 
@@ -112,7 +112,11 @@
     <ul class="breadcrumb">
     
     
-        <li class="breadcrumb-item active" aria-current="page">Hancock</li>
+        <li class="breadcrumb-item"><a href="http://localhost:8080">Hancock</a></li>
+    
+    
+    
+        <li class="breadcrumb-item active" aria-current="page">Protocol Service</li>
     
     
     </ul>
@@ -128,61 +132,7 @@
             
                 
                     
-                        <h1 id="hancock-for-javaandroid">Hancock (for java/android)</h1>
-<h2 id="using-this-package">Using this package</h2>
-<p>This package is distributed from <a href="https://mvnrepository.com/artifact/com.bbva.ndb/hancock-sdk-java-android">Maven repository</a>.</p>
-<h3 id="installation">Installation</h3>
-<p>Gradle</p>
-<pre><code class="language-text/plain"># build.gradle
-dependencies {
-	compile('com.bbva.ndb:hancock-sdk-java-android:1.0.0-alpha.49')
-}
-</code></pre>
-<p>Maven</p>
-<pre><code class="language-text/plain"># pom.xml
-&lt;dependencies&gt;
-    &lt;dependency&gt;
-        &lt;groupId&gt;com.bbva.ndb&lt;/groupId&gt;
-        &lt;artifactId&gt;hancock-sdk-java-android&lt;/artifactId&gt;
-        &lt;version&gt;1.0.0-alpha.49&lt;/version&gt;
-    &lt;/dependency&gt;
-&lt;/dependencies&gt;
-</code></pre>
-<h3 id="configuring-a-client">Configuring a client</h3>
-<p>The main client is the [[EthereumClient]] class. You have to instantiate it passing an [[HancockConfig]] configuration object
-to indicate the client which hancock service it has to use.</p>
-<p>Configuration object example:</p>
-<pre><code class="language-text/plain">import com.bbva.hancock.sdk.dlt.ethereum.EthereumClient;
-import com.bbva.hancock.sdk.config.HancockConfig;
-
-HancockConfig config = new HancockConfig.Builder()
-    .withAdapter(&quot;https://hancock-url.es&quot;, &quot;/dlt-adapter&quot;, 443)
-    .withBroker(&quot;ws://hancock-url&quot;, &quot;&quot;, 80)
-    .withWallet(&quot;https://hancock-url.es&quot;, &quot;/wallet-hub&quot;, 443)
-    .withEnv(&quot;pro&quot;)
-    .build();
-    
-EthereumClient client = new EthereumClient(config);
-</code></pre>
-<h3 id="introduction-and-examples">Introduction and examples</h3>
-<p>EthereumClient provides interfaces to interact with the blockchain
-allowing common operation like transfers, balance consulting or smart contract interactions.
-Take a look at the examples:</p>
-<ul>
-<li><a href="http://localhost:8080/ethereum">Ethereum</a>
-<ul>
-<li><a href="http://localhost:8080/ethereum/EthereumWalletService">EthereumWalletService</a></li>
-<li><a href="http://localhost:8080/ethereum/EthereumTransferService">EthereumTransferService</a></li>
-<li><a href="http://localhost:8080/ethereum/EthereumTransactionService">EthereumTransactionService</a></li>
-<li><a href="http://localhost:8080/ethereum/EthereumSmartContractService">EthereumSmartContractService</a></li>
-<li><a href="http://localhost:8080/ethereum/EthereumTokenService">EthereumTokenService</a></li>
-</ul>
-</li>
-<li><a href="http://localhost:8080/ProtocolService">ProtocolService</a></li>
-</ul>
-<h3 id="javadoc">Javadoc</h3>
-<p>You can find API definitions <a href="https://bbva.github.io/hancock-sdk-java-android/api">here</a>.</p>
-
+                        
                     
                 
             

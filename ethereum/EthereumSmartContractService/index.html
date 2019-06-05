@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+
+
+
+<meta charset="utf-8"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
+<meta name="generator" content="Orchid 0.17.0"/>
+<link rel="icon" href="http://localhost:8080/favicon.ico">
+
+
+<meta name="robots" content="index, follow">
+
+
+
+<title>SmartContract Service</title>
+
+
+<meta name="description" content="">
+
+
+
+
+
+<script>
+    window.site = {"orchidVersion":"0.17.0","baseUrl":"http://localhost:8080","environment":"debug","version":"1.0.0-alpha.49"};
+</script>
+
+
+
+
+
+<!-- start:debug info -->
+
+<!-- THEME -->
+<!-- Type: BsDoc -->
+<!-- Class: com.eden.orchid.bsdoc.BSDocTheme -->
+
+<!-- PAGE -->
+<!-- Type: staticPage -->
+<!-- Class: com.eden.orchid.pages.pages.StaticPage -->
+<!-- Layout: index -->
+<!-- Resolved Layout: templates/layouts/index.peb -->
+<!-- Page Template: staticPage-ethereum, staticPage, page -->
+<!-- Resolved Page Template:  -->
+
+<!-- RESOURCE -->
+<!-- Class: com.eden.orchid.api.resources.resource.FileResource -->
+<!-- Source Filename: pages/ethereum/EthereumSmartContractService.md -->
+
+<!-- COMPLETE PAGE CONFIGURATION -->
+<script>
+    window.allData = {"reference":{"path":"ethereum","baseUrl":"http://localhost:8080","fileName":"EthereumSmartContractService","extension":"html","usePrettyUrl":true,"link":"http://localhost:8080/ethereum/EthereumSmartContractService"},"description":"","title":"SmartContract Service"};
+</script>
+
+<!-- end:debug info -->
+
+
+
+<!-- start:inject styles -->
+<link rel="stylesheet" type="text/css" href="https://netdna.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css"/>
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.0/gh-fork-ribbon.min.css"/>
+<link rel="stylesheet" type="text/css" href="http://localhost:8080/BsDoc/cb595d9e/assets/css/bsdoc.css"/>
+<!-- end:inject styles -->
+
+
+</head>
+<body>
+
+
+
+
+
+<header class="navbar navbar-fixed-top bs-docs-nav">
+    <div class="container">
+        <div class="navbar-header" role="banner">
+            <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="http://localhost:8080"></a>
+        </div>
+        <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+            <ul class="nav navbar-nav navbar-right">
+                
+            </ul>
+        </nav>
+    </div>
+</header>
+
+
+<div id="top"></div>
+
+
+    <div class="bs-docs-masthead" id="jumbotron">
+        <div class="container">
+            <h1 class="home-title">SmartContract Service</h1>
+        </div>
+    </div>
+
+
+<div class="container bs-docs-container">
+    <div class="row">
+        <div class="col-md-9" role="main">
+        <nav aria-label="breadcrumb">
+    <ul class="breadcrumb">
+    
+    
+        <li class="breadcrumb-item"><a href="http://localhost:8080">Hancock</a></li>
+    
+    
+    
+        <li class="breadcrumb-item"><a href="http://localhost:8080/ethereum">Ethereum</a></li>
+    
+    
+    
+        <li class="breadcrumb-item active" aria-current="page">SmartContract Service</li>
+    
+    
+    </ul>
+</nav>
+        
+
+        
+        
+            
+    <!-- start:inject components -->
+    
+        
+            
+                
+                    
+                        <h2 id="ethereumsmartcontractservice">EthereumSmartContractService</h2>
+<h3 id="introduction">Introduction</h3>
+<p>We can use this interface to manage operations related with Ethereum smart contracts over blockchain</p>
+<h3 id="smart-contract-deployment">Smart contract deployment</h3>
+<pre><code class="language-javascript">  TransactionConfig txconfig = new TransactionConfig.Builder()
+      .withPrivateKey(&quot;0xd06026d5b8664036bdec0a924b8c7360566e678a2291e9440156365b040a7b83&quot;)
+      .build();
+        
+  List&lt;String&gt; params = new ArrayList&lt;&gt;();
+          params.add(&quot;1000&quot;);
+          params.add(&quot;HancockTest1&quot;);
+          params.add(&quot;18&quot;);
+          params.add(&quot;HT1&quot;);
+  
+  final Future&lt;HancockSocketTransactionBody&gt; response = ethereumSmartContractService
+  .deploy(&quot;0x6c0a14f7561898b9ddc0c57652a53b2c6665443e&quot;, &quot;https://s3-eu-west-1.amazonaws.com/ethereum/eip20/EIP20&quot;, &quot;EIP20&quot;, params, txConfig);
+          
+  
+  System.out.println(response.get());
+
+</code></pre>
+<p>Console output:</p>
+<pre><code class="language-bash">{
+  blockHash: '0x4c5dae42c9ea1b90912b6f7128a9d1213d14f70ca12b06f417b4d519b8cfe543';
+  blockNumber: 4460598;
+  transactionId: '0x241dbc176195e58c7505812e7c9a04bd83c5dd59b0684e39911f88bedce5c6bf';
+  from: '0x8a37b79e54d69e833d79cac3647c877ef72830e1';
+  to: null;
+  value: IHancockSocketCurrency;
+  data: '';
+  fee: IHancockSocketCurrency;
+  newContractAddress: '0x54a298ee9fccbf0ad8e55bc641d3086b81a48c41';
+  timestamp: 1559038793;
+}
+</code></pre>
+<h3 id="smart-contract-invoke">Smart contract invoke</h3>
+<pre><code class="language-bash">TransactionConfig txconfig = new TransactionConfig.Builder()
+    .withPrivateKey(&quot;0xd06026d5b8664036bdec0a924b8c7360566e678a2291e9440156365b040a7b83&quot;)
+    .build();
+      
+ArrayList&lt;String&gt; params = new ArrayList();
+params.add(&quot;0x6c0a14f7561898b9ddc0c57652a53b2c6665443e&quot;);
+
+EthereumTransactionResponse invokeResponse = ethereumSmartContractService.invoke(
+    &quot;token-contract-alias&quot;,
+    &quot;balanceOf&quot;, 
+    params, 
+    &quot;0x6c0a14f7561898b9ddc0c57652a53b2c6665443e&quot;, 
+    txconfig
+);
+
+System.out.println(&quot;success: &quot; + invokeResponse.getSuccess());
+</code></pre>
+<p>Console output:</p>
+<pre><code class="language-bash">success: true
+</code></pre>
+<h3 id="smart-contract-register">Smart contract register</h3>
+<pre><code class="language-bash">TransactionConfig txconfig = new TransactionConfig.Builder()
+    .withPrivateKey(&quot;0xd06026d5b8664036bdec0a924b8c7360566e678a2291e9440156365b040a7b83&quot;)
+    .build();
+      
+ArrayList&lt;String&gt; abiDefinitions = new ArrayList();
+params.add(new AbiDefinition());
+
+EthereumRegisterResponse invokeResponse = ethereumSmartContractService.register(
+&quot;MyAlias&quot;, 
+&quot;0x6c0a14f7561898b9ddc0c57652a53b2c6665443e&quot;, 
+abiDefinitions)
+System.out.println(&quot;success: &quot; + invokeResponse.getSuccess());
+</code></pre>
+<p>Console output:</p>
+<pre><code class="language-bash">success: true
+</code></pre>
+<h3 id="subscribe-to-smart-contract-events">Subscribe to smart contract events</h3>
+<pre><code class="language-bash">ArrayList&lt;String&gt; contracts = new ArrayList&lt;&gt;();
+contracts.add(&quot;0x547aaccaef70a7aef5a44fa173f46e9ea07bdce7&quot;);
+
+HancockSocket socket = ethereumSmartContractService.subscribeToEvents(contracts);
+
+Function logsFunc = o -&gt; {
+    System.out.println(o);
+    return null;
+};
+
+socket.on(&quot;contract-event&quot;, logsFunc);
+</code></pre>
+<h3 id="subscribe-to-smart-contract-deployment">Subscribe to smart contract deployment</h3>
+<pre><code class="language-bash">ArrayList&lt;String&gt; contracts = new ArrayList&lt;&gt;();
+contracts.add(&quot;0x547aaccaef70a7aef5a44fa173f46e9ea07bdce7&quot;);
+
+Function readyFunc = o -&gt; {
+    System.out.println(o);
+    return null;
+};
+HancockSocket socket = ethereumSmartContractService.subscribeToContractsDeployments(contracts, &quot;consumer&quot;, readyFunc);
+
+Function logsFunc = o -&gt; {
+    System.out.println(o);
+    return null;
+};
+
+socket.on(&quot;contract-deployment&quot;, logsFunc);
+</code></pre>
+<h3 id="subscribe-to-smart-contract-transactions">Subscribe to smart contract transactions</h3>
+<pre><code class="language-bash">ArrayList&lt;String&gt; contracts = new ArrayList&lt;&gt;();
+contracts.add(&quot;0x547aaccaef70a7aef5a44fa173f46e9ea07bdce7&quot;);
+
+HancockSocket socket = ethereumSmartContractService.subscribeToTransactions(contracts);
+
+Function logsFunc = o -&gt; {
+    System.out.println(o);
+    return null;
+};
+
+socket.on(&quot;transaction&quot;, logsFunc);
+</code></pre>
+
+                    
+                
+            
+        
+    
+    <!-- end:inject components -->
+
+
+        
+        </div>
+
+        <!-- Page navigation
+        =========================================== -->
+        <div class="col-md-3" role="complementary">
+        <div class="bs-docs-sidebar hidden-print" id="bs-docs-sidebar">
+    
+
+    <ul class="nav bs-docs-sidenav">
+        
+    </ul>
+
+    
+    <!-- start:inject components -->
+    
+    <!-- end:inject components -->
+
+
+
+    <a class="back-to-top" href="#top">
+        <i class="glyphicon glyphicon-chevron-up"></i> Back to top
+    </a>
+</div>
+
+        </div>
+    </div>
+</div>
+
+
+<div id="footer">
+    <div class="container bs-docs-container">
+    <footer class="bs-docs-footer" role="contentinfo">
+    <div class="row">
+        <div class="col-xs-12">
+            <nav aria-label="navigateClasses">
+                <ul class="pager">
+                    
+
+                    
+                </ul>
+            </nav>
+        </div>
+    </div>
+    <div class="icons">
+    
+    
+    
+    </div>
+    <br>
+    <p>
+    Documentation template based on the
+    <a href="https://github.com/mistic100/jekyll-bootstrap-doc">Jekyll Bootstrap Doc</a>
+    Jekyll theme by the <a href="https://getbootstrap.com">Bootstrap team</a>. Site created with
+    <a href="https://orchid.netlify.com">Orchid</a>.
+</p>
+
+<ul class="bs-docs-footer-links muted">
+    <li>Currently 1.0.0-alpha.49</li>
+</ul>
+
+</footer>
+    </div>
+</div>
+
+
+<!-- start:inject scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://netdna.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.3.0/bootbox.min.js"></script>
+<script src="http://localhost:8080/BsDoc/cb595d9e/assets/js/bsdoc.js"></script>
+<!-- end:inject scripts -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/trianglify/1.2.0/trianglify.min.js"></script>
+
+<script>
+    $(function () {
+        window.colors = ['#4C376C', '#000000'];
+                  
+    trianglify({});
+
+        buildNav();
+    });
+</script>
+
+</body>
+</html>
