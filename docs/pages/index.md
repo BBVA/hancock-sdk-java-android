@@ -1,4 +1,8 @@
-# Hancock SDK client (for java/android)
+---
+title: 'Hancock'
+location: 'Hancock'
+---
+# Hancock (for java/android)
 
 ## Using this package
 This package is distributed from [Maven repository](https://mvnrepository.com/artifact/com.bbva.ndb/hancock-sdk-java-android).
@@ -25,7 +29,7 @@ Maven
 </dependencies>
 ```
 
-### Using all together
+### Configuring a client
 
 The main client is the [[EthereumClient]] class. You have to instantiate it passing an [[HancockConfig]] configuration object
 to indicate the client which hancock service it has to use.
@@ -47,15 +51,17 @@ EthereumClient client = new EthereumClient(config);
 
 ### Introduction and examples
 
-[[EthereumClient]] provides interfaces to interact with the blockchain 
-allowing common operation like transfers, balance consulting or smart contract interactions. Take a look at the diferent sections of the [docs](https://docs.kickstartteam.es/blockchainhub/kst-hancock-sdk-java-android/docs/index.html) to see examples of use:
+EthereumClient provides interfaces to interact with the blockchain 
+allowing common operation like transfers, balance consulting or smart contract interactions. 
+Take a look at the examples:
 
-- [[EthereumWalletService]]
-- [[EthereumTransferService]]
-- [[EthereumTransactionService]]
-- [[EthereumSmartContractService]]
-- [[EthereumTokenService]]
-- [[ProtocolService]]
+- [Ethereum]({{ link('pageId=Ethereum') }})
+  - [EthereumWalletService]({{ link('pageId=EthereumWalletService') }})
+  - [EthereumTransferService]({{ link('pageId=EthereumTransferService') }})
+  - [EthereumTransactionService]({{ link('pageId=EthereumTransactionService') }})
+  - [EthereumSmartContractService]({{ link('pageId=EthereumSmartContractService') }})
+  - [EthereumTokenService]({{ link('pageId=EthereumTokenService') }})
+- [ProtocolService]({{ link('pageId=ProtocolService') }})
 
 ### Javadoc
 

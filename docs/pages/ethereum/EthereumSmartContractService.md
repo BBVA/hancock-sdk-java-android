@@ -1,4 +1,11 @@
-## HancockEthereumSmartContractService
+---
+pageId: 'EthereumSmartContractService'
+title: 'SmartContract Service'
+location: 'EthereumSmartContractService'
+parent: 'location=Ethereum'
+---
+
+## EthereumSmartContractService
 
 ### Introduction
 

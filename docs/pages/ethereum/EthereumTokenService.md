@@ -1,4 +1,11 @@
-## HancockEthereumTokenService
+---
+pageId: 'EthereumTokenService'
+title: 'Token Service'
+location: 'EthereumTokenService'
+parent: 'location=Ethereum'
+---
+
+## EthereumTokenService
 
 ### Introduction
 
