@@ -1,4 +1,10 @@
-## HancockProtocolClient
+---
+pageId: 'ProtocolService'
+location: 'Protocol Service'
+parent: 'location=Hancock'
+---
+
+## ProtocolService
 
 ### Introduction
 

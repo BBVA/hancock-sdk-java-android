@@ -1,4 +1,11 @@
-## HancockEthereumTransferService
+---
+pageId: 'EthereumTransferService'
+title: 'Transfer Service'
+location: 'EthereumTransferService'
+parent: 'location=Ethereum'
+---
+
+## EthereumTransferService
 
 ### Introduction
 

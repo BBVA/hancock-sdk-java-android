@@ -1,4 +1,11 @@
-## HancockEthereumWalletService
+---
+pageId: 'EthereumWalletService'
+title: 'Wallet Service'
+location: 'EthereumWalletService'
+parent: 'location=Ethereum'
+---
+
+## [EthereumWalletService]({{ link('EthereumWalletService') }})
 
 ### Introduction
 
